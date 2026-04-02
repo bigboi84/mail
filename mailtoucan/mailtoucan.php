@@ -10,7 +10,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-// Define Constants for easy migration to RackNerd later
+// Define Constants
 define( 'MT_VERSION', '1.0.0' );
 define( 'MT_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MT_URL', plugin_dir_url( __FILE__ ) );
@@ -23,6 +23,17 @@ function activate_mailtoucan() {
     MT_Activator::activate();
 }
 register_activation_hook( __FILE__, 'activate_mailtoucan' );
+
+/**
+ * Load SaaS Standalone Modules
+ */
+// Boot up the Toucan AI Engine
+require_once MT_PATH . 'includes/modules/ai/class-mt-ai.php';
+
+// LOAD NEW ADMIN SETTINGS BACKEND
+require_once MT_PATH . 'includes/class-mt-admin-settings.php';
+$admin_settings = new MT_Admin_Settings();
+$admin_settings->init();
 
 /**
  * Boot up the MailToucan Core Engine
