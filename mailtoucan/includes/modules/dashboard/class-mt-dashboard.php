@@ -250,6 +250,7 @@ class MT_Dashboard {
         $template_id = intval($_POST['template_id']);
         $name = sanitize_text_field($_POST['template_name']);
         $subject = sanitize_text_field($_POST['email_subject']);
+        $assigned_to = sanitize_text_field($_POST['assigned_to']); // <-- NEW FIELD CAPTURED
         $body = wp_kses_post(wp_unslash($_POST['email_body']));
 
         if ($template_id === 0) {
@@ -258,14 +259,16 @@ class MT_Dashboard {
                 'template_name' => $name, 
                 'email_subject' => $subject, 
                 'email_body' => $body, 
-                'status' => 'active'
+                'status' => 'active',
+                'assigned_to' => $assigned_to
             ) );
             wp_send_json_success(array('message' => 'Template Saved!', 'id' => $wpdb->insert_id));
         } else {
             $wpdb->update( $wpdb->prefix . 'mt_email_templates', array(
                 'template_name' => $name, 
                 'email_subject' => $subject, 
-                'email_body' => $body
+                'email_body' => $body,
+                'assigned_to' => $assigned_to
             ), array('id' => $template_id, 'brand_id' => $brand_id) );
             wp_send_json_success(array('message' => 'Template Updated!', 'id' => $template_id));
         }
@@ -613,14 +616,11 @@ class MT_Dashboard {
                 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
                 <style>
                     body { background-color: #f3f4f6; font-family: 'Inter', sans-serif; }
-                    /* Inject Dynamic Dark Charcoal Sidebar */
                     .sidebar { width: 260px; background-color: <?php echo esc_html($mt_palette['dark']); ?>; min-height: 100vh; color: #fff; position: fixed; left: 0; top: 0; z-index: 50; display: flex; flex-direction: column; }
                     .main-content { margin-left: 260px; padding: 2rem; min-height: 100vh; flex: 1; width: calc(100% - 260px); }
-                    /* Full bleed for Studio Builder */
                     .main-content.studio-active { padding: 0; } 
                     
                     .nav-link { display: flex; align-items: center; padding: 0.85rem 1.25rem; color: #9ca3af; border-radius: 0.5rem; margin-bottom: 0.5rem; font-weight: 500; transition: all 0.2s; text-decoration: none;}
-                    /* Inject Dynamic Primary Accent for Active States */
                     .nav-link:hover, .nav-link.active { background-color: #1f2937; color: #fff; border-left: 3px solid <?php echo esc_html($mt_palette['accent']); ?>; }
                     
                     .nav-group-btn { display: flex; align-items: center; width: 100%; padding: 0.75rem 1.25rem; color: #6b7280; margin-top: 1rem; font-weight: 700; text-transform: uppercase; font-size: 0.70rem; letter-spacing: 0.05em; transition: color 0.2s; cursor: pointer; outline: none;}
@@ -630,7 +630,6 @@ class MT_Dashboard {
                     .nav-group-items.open { display: flex; }
                     .nav-sub-link { display: flex; align-items: center; padding: 0.75rem 1.25rem; color: #9ca3af; font-size: 0.875rem; transition: all 0.2s; text-decoration: none; border-left: 3px solid transparent; }
                     
-                    /* Inject Accent for Sublinks */
                     .nav-sub-link:hover, .nav-sub-link.active { background-color: #1f2937; color: #fff; border-left-color: <?php echo esc_html($mt_palette['accent']); ?>; }
                     
                     .custom-scrollbar::-webkit-scrollbar { width: 4px; }
