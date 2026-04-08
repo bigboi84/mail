@@ -8,13 +8,13 @@ class MT_Dashboard {
         add_action( 'init', array( $this, 'add_rewrite_rules' ) );
         add_filter( 'query_vars', array( $this, 'add_query_vars' ) );
         add_action( 'template_redirect', array( $this, 'render_app' ) );
-        
+
         // Admin AJAX Handlers
         add_action( 'wp_ajax_mt_save_splash_config', array( $this, 'ajax_save_splash' ) );
         add_action( 'wp_ajax_mt_save_brand_config', array( $this, 'ajax_save_brand' ) );
-        add_action( 'wp_ajax_mt_save_location', array( $this, 'ajax_save_location' ) ); 
+        add_action( 'wp_ajax_mt_save_location', array( $this, 'ajax_save_location' ) );
         add_action( 'wp_ajax_mt_delete_location', array( $this, 'ajax_delete_location' ) ); 
-        add_action( 'wp_ajax_mt_upload_vault_media', array( $this, 'ajax_upload_vault_media' ) ); 
+        add_action( 'wp_ajax_mt_upload_vault_media', array( $this, 'ajax_upload_vault_media' ) );
         add_action( 'wp_ajax_mt_delete_vault_media', array( $this, 'ajax_delete_vault_media' ) ); 
         add_action( 'wp_ajax_mt_save_campaign', array( $this, 'ajax_save_campaign' ) );
         add_action( 'wp_ajax_mt_delete_campaign', array( $this, 'ajax_delete_campaign' ) );
@@ -44,6 +44,7 @@ class MT_Dashboard {
     private function maybe_create_saas_tables() {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
+
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
         $table_leads = $wpdb->prefix . 'mt_guest_leads';
@@ -113,12 +114,12 @@ class MT_Dashboard {
     }
 
     public function add_rewrite_rules() { 
-        add_rewrite_rule( '^app/?$', 'index.php?mt_app=1', 'top' ); 
+        add_rewrite_rule( '^app/?$', 'index.php?mt_app=1', 'top' );
         add_rewrite_rule( '^splash/([^/]+)/([^/]+)/?$', 'index.php?mt_splash_brand=$matches[1]&mt_splash_loc=$matches[2]', 'top' );
     }
     
     public function add_query_vars( $vars ) { 
-        $vars[] = 'mt_app'; 
+        $vars[] = 'mt_app';
         $vars[] = 'mt_splash_brand'; 
         $vars[] = 'mt_splash_loc'; 
         return $vars; 
@@ -128,7 +129,7 @@ class MT_Dashboard {
         $user_id = get_current_user_id();
         $brand_id = get_user_meta( $user_id, 'mt_brand_id', true );
         if ( ! $brand_id && current_user_can( 'manage_options' ) ) {
-            return 1; 
+            return 1;
         }
         return intval($brand_id);
     }
@@ -153,20 +154,19 @@ class MT_Dashboard {
         $domain = sanitize_text_field(strtolower($_POST['domain']));
         $domain = str_replace(array('http://', 'https://', 'www.'), '', $domain);
         $domain = trim($domain, '/');
-        
+
         if ( ! preg_match('/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}$/i', $domain) ) {
             wp_send_json_error('Invalid domain format.');
         }
 
         global $wpdb;
         $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$wpdb->prefix}mt_email_domains WHERE domain_name = %s AND brand_id = %d", $domain, $brand_id));
-        
         if ($exists) {
             wp_send_json_error('Domain already registered.');
         }
 
         $dkim1 = substr(md5(uniqid(rand(), true)), 0, 32); 
-        $dkim2 = substr(md5(uniqid(rand(), true)), 0, 32); 
+        $dkim2 = substr(md5(uniqid(rand(), true)), 0, 32);
         $dkim3 = substr(md5(uniqid(rand(), true)), 0, 32);
         $dkim_tokens = wp_json_encode([$dkim1, $dkim2, $dkim3]);
 
@@ -176,9 +176,9 @@ class MT_Dashboard {
             'status' => 'pending', 
             'dkim_tokens' => $dkim_tokens
         ) );
-        
+
         if($result) {
-            wp_send_json_success('Domain added successfully.'); 
+            wp_send_json_success('Domain added successfully.');
         } else {
             wp_send_json_error('Database Sync Error.');
         }
@@ -219,7 +219,6 @@ class MT_Dashboard {
         if ($provider === 'custom') {
             $host = sanitize_text_field($_POST['host']);
             $logs[] = "[NETWORK] Resolving host: " . ($host ? $host : 'MISSING_HOST') . "...";
-            
             if (empty($host) || empty($_POST['user']) || empty($_POST['pass'])) {
                 $logs[] = "[ERROR] Missing required SMTP credentials.";
                 wp_send_json_error(['logs' => $logs]);
@@ -228,7 +227,6 @@ class MT_Dashboard {
             $logs[] = "[NETWORK] TCP Connection established.";
             $logs[] = "[SUCCESS] 235 Authentication successful. Server ready.";
             wp_send_json_success(['logs' => $logs]);
-            
         } else {
             $logs[] = "[API] Pinging " . strtoupper($provider) . " API endpoints over HTTPS...";
             
@@ -250,7 +248,7 @@ class MT_Dashboard {
         $template_id = intval($_POST['template_id']);
         $name = sanitize_text_field($_POST['template_name']);
         $subject = sanitize_text_field($_POST['email_subject']);
-        $assigned_to = sanitize_text_field($_POST['assigned_to']); // <-- NEW FIELD CAPTURED
+        $assigned_to = sanitize_text_field($_POST['assigned_to']);
         $body = wp_kses_post(wp_unslash($_POST['email_body']));
 
         if ($template_id === 0) {
@@ -335,7 +333,7 @@ class MT_Dashboard {
         $existing_config = json_decode($existing_brand->brand_config, true) ?: [];
         
         if (isset($existing_config['vault'])) { 
-            $new_config['vault'] = $existing_config['vault']; 
+            $new_config['vault'] = $existing_config['vault'];
         }
 
         $wpdb->update( $wpdb->prefix . 'mt_brands', array( 
@@ -343,7 +341,6 @@ class MT_Dashboard {
             'primary_color' => $primary_color, 
             'brand_config' => wp_json_encode($new_config) 
         ), array('id' => $brand_id) );
-        
         wp_send_json_success('Brand Identity Saved.');
     }
 
@@ -367,7 +364,7 @@ class MT_Dashboard {
             }
         }
         $router_identity = implode(',', $hardware_macs);
-
+        
         if ($store_id === 0) {
             $wpdb->insert( $wpdb->prefix . 'mt_stores', array( 
                 'brand_id' => $brand_id, 
@@ -397,6 +394,7 @@ class MT_Dashboard {
     public function ajax_upload_vault_media() {
         $brand_id = $this->verify_ajax_request();
         global $wpdb;
+        
         if ( empty( $_FILES['file'] ) ) {
             wp_send_json_error('No file uploaded.');
         }
@@ -426,7 +424,7 @@ class MT_Dashboard {
             $wpdb->update( $wpdb->prefix . 'mt_brands', array('brand_config' => wp_json_encode($config)), array('id' => $brand_id) );
             wp_send_json_success($media_item);
         } else { 
-            wp_send_json_error( $movefile['error'] ); 
+            wp_send_json_error( $movefile['error'] );
         }
     }
 
@@ -443,10 +441,10 @@ class MT_Dashboard {
                     if(file_exists($v['file'])) {
                         @unlink($v['file']);
                     }
-                    unset($config['vault'][$k]); 
+                    unset($config['vault'][$k]);
                 }
             }
-            $config['vault'] = array_values($config['vault']); 
+            $config['vault'] = array_values($config['vault']);
             $wpdb->update( $wpdb->prefix . 'mt_brands', array('brand_config' => wp_json_encode($config)), array('id' => $brand_id) );
         }
         
@@ -456,11 +454,12 @@ class MT_Dashboard {
     public function ajax_save_campaign() {
         $brand_id = $this->verify_ajax_request();
         global $wpdb;
+        
         $camp_id = intval($_POST['campaign_id']);
         $name = sanitize_text_field($_POST['campaign_name']);
         $type = sanitize_text_field($_POST['campaign_type']);
-        $config_json = wp_unslash($_POST['config']); 
-
+        $config_json = wp_unslash($_POST['config']);
+        
         if ($camp_id === 0) {
             $wpdb->insert( $wpdb->prefix . 'mt_campaigns', array(
                 'brand_id' => $brand_id, 
@@ -515,7 +514,7 @@ class MT_Dashboard {
         $brand_id = intval($payload['brand_id']); 
         $store_id = intval($payload['store_id']); 
         $campaign_id = intval($payload['campaign_id']);
-        $email = sanitize_email($payload['email']); 
+        $email = sanitize_email($payload['email']);
         $name = sanitize_text_field($payload['name']); 
         $mac = sanitize_text_field($payload['mac'] ?? 'UNKNOWN');
         $survey_data = wp_json_encode($payload['survey_data'] ?? []);
@@ -547,9 +546,9 @@ class MT_Dashboard {
             'consent_ip' => $ip, 
             'consent_log' => $consent_log
         ) );
-        
+
         if ($result) {
-            wp_send_json_success('Lead Saved'); 
+            wp_send_json_success('Lead Saved');
         } else {
             wp_send_json_error('DB Error');
         }
@@ -564,16 +563,16 @@ class MT_Dashboard {
             } else {
                 wp_die('Splash engine missing.');
             }
-            exit; 
+            exit;
         }
 
         if ( get_query_var( 'mt_app' ) ) {
             if ( ! is_user_logged_in() ) { 
-                wp_redirect( wp_login_url( home_url( '/app/' ) ) ); 
+                wp_redirect( wp_login_url( home_url( '/app/' ) ) );
                 exit; 
             }
             if ( ! current_user_can( 'access_mt_app' ) && ! current_user_can( 'manage_options' ) ) { 
-                wp_die( 'Access Denied.' ); 
+                wp_die( 'Access Denied.' );
             }
             
             global $wpdb;
@@ -581,15 +580,14 @@ class MT_Dashboard {
             $brand_id = $this->get_tenant_brand_id();
             
             if ( ! $brand_id ) { 
-                wp_die('No Tenant Environment Assigned.'); 
+                wp_die('No Tenant Environment Assigned.');
             }
             
             $brand = $wpdb->get_row( $wpdb->prepare("SELECT * FROM {$wpdb->prefix}mt_brands WHERE id = %d", $brand_id) );
-
             $current_user = wp_get_current_user();
             $logout_url = wp_logout_url( home_url('/app/') );
             $avatar_url = get_avatar_url($current_user->ID, ['size' => 60]);
-
+            
             // FETCH GLOBAL ADMIN BRANDING
             $mt_palette = get_option( 'mt_brand_palette', [
                 'accent' => '#FCC753', 
@@ -599,12 +597,11 @@ class MT_Dashboard {
 
             $core_views = ['brand', 'locations', 'domains'];
             $wifi_views = ['splash', 'crm'];
-            $email_views = ['delivery', 'email_insights', 'bulk_email', 'studio', 'workflows'];
+            $email_views = ['email_insights', 'studio', 'campaigns', 'workflows', 'delivery']; // REORDERED ARRAY
             
             $is_core = in_array($view, $core_views);
             $is_wifi = in_array($view, $wifi_views);
             $is_email = in_array($view, $email_views);
-
             ?>
             <!DOCTYPE html>
             <html lang="en">
@@ -648,6 +645,7 @@ class MT_Dashboard {
                     </div>
                     
                     <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+            
                         <a href="?view=overview" class="nav-link mx-2 <?php echo $view === 'overview' ? 'active' : ''; ?>"><i class="fa-solid fa-chart-pie mr-2 w-5 text-center"></i> Account Status</a>
                         
                         <button class="nav-group-btn <?php echo $is_core ? 'active' : ''; ?>" onclick="toggleNav('core')">
@@ -671,13 +669,11 @@ class MT_Dashboard {
                             Email Marketing <i class="fa-solid fa-chevron-<?php echo $is_email ? 'up' : 'down'; ?> ml-auto transition-transform" id="icon_email"></i>
                         </button>
                         <div class="nav-group-items <?php echo $is_email ? 'open' : ''; ?>" id="nav_email">
-                            <a href="?view=delivery" class="nav-sub-link <?php echo $view === 'delivery' ? 'active' : ''; ?>"><i class="fa-solid fa-network-wired mr-3 w-4 text-center"></i> Delivery Routing</a>
                             <a href="?view=email_insights" class="nav-sub-link <?php echo $view === 'email_insights' ? 'active' : ''; ?>"><i class="fa-solid fa-chart-line mr-3 w-4 text-center"></i> Dashboard Insights</a>
-                            <a href="?view=bulk_email" class="nav-sub-link <?php echo $view === 'bulk_email' ? 'active' : ''; ?>"><i class="fa-solid fa-paper-plane mr-3 w-4 text-center"></i> Bulk Broadcasts</a>
-                            
                             <a href="?view=studio" class="nav-sub-link <?php echo $view === 'studio' ? 'active' : ''; ?>"><i class="fa-solid fa-wand-magic-sparkles mr-3 w-4 text-center"></i> Toucan Studio</a>
-                            
+                            <a href="?view=campaigns" class="nav-sub-link <?php echo $view === 'campaigns' ? 'active' : ''; ?>"><i class="fa-solid fa-paper-plane mr-3 w-4 text-center"></i> Campaigns</a>
                             <a href="?view=workflows" class="nav-sub-link <?php echo $view === 'workflows' ? 'active' : ''; ?>"><i class="fa-solid fa-diagram-project mr-3 w-4 text-center"></i> Workflows & Drip</a>
+                            <a href="?view=delivery" class="nav-sub-link <?php echo $view === 'delivery' ? 'active' : ''; ?>"><i class="fa-solid fa-network-wired mr-3 w-4 text-center"></i> Delivery Routing</a>
                         </div>
                     </nav>
 
@@ -717,7 +713,6 @@ class MT_Dashboard {
                     function toggleNav(group) {
                         const items = document.getElementById('nav_' + group);
                         const icon = document.getElementById('icon_' + group);
-                        
                         if (items.classList.contains('open')) {
                             items.classList.remove('open');
                             icon.classList.remove('fa-chevron-up');
