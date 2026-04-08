@@ -135,6 +135,7 @@ $default_mjml = "
     /* EDIT STATE */
     #mt-left-panel * { box-sizing: border-box; }
     .gjs-sm-sector, .gjs-trt-traits, .gjs-sm-properties { background: #ffffff !important; border-bottom: none !important; }
+    
     .gjs-sm-title, .gjs-trt-header, .gjs-sm-title-c, .gjs-sm-sector-title, .gjs-sm-title *, .gjs-trt-header * { 
         background-color: #ffffff !important; color: #0f172a !important; font-weight: 800 !important; font-size: 11px !important; letter-spacing: 0.5px !important; text-transform: uppercase !important; border: none !important; 
     }
@@ -144,49 +145,55 @@ $default_mjml = "
     .gjs-sm-property, .gjs-trt-trait { overflow: visible !important; padding: 12px 20px !important; border-bottom: 1px solid #f8fafc !important; display: flex; flex-direction: column; background: #ffffff !important; width: 100% !important;}
     .gjs-sm-label, .gjs-trt-label, .gjs-sm-label *, .gjs-trt-label * { color: #475569 !important; font-size: 10px !important; font-weight: 800 !important; text-transform: uppercase; margin-bottom: 6px !important; display: block; letter-spacing: 0.5px !important; white-space: normal !important; word-break: break-word !important; }
     
-    .gjs-field { background-color: #ffffff !important; border: 1px solid #cbd5e1 !important; border-radius: 6px !important; width: 100% !important; min-height: 36px !important; padding: 0 !important; display: flex !important; align-items: center !important;}
-    .gjs-field input, .gjs-field select, .gjs-field textarea { background: transparent !important; color: #0f172a !important; font-size: 12px !important; font-family: 'Inter', sans-serif !important; font-weight: 600 !important; border: none !important; padding: 8px 12px !important; height: 100% !important; flex: 1 !important; box-shadow: none !important; width: 100% !important;}
+    .gjs-field, .gjs-field input, .gjs-field select, .gjs-field textarea { background-color: #ffffff !important; border: 1px solid #cbd5e1 !important; color: #0f172a !important; border-radius: 6px !important; font-size: 12px !important; font-family: 'Inter', sans-serif !important; width: 100% !important; font-weight: 600 !important; box-shadow: none !important; min-height: 36px !important;}
+    .gjs-field { padding: 0 !important; display: flex !important; align-items: center !important; overflow: hidden !important;}
+    .gjs-field input, .gjs-field select, .gjs-field textarea { border: none !important; padding: 8px 12px !important; height: 100% !important; flex: 1 !important;}
     .gjs-field input:focus, .gjs-field textarea:focus, .gjs-field select:focus { outline: none !important; box-shadow: inset 0 0 0 2px rgba(15,23,42,0.1) !important;}
     .gjs-field-arrows { display: none !important; }
 
-    /* ========================================================= */
-    /* COLOR PICKER OVERHAUL (PERFECT CIRCLE, NO CHECKERBOARD)   */
-    /* ========================================================= */
-    .gjs-field-color { flex-direction: row !important; padding: 4px 8px !important; align-items: center !important;}
-    .gjs-field-color-picker { 
-        border: 1px solid #cbd5e1 !important; 
-        border-radius: 50% !important; 
-        width: 24px !important; 
-        height: 24px !important; 
-        cursor: pointer !important; 
-        margin-right: 8px !important; 
-        flex-shrink: 0 !important; 
-        position: relative !important;
-        overflow: hidden !important; 
+    /* SEGMENTED CONTROLS FIX */
+    .gjs-field-radio {
+        display: flex !important; flex-direction: row !important; background-color: #f8fafc !important; 
+        border-radius: 8px !important; padding: 4px !important; border: 1px solid #e2e8f0 !important;
+        width: 100% !important; gap: 4px !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important;
     }
-    
-    /* Strips out the transparency image natively injected by GrapesJS */
-    .gjs-checker-bg { background-image: none !important; display: none !important;}
-    
-    /* Forces the element holding the actual color style to fill the circle */
-    .gjs-field-color-picker-color, .gjs-field-color-picker > div { 
-        width: 100% !important; 
-        height: 100% !important; 
-        border-radius: 50% !important; 
-        position: absolute !important;
-        inset: 0 !important;
+    .gjs-radio-item {
+        flex: 1 !important; background: transparent !important; border: none !important; box-shadow: none !important;
+        border-radius: 6px !important; padding: 6px 0 !important; display: flex !important; align-items: center !important;
+        justify-content: center !important; cursor: pointer !important; transition: all 0.2s ease !important;
+    }
+    .gjs-radio-item input { display: none !important; }
+    .gjs-radio-item-label { color: #64748b !important; cursor: pointer !important; display: flex !important; align-items: center !important; justify-content: center !important; width: 100% !important;}
+    .gjs-radio-item-label svg { fill: #64748b !important; width: 14px !important; height: 14px !important; transition: fill 0.2s; }
+    .gjs-radio-item.gjs-active { background-color: #ffffff !important; box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important; }
+    .gjs-radio-item.gjs-active .gjs-radio-item-label { color: var(--mt-brand) !important; font-weight: 800 !important; }
+    .gjs-radio-item.gjs-active .gjs-radio-item-label svg { fill: var(--mt-brand) !important; }
+
+    /* PERFECT COLOR CIRCLE FIX */
+    .gjs-field-color { flex-direction: row !important; padding: 4px 8px !important; align-items: center !important;}
+    .gjs-field-color-picker, .gjs-field-colorp { 
+        border: 1px solid #cbd5e1 !important; border-radius: 50% !important; width: 24px !important; height: 24px !important; 
+        cursor: pointer !important; margin-right: 8px !important; flex-shrink: 0 !important; position: relative !important;
+        overflow: hidden !important; background: transparent !important; display: flex !important; align-items: center !important;
+        justify-content: center !important; padding: 0 !important;
+    }
+    .gjs-checker-bg { display: none !important; background-image: none !important;}
+    .gjs-field-color-picker-color, .gjs-field-colorp-color, .gjs-field-colorp-c { 
+        width: 100% !important; height: 100% !important; border-radius: 50% !important; position: absolute !important;
+        top: 0 !important; left: 0 !important; border: none !important; margin: 0 !important; padding: 0 !important;
+        transform: scale(1.15) !important; 
     }
 
-    .sp-container, .gjs-color-picker { 
-        border: 1px solid #e2e8f0 !important; 
-        border-radius: 12px !important; 
-        box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important; 
-        background: #ffffff !important; 
-        font-family: 'Inter', sans-serif !important; 
-        z-index: 99999 !important; 
+    /* CUSTOM IN-PLATFORM COLOR DRAWER UI */
+    #mt_color_drawer {
+        position: absolute; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 1px solid #e2e8f0;
+        padding: 20px; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 500; box-shadow: 0 -10px 40px rgba(0,0,0,0.08);
     }
+    #mt_color_drawer.open { transform: translateY(0); }
+    .color-swatch-btn { width: 100%; aspect-ratio: 1; border-radius: 50%; border: 1px solid #cbd5e1; cursor: pointer; transition: transform 0.2s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+    .color-swatch-btn:hover { transform: scale(1.1); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
     
-    /* Native Color Inputs (Body Tab) */
     input[type="color"] { -webkit-appearance: none; border: none; width: 100%; height: 40px; border-radius: 6px; padding: 0; cursor: pointer; background: transparent; }
     input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
     input[type="color"]::-webkit-color-swatch { border: 1px solid #cbd5e1; border-radius: 6px; }
@@ -239,8 +246,15 @@ $default_mjml = "
     .studio-dark .gjs-sm-title *, .studio-dark .gjs-trt-header * { background-color: transparent !important; color: #f8fafc !important; }
     .studio-dark .gjs-sm-label, .studio-dark .gjs-sm-label * { color: #94a3b8 !important; }
     .studio-dark .gjs-field, .studio-dark .gjs-field input, .studio-dark .gjs-field select { background-color: #0f172a !important; color: #f8fafc !important; border-color: #334155 !important; }
-    .studio-dark .gjs-field-color-picker { border-color: #334155 !important; }
+    .studio-dark .gjs-field-color-picker, .studio-dark .gjs-field-colorp { border-color: #475569 !important; background: transparent !important;}
     
+    .studio-dark .gjs-field-radio { background-color: #0f172a !important; border-color: #334155 !important;}
+    .studio-dark .gjs-radio-item.gjs-active { background-color: #334155 !important; box-shadow: none !important;}
+    .studio-dark .gjs-radio-item.gjs-active .gjs-radio-item-label svg { fill: #ffffff !important; }
+    
+    .studio-dark #mt_color_drawer { background-color: #1e293b !important; border-top-color: #334155 !important; }
+    .studio-dark .color-swatch-btn { border-color: #475569 !important; }
+
     .studio-dark .pill-tab:hover { color: #f8fafc; }
     .studio-dark .sub-pill-tab { background: #0f172a !important; border-color: #334155 !important; }
     .studio-dark .sub-pill-tab.active { background: #1e293b !important; color: var(--mt-brand) !important; }
@@ -294,11 +308,14 @@ $default_mjml = "
                                 <i class="fa-regular fa-envelope text-4xl text-gray-200"></i>
                             </div>
                             <div class="px-3 pb-3 flex flex-col flex-1">
-                                <h3 class="font-bold text-gray-900 truncate"><?php echo esc_html($tpl->template_name); ?></h3>
+                                <h3 class="font-bold text-gray-900 truncate">
+                                    <?php echo esc_html($tpl->template_name); ?>
+                                    <?php if(strpos($tpl->template_name, 'Draft') !== false) echo '<span class="ml-2 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-[10px] rounded font-bold">DRAFT</span>'; ?>
+                                </h3>
                                 <div class="flex justify-between items-center mt-4 border-t border-gray-100 pt-4">
                                     <button onclick="trashTemplate(<?php echo $tpl->id; ?>)" class="text-gray-300 hover:text-red-500 transition"><i class="fa-solid fa-trash-can"></i></button>
                                     <button onclick="openBuilder(<?php echo $tpl->id; ?>, '<?php echo esc_js($tpl->template_name); ?>')" class="bg-gray-900 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-black transition">Open Designer</button>
-                                    <input type="hidden" id="raw_body_<?php echo $tpl->id; ?>" data-body="<?php echo esc_attr($tpl->email_body); ?>">
+                                    <textarea id="raw_body_<?php echo $tpl->id; ?>" style="display:none;"><?php echo esc_textarea($tpl->email_body); ?></textarea>
                                 </div>
                             </div>
                         </div>
@@ -406,16 +423,14 @@ $default_mjml = "
 
             <div id="tab-sections" class="flex-1 flex-col overflow-hidden panel-tab-content">
                 <div class="flex border-b border-gray-100 bg-gray-50 shrink-0 transition-colors">
-                    <button onclick="switchSubTab('layers')" id="sub-btn-layers" class="sub-pill-tab w-1/2 active text-center">Layers</button>
-                    <button onclick="switchSubTab('prebuilt')" id="sub-btn-prebuilt" class="sub-pill-tab w-1/2 text-center">Pre-Built</button>
+                    <button onclick="switchSubTab('prebuilt')" id="sub-btn-prebuilt" class="sub-pill-tab w-1/2 active text-center border-r border-gray-100">Pre-Built</button>
+                    <button onclick="switchSubTab('layers')" id="sub-btn-layers" class="sub-pill-tab w-1/2 text-center">Layers</button>
                 </div>
-                
-                <div id="sub-content-layers" class="flex-1 overflow-y-auto custom-scrollbar p-6 sub-panel active block">
-                    <div id="mt-layers-container"></div>
-                </div>
-                
-                <div id="sub-content-prebuilt" class="flex-1 overflow-y-auto custom-scrollbar p-0 sub-panel hidden">
+                <div id="sub-content-prebuilt" class="flex-1 overflow-y-auto custom-scrollbar p-0 sub-panel active block">
                     <div id="mt-prebuilt-container"></div>
+                </div>
+                <div id="sub-content-layers" class="flex-1 overflow-y-auto custom-scrollbar p-6 sub-panel hidden">
+                    <div id="mt-layers-container"></div>
                 </div>
             </div>
             
@@ -452,15 +467,36 @@ $default_mjml = "
                 <div class="h-14 border-b border-gray-100 flex items-center px-4 bg-white shrink-0 transition-colors">
                     <button onclick="closeEditPanel()" class="flex items-center gap-2 text-[10px] font-bold text-gray-500 hover:text-gray-900 uppercase tracking-widest transition"><i class="fa-solid fa-arrow-left"></i> Back</button>
                 </div>
-                <div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
+                <div id="style-scroll-container" class="flex-1 overflow-y-auto custom-scrollbar flex flex-col">
                     <div id="mt-traits-container"></div>
                     <div id="mt-styles-container" class="pb-10"></div>
                 </div>
             </div>
 
+            <div id="mt_color_drawer">
+                <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-3">
+                    <h3 class="text-[10px] font-black uppercase tracking-widest text-gray-500">Pick a Color</h3>
+                    <button onclick="closeColorDrawer()" class="text-gray-400 hover:text-gray-900"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <p class="text-[10px] font-bold uppercase text-gray-400 mb-2">Brand Palette</p>
+                <div class="grid grid-cols-6 gap-2 mb-5">
+                    <button class="color-swatch-btn" style="background-color: <?php echo esc_attr($brand_color); ?>;" onclick="applyCustomColor('<?php echo esc_js($brand_color); ?>')" title="Primary"></button>
+                    <button class="color-swatch-btn" style="background-color: <?php echo esc_attr($mt_palette['accent']); ?>;" onclick="applyCustomColor('<?php echo esc_js($mt_palette['accent']); ?>')" title="Accent"></button>
+                    <button class="color-swatch-btn" style="background-color: #0f172a;" onclick="applyCustomColor('#0f172a')" title="Dark Slate"></button>
+                    <button class="color-swatch-btn" style="background-color: #475569;" onclick="applyCustomColor('#475569')" title="Slate"></button>
+                    <button class="color-swatch-btn" style="background-color: #ffffff;" onclick="applyCustomColor('#ffffff')" title="White"></button>
+                    <button class="color-swatch-btn flex items-center justify-center text-red-500 bg-gray-50" onclick="applyCustomColor('transparent')" title="Transparent"><i class="fa-solid fa-ban text-xs"></i></button>
+                </div>
+                <p class="text-[10px] font-bold uppercase text-gray-400 mb-2">Custom Color</p>
+                <div class="flex items-center gap-3">
+                    <input type="color" id="mt_custom_color_picker" class="w-10 h-10 rounded cursor-pointer border border-gray-200 p-0 bg-transparent" onchange="applyCustomColor(this.value)">
+                    <input type="text" id="mt_custom_color_hex" class="flex-1 border border-gray-200 rounded-lg text-sm p-2.5 font-bold text-gray-700 outline-none focus:border-indigo-500 shadow-sm" placeholder="#HEXCODE" onchange="applyCustomColor(this.value)">
+                </div>
+            </div>
+
         </div>
 
-        <div id="canvas-wrapper" class="flex-1 relative overflow-y-auto flex justify-center pt-10 pb-24 bg-[#f1f5f9] transition-colors">
+        <div id="canvas-wrapper" class="flex-1 relative overflow-y-auto flex justify-center pt-10 pb-24 bg-[#f1f5f9] transition-colors custom-scrollbar">
             <div id="gjs-container" class="w-full max-w-[650px] relative transition-all duration-300 mx-auto">
                 <div id="gjs" class="absolute inset-0 bg-transparent"></div>
             </div>
@@ -626,6 +662,48 @@ $default_mjml = "
         }
     }
 
+    // --- CUSTOM COLOR DRAWER LOGIC WITH AUTO-CLOSE ---
+    let activeColorInput = null;
+
+    document.getElementById('mt-left-panel').addEventListener('click', function(e) {
+        const pickerBtn = e.target.closest('.gjs-field-color-picker') || e.target.closest('.gjs-field-colorp');
+        const insideDrawer = e.target.closest('#mt_color_drawer');
+        
+        if (pickerBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            const fieldWrapper = pickerBtn.closest('.gjs-field-color, .gjs-field');
+            if(fieldWrapper) {
+                activeColorInput = fieldWrapper.querySelector('input[type="text"]');
+                if(activeColorInput) {
+                    document.getElementById('mt_color_drawer').classList.add('open');
+                    let currentVal = activeColorInput.value;
+                    document.getElementById('mt_custom_color_hex').value = currentVal;
+                    if(currentVal && currentVal !== 'transparent' && currentVal !== 'none') {
+                        try { document.getElementById('mt_custom_color_picker').value = currentVal.slice(0,7); } catch(err){}
+                    }
+                }
+            }
+        } else if (!insideDrawer) {
+            closeColorDrawer();
+        }
+    }, true);
+
+    function closeColorDrawer() {
+        document.getElementById('mt_color_drawer').classList.remove('open');
+        activeColorInput = null;
+    }
+
+    function applyCustomColor(hex) {
+        if(!activeColorInput) return;
+        document.getElementById('mt_custom_color_hex').value = hex;
+        if(hex && hex !== 'transparent' && hex !== 'none') {
+            try { document.getElementById('mt_custom_color_picker').value = hex.slice(0,7); } catch(err){}
+        }
+        activeColorInput.value = hex;
+        activeColorInput.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
     // --- TAB LOGIC ---
     function switchStudioTab(tab, el) {
         document.querySelectorAll('.studio-tab-btn').forEach(b => b.classList.remove('active'));
@@ -638,6 +716,7 @@ $default_mjml = "
         document.getElementById('tab-btn-' + tab).classList.add('active');
         document.querySelectorAll('.panel-tab-content').forEach(c => { c.classList.remove('active'); });
         document.getElementById('tab-' + tab).classList.add('active');
+        closeColorDrawer();
     }
     function switchSubTab(tab) {
         document.querySelectorAll('.sub-pill-tab').forEach(b => b.classList.remove('active'));
@@ -646,7 +725,11 @@ $default_mjml = "
         document.getElementById('sub-content-' + tab).classList.remove('hidden');
         document.getElementById('sub-content-' + tab).classList.add('active');
     }
-    function closeEditPanel() { if(editor) editor.select(null); document.getElementById('panel-edit-menu').classList.add('hidden'); }
+    function closeEditPanel() { 
+        if(editor) editor.select(null); 
+        document.getElementById('panel-edit-menu').classList.add('hidden'); 
+        closeColorDrawer();
+    }
 
     // --- ACTIONS & MODALS ---
     function openTestModal() { document.getElementById('test_email_modal').classList.remove('hidden'); document.getElementById('test_email_modal').classList.add('flex'); }
@@ -686,6 +769,75 @@ $default_mjml = "
         else { showToast("Please select an Image block on the canvas first.", "error"); }
     }
 
+    // --- SILENT AUTO-SAVE DRAFT LOGIC ---
+    function silentDraftSave() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        const dateString = now.toLocaleDateString();
+        const draftName = 'Draft - ' + dateString + ' ' + timeString;
+        
+        const fd = new FormData();
+        fd.append('action', 'mt_save_template'); 
+        fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
+        fd.append('template_id', 0); 
+        fd.append('template_name', draftName);
+        
+        const payload = JSON.stringify({ html: '', mjml: defaultMjml });
+        const safePayload = btoa(unescape(encodeURIComponent(payload))); 
+        fd.append('email_body', safePayload);
+        
+        const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
+        fetch(ajaxUrl, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
+            if(res.success) {
+                document.getElementById('builder_tpl_id').value = res.data.id;
+                document.getElementById('builder_tpl_name').value = draftName;
+            }
+        }).catch(err => console.error("Silent Draft Save Failed", err));
+    }
+
+    // --- TRASH RESTORE / EMPTY / PERMANENT LOGIC ---
+    function trashTemplate(id) { 
+        mtConfirm("Trash Template", "Are you sure you want to move this design to the trash?", function() {
+            const fd = new FormData(); 
+            fd.append('action','mt_trash_template'); 
+            fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
+            fd.append('template_id',id); 
+            
+            const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
+            fetch(ajaxUrl,{method:'POST',body:fd}).then(()=>window.location.reload());
+        });
+    }
+    
+    function restoreTemplate(id) {
+        const fd = new FormData(); 
+        fd.append('action','mt_restore_template'); 
+        fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
+        fd.append('template_id',id); 
+        const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
+        fetch(ajaxUrl,{method:'POST',body:fd}).then(()=>window.location.reload());
+    }
+
+    function emptyTrash() {
+        mtConfirm("Empty Trash", "Are you sure you want to permanently delete all items in the trash? This cannot be undone.", function() {
+            const fd = new FormData(); 
+            fd.append('action','mt_empty_trash'); 
+            fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
+            const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
+            fetch(ajaxUrl,{method:'POST',body:fd}).then(()=>window.location.reload());
+        });
+    }
+
+    function deletePermanent(id) {
+        mtConfirm("Delete Forever", "Are you sure you want to permanently delete this template? This cannot be undone.", function() {
+            const fd = new FormData(); 
+            fd.append('action','mt_delete_template_permanent'); 
+            fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
+            fd.append('template_id',id); 
+            const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
+            fetch(ajaxUrl,{method:'POST',body:fd}).then(()=>window.location.reload());
+        });
+    }
+
     // --- BUILDER CORE ---
     function openBuilder(id, name = '') {
         document.getElementById('builder_tpl_id').value = id;
@@ -698,9 +850,18 @@ $default_mjml = "
 
         let startingData = '';
         if(id !== 0) { 
-            const rawBody = document.getElementById('raw_body_' + id).getAttribute('data-body'); 
-            try { let parsed = JSON.parse(rawBody); startingData = parsed.mjml || defaultMjml; } catch(e) { startingData = rawBody || defaultMjml; }
-        } else { startingData = defaultMjml; }
+            let rawBody = document.getElementById('raw_body_' + id).value.trim(); 
+            if (rawBody && !rawBody.startsWith('{') && !rawBody.startsWith('<')) {
+                try { rawBody = decodeURIComponent(escape(atob(rawBody))); } catch(e) { console.error("Base64 decode failed"); }
+            }
+            try { 
+                let parsed = JSON.parse(rawBody); 
+                startingData = parsed.mjml || defaultMjml; 
+            } catch(e) { startingData = rawBody || defaultMjml; }
+        } else { 
+            startingData = defaultMjml; 
+            silentDraftSave();
+        }
 
         if (!editor) { initGrapesJS(startingData); } 
         else { 
@@ -720,17 +881,7 @@ $default_mjml = "
             storageManager: false,
             plugins: ['grapesjs-mjml'],
             pluginsOpts: { 'grapesjs-mjml': {} },
-            
-            // COLOR PICKER FIX: Removed positioning restraints
-            colorPicker: {
-                palette: [
-                    [brandPrimaryColor, brandAccentColor, '#0f172a', '#334155'],
-                    ['#ffffff', '#f8fafc', '#f1f5f9', '#e2e8f0'],
-                    ['#ef4444', '#f97316', '#22c55e', '#3b82f6'],
-                    ['transparent']
-                ]
-            },
-            
+            colorPicker: false, 
             blockManager: { appendTo: '#mt-blocks-container' },
             layerManager: { appendTo: '#mt-layers-container' },
             traitManager: { appendTo: '#mt-traits-container' },
@@ -790,7 +941,6 @@ $default_mjml = "
 
             bm.add('ftr-standard', { category: 'Footers', label: `<i class="fa-solid fa-shoe-prints"></i><div class="gjs-block-label">Full Footer</div>`, content: `<mj-section padding="30px 20px" background-color="transparent"><mj-column><mj-image src="${brandLogoUrl}" width="120px" align="center" padding-bottom="15px"></mj-image><mj-social font-size="15px" icon-size="30px" mode="horizontal" padding-bottom="20px"><mj-social-element name="facebook" href="#"></mj-social-element><mj-social-element name="instagram" href="#"></mj-social-element></mj-social><mj-text font-size="12px" color="#94a3b8" align="center" line-height="1.5"><strong>${brandName}</strong><br>123 Brand Street, City, State 12345<br>contact@domain.com | (555) 123-4567<br><br>You received this because you opted in.</mj-text><mj-text font-size="12px" align="center" padding-top="5px"><a href="[Unsubscribe_Link]" style="color:#64748b; text-decoration:underline;">Unsubscribe Safely</a></mj-text></mj-column></mj-section>` });
 
-            // Move Pre-Built blocks into Sub-Tab
             setTimeout(() => { 
                 const cats = document.querySelectorAll('.gjs-block-category');
                 const prebuiltContainer = document.getElementById('mt-prebuilt-container');
@@ -813,35 +963,12 @@ $default_mjml = "
         editor.on('component:selected', component => { 
             document.getElementById('panel-edit-menu').classList.remove('hidden');
             document.getElementById('panel-edit-menu').classList.add('flex');
+            closeColorDrawer();
             const traits = component.get('traits');
             if(traits) component.set('traits', traits.filter(t => t.get('name') !== 'title' && t.get('name') !== 'id'));
         });
     }
 
-    // --- ACTIONS LOGIC USING CUSTOM MODALS ---
-    function trashTemplate(id) { 
-        mtConfirm("Trash Template", "Are you sure you want to move this design to the trash?", function() {
-            const fd = new FormData(); 
-            fd.append('action','mt_trash_template'); 
-            fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
-            fd.append('template_id',id); 
-            
-            const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
-            fetch(ajaxUrl,{method:'POST',body:fd}).then(()=>window.location.reload());
-        });
-    }
-
-    function saveAsTemplate() {
-        const currentName = document.getElementById('builder_tpl_name').value;
-        mtPrompt("Save as Template", "Enter a name for this new template:", currentName ? currentName + " (Copy)" : "New Template", function(newName) {
-            if(!newName || newName.trim() === "") { showToast("Template name cannot be empty.", "error"); return; }
-            document.getElementById('builder_tpl_id').value = 0;
-            document.getElementById('builder_tpl_name').value = newName.trim();
-            saveBuilder();
-        });
-    }
-    
-    // SAFEGUARDED SAVE FUNCTION (NO MORE INFINITE SPINNING)
     function saveBuilder() {
         const btn = document.getElementById('btn_save_builder');
         const id = document.getElementById('builder_tpl_id').value;
@@ -856,7 +983,6 @@ $default_mjml = "
         let mjmlData = '';
         
         try {
-            // Attempt to run the MJML compiler
             const compiled = editor.runCommand('mjml-get-code');
             if (compiled && compiled.html) {
                 htmlData = compiled.html;
@@ -865,7 +991,6 @@ $default_mjml = "
                 throw new Error("MJML command returned empty data");
             }
         } catch (error) {
-            // If the user drops a broken block or the compiler fails, we gracefully fallback
             console.warn("MJML Export Warning. Falling back to standard HTML render:", error);
             htmlData = editor.getHtml(); 
             mjmlData = editor.getHtml();
@@ -876,9 +1001,11 @@ $default_mjml = "
         fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
         fd.append('template_id', id); 
         fd.append('template_name', name);
-        fd.append('email_body', JSON.stringify({ html: htmlData, mjml: mjmlData }));
         
-        // Ensure we always have an endpoint to hit
+        const payload = JSON.stringify({ html: htmlData, mjml: mjmlData });
+        const safePayload = btoa(unescape(encodeURIComponent(payload))); 
+        fd.append('email_body', safePayload);
+        
         const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
         
         fetch(ajaxUrl, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
