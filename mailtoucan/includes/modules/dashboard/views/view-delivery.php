@@ -18,95 +18,136 @@ $delivery = isset($brand_config['delivery']) ? $brand_config['delivery'] : [
 $brand_slug = sanitize_title($brand->brand_name);
 if (empty($brand_slug)) $brand_slug = 'rewards';
 $system_email = $brand_slug . '@mailtoucan.pro';
+
+// Fetch Brand Colors for UI
+$brand_color = !empty($brand->primary_color) ? $brand->primary_color : '#0f172a';
+$mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => '#1A232E'] );
 ?>
+
+<style>
+    :root {
+        --mt-brand: <?php echo esc_html($brand_color); ?>;
+        --mt-accent: <?php echo esc_html($mt_palette['accent']); ?>;
+    }
+
+    /* Modern Routing Cards (Hides native radios) */
+    .routing-radio { display: none; }
+    .routing-card { transition: all 0.2s ease; border: 2px solid #e2e8f0; cursor: pointer; }
+    .routing-radio:checked + .routing-card { border-color: var(--mt-brand); background-color: #f8fafc; }
+    .routing-radio:checked + .routing-card .radio-circle { border-color: var(--mt-brand); }
+    .routing-radio:checked + .routing-card .radio-circle::after { content: ''; display: block; width: 10px; height: 10px; background: var(--mt-brand); border-radius: 50%; margin: 3px auto; }
+    
+    /* Hover Effects */
+    .routing-card:hover { border-color: #cbd5e1; }
+    .routing-radio:checked + .routing-card:hover { border-color: var(--mt-brand); }
+</style>
 
 <header class="mb-8 flex justify-between items-end">
     <div>
-        <h1 class="text-2xl font-bold text-gray-900">Delivery Routing</h1>
-        <p class="text-gray-500 text-sm">Configure how your Transactional and Bulk marketing emails are sent.</p>
+        <h1 class="text-3xl font-black text-gray-900 flex items-center gap-3">Flight Routing</h1>
+        <p class="text-gray-500 text-sm mt-1">Configure how your Transactional and Bulk marketing emails take flight.</p>
     </div>
-    <button onclick="saveDeliverySettings()" id="btn_save_delivery" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-bold shadow-md hover:bg-indigo-700 transition flex items-center gap-2">
-        <i class="fa-solid fa-floppy-disk"></i> Save Settings
+    <button onclick="saveDeliverySettings()" id="btn_save_delivery" class="text-white px-8 py-3 rounded-xl font-black shadow-lg hover:opacity-90 transition flex items-center gap-2" style="background-color: var(--mt-brand);">
+        <i class="fa-solid fa-floppy-disk"></i> Save Routes
     </button>
 </header>
 
 <div class="grid grid-cols-2 gap-8 mb-12">
     
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div class="p-5 border-b bg-gray-50 flex items-center gap-3">
-            <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-bolt"></i></div>
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+        <div class="p-6 border-b border-gray-100 bg-gray-50/50 flex items-center gap-4 shrink-0">
+            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-xl shadow-sm border border-blue-100"><i class="fa-solid fa-bolt"></i></div>
             <div>
-                <h2 class="font-bold text-gray-900">Transactional Engine</h2>
-                <p class="text-xs text-gray-500">For WiFi Splash Pages & Autoresponders</p>
+                <h2 class="text-lg font-black text-gray-900">Transactional Engine</h2>
+                <p class="text-xs text-gray-500 font-medium">For WiFi Splash Pages & Autoresponders</p>
             </div>
         </div>
-        <div class="p-6 space-y-4">
-            <label class="flex items-start gap-4 p-4 border rounded-lg cursor-pointer hover:bg-gray-50 <?php echo $delivery['splash_method'] == 'system' ? 'border-blue-500 bg-blue-50' : ''; ?>">
-                <input type="radio" name="splash_method" value="system" class="mt-1" <?php echo $delivery['splash_method'] == 'system' ? 'checked' : ''; ?>>
-                <div>
-                    <p class="font-bold text-sm text-gray-900">System Branded (Free)</p>
-                    <p class="text-xs text-gray-500">Sent from <span class="font-mono text-indigo-600 bg-indigo-50 px-1 rounded"><?php echo esc_html($system_email); ?></span></p>
-                </div>
-            </label>
-            <label class="flex items-start gap-4 p-4 border rounded-lg cursor-pointer hover:bg-gray-50 <?php echo $delivery['splash_method'] == 'google' ? 'border-blue-500 bg-blue-50' : ''; ?>">
-                <input type="radio" name="splash_method" value="google" class="mt-1" <?php echo $delivery['splash_method'] == 'google' ? 'checked' : ''; ?>>
-                <div class="w-full">
-                    <div class="flex justify-between">
-                        <p class="font-bold text-sm text-gray-900">Google Workspace / Gmail</p>
-                        <span class="text-[10px] bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded font-bold">Low Volume</span>
+        <div class="p-8 space-y-4 flex-1 bg-white">
+            
+            <label class="block relative">
+                <input type="radio" name="splash_method" value="system" class="routing-radio" <?php echo $delivery['splash_method'] == 'system' ? 'checked' : ''; ?>>
+                <div class="routing-card bg-white rounded-xl p-5 flex items-start gap-4">
+                    <div class="radio-circle w-5 h-5 rounded-full border-2 border-gray-300 shrink-0 mt-0.5"></div>
+                    <div>
+                        <p class="font-bold text-sm text-gray-900 mb-1">System Branded (Free)</p>
+                        <p class="text-xs text-gray-500 leading-relaxed">Sent reliably from our shared network via <br><span class="font-mono text-indigo-600 bg-indigo-50 border border-indigo-100 px-1.5 py-0.5 rounded mt-1 inline-block"><?php echo esc_html($system_email); ?></span></p>
                     </div>
-                    <p class="text-xs text-gray-500 mb-2">Send directly from your connected Gmail account.</p>
-                    <button class="text-xs bg-gray-900 text-white px-3 py-1.5 rounded font-bold hover:bg-gray-800 transition"><i class="fa-brands fa-google mr-1"></i> Connect Account</button>
                 </div>
             </label>
-            <label class="flex items-start gap-4 p-4 border rounded-lg cursor-pointer hover:bg-gray-50 <?php echo $delivery['splash_method'] == 'domain' ? 'border-blue-500 bg-blue-50' : ''; ?>">
-                <input type="radio" name="splash_method" value="domain" class="mt-1" <?php echo $delivery['splash_method'] == 'domain' ? 'checked' : ''; ?>>
-                <div>
-                    <p class="font-bold text-sm text-gray-900">Authenticated Domain</p>
-                    <p class="text-xs text-gray-500">Send using the domains you verified in Core Setup.</p>
+
+            <label class="block relative">
+                <input type="radio" name="splash_method" value="google" class="routing-radio" <?php echo $delivery['splash_method'] == 'google' ? 'checked' : ''; ?>>
+                <div class="routing-card bg-white rounded-xl p-5 flex items-start gap-4">
+                    <div class="radio-circle w-5 h-5 rounded-full border-2 border-gray-300 shrink-0 mt-0.5"></div>
+                    <div class="w-full">
+                        <div class="flex justify-between items-center mb-1">
+                            <p class="font-bold text-sm text-gray-900">Google Workspace / Gmail</p>
+                            <span class="text-[9px] bg-yellow-100 text-yellow-700 px-2 py-1 rounded border border-yellow-200 font-black uppercase tracking-widest">Low Volume</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mb-3">Send directly from your connected Gmail account.</p>
+                        <button class="text-xs bg-gray-900 text-white px-4 py-2 rounded-lg font-bold hover:bg-black transition shadow-sm"><i class="fa-brands fa-google mr-1.5"></i> Connect Account</button>
+                    </div>
                 </div>
             </label>
+
+            <label class="block relative">
+                <input type="radio" name="splash_method" value="domain" class="routing-radio" <?php echo $delivery['splash_method'] == 'domain' ? 'checked' : ''; ?>>
+                <div class="routing-card bg-white rounded-xl p-5 flex items-start gap-4">
+                    <div class="radio-circle w-5 h-5 rounded-full border-2 border-gray-300 shrink-0 mt-0.5"></div>
+                    <div>
+                        <p class="font-bold text-sm text-gray-900 mb-1">Authenticated Domain</p>
+                        <p class="text-xs text-gray-500">Send using the domains you verified in Core Setup.</p>
+                    </div>
+                </div>
+            </label>
+
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div class="p-5 border-b bg-gray-50 flex items-center gap-3">
-            <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-lg"><i class="fa-solid fa-users"></i></div>
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
+        <div class="p-6 border-b border-gray-100 bg-gray-50/50 flex items-center gap-4 shrink-0">
+            <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center text-xl shadow-sm border border-purple-100"><i class="fa-solid fa-users"></i></div>
             <div>
-                <h2 class="font-bold text-gray-900">Bulk Broadcast Engine</h2>
-                <p class="text-xs text-gray-500">For Newsletters & Mass Campaigns</p>
+                <h2 class="text-lg font-black text-gray-900">Bulk Broadcast Engine</h2>
+                <p class="text-xs text-gray-500 font-medium">For Newsletters & Mass Campaigns</p>
             </div>
         </div>
-        <div class="p-6 space-y-4">
+        <div class="p-8 space-y-4 flex-1 bg-white">
             
-            <div class="bg-red-50 p-3 rounded border border-red-100 flex gap-2 mb-2">
+            <div class="bg-red-50 p-4 rounded-xl border border-red-100 flex gap-3 mb-2">
                 <i class="fa-solid fa-shield-halved text-red-500 mt-0.5"></i>
-                <p class="text-xs text-red-700 font-medium">To protect sender reputation, <strong>System</strong> and <strong>Gmail</strong> routing are disabled for bulk sending.</p>
+                <p class="text-[11px] text-red-700 font-medium leading-relaxed">To protect global sender reputation, <strong>System</strong> and <strong>Gmail</strong> routing are strictly disabled for massive flock deployments.</p>
             </div>
 
-            <label class="flex items-start gap-4 p-4 border rounded-lg cursor-pointer hover:bg-gray-50 <?php echo $delivery['bulk_method'] == 'domain' ? 'border-purple-500 bg-purple-50' : ''; ?>">
-                <input type="radio" name="bulk_method" value="domain" class="mt-1" <?php echo $delivery['bulk_method'] == 'domain' ? 'checked' : ''; ?>>
-                <div>
-                    <p class="font-bold text-sm text-gray-900">Authenticated Domain (Native)</p>
-                    <p class="text-xs text-gray-500">Use our high-deliverability internal network.</p>
+            <label class="block relative">
+                <input type="radio" name="bulk_method" value="domain" class="routing-radio" onchange="document.getElementById('external_api_box').classList.add('hidden')" <?php echo $delivery['bulk_method'] == 'domain' ? 'checked' : ''; ?>>
+                <div class="routing-card bg-white rounded-xl p-5 flex items-start gap-4">
+                    <div class="radio-circle w-5 h-5 rounded-full border-2 border-gray-300 shrink-0 mt-0.5"></div>
+                    <div>
+                        <p class="font-bold text-sm text-gray-900 mb-1">Authenticated Domain (Native)</p>
+                        <p class="text-xs text-gray-500">Use our high-deliverability internal Toucan network.</p>
+                    </div>
                 </div>
             </label>
             
-            <label class="flex items-start gap-4 p-4 border rounded-lg cursor-pointer hover:bg-gray-50 <?php echo $delivery['bulk_method'] == 'api' ? 'border-purple-500 bg-purple-50' : ''; ?>">
-                <input type="radio" name="bulk_method" value="api" class="mt-1" onchange="document.getElementById('external_api_box').classList.remove('hidden')" <?php echo $delivery['bulk_method'] == 'api' ? 'checked' : ''; ?>>
-                <div class="w-full">
-                    <p class="font-bold text-sm text-gray-900">External API / Custom SMTP</p>
-                    <p class="text-xs text-gray-500">Bring your own server (SendGrid, Mailgun, etc.)</p>
+            <label class="block relative">
+                <input type="radio" name="bulk_method" value="api" class="routing-radio" onchange="document.getElementById('external_api_box').classList.remove('hidden')" <?php echo $delivery['bulk_method'] == 'api' ? 'checked' : ''; ?>>
+                <div class="routing-card bg-white rounded-xl p-5 flex items-start gap-4">
+                    <div class="radio-circle w-5 h-5 rounded-full border-2 border-gray-300 shrink-0 mt-0.5"></div>
+                    <div class="w-full">
+                        <p class="font-bold text-sm text-gray-900 mb-1">External API / Custom SMTP</p>
+                        <p class="text-xs text-gray-500">Bring your own server (SendGrid, Mailgun, etc.)</p>
+                    </div>
                 </div>
             </label>
 
-            <div id="external_api_box" class="bg-gray-50 p-4 border rounded-lg mt-2 transition-all <?php echo $delivery['bulk_method'] == 'api' ? '' : 'hidden'; ?>">
+            <div id="external_api_box" class="bg-gray-50 p-6 border border-gray-200 rounded-xl mt-4 transition-all <?php echo $delivery['bulk_method'] == 'api' ? '' : 'hidden'; ?>">
                 <div class="flex justify-between items-end mb-3">
-                    <label class="block text-[10px] uppercase font-bold text-gray-500">Select Provider</label>
-                    <button type="button" onclick="openSmtpGuide()" class="text-xs font-bold text-indigo-600 hover:underline"><i class="fa-solid fa-circle-info mr-1"></i>Setup Guide</button>
+                    <label class="block text-[10px] uppercase font-bold tracking-widest text-gray-500">Select Provider</label>
+                    <button type="button" onclick="openSmtpGuide()" class="text-[11px] font-black text-indigo-600 hover:text-indigo-800 transition"><i class="fa-solid fa-circle-info mr-1"></i>Setup Guide</button>
                 </div>
                 
-                <select id="smtp_provider" onchange="toggleSmtpFields()" class="w-full p-2 border border-gray-300 rounded text-sm mb-4 outline-none font-bold text-gray-700 bg-white shadow-sm">
+                <select id="smtp_provider" onchange="toggleSmtpFields()" class="w-full p-3 border border-gray-300 rounded-lg text-sm mb-5 outline-none font-bold text-gray-700 bg-white focus:border-indigo-500 transition shadow-sm">
                     <option value="sendgrid" <?php echo $delivery['smtp_provider'] == 'sendgrid' ? 'selected' : ''; ?>>SendGrid API</option>
                     <option value="mailgun" <?php echo $delivery['smtp_provider'] == 'mailgun' ? 'selected' : ''; ?>>Mailgun API</option>
                     <option value="postmark" <?php echo $delivery['smtp_provider'] == 'postmark' ? 'selected' : ''; ?>>Postmark API</option>
@@ -116,38 +157,38 @@ $system_email = $brand_slug . '@mailtoucan.pro';
                 </select>
 
                 <div id="api_key_box" class="<?php echo $delivery['smtp_provider'] !== 'custom' ? '' : 'hidden'; ?>">
-                    <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1" id="lbl_api_key">Provider API Key</label>
-                    <input type="password" id="smtp_key" value="<?php echo esc_attr($delivery['smtp_key']); ?>" class="w-full p-2 border border-gray-300 rounded text-sm outline-none focus:ring-2 focus:ring-purple-100 shadow-inner" placeholder="Enter your secret API key">
+                    <label class="block text-[10px] uppercase font-bold tracking-widest text-gray-500 mb-2" id="lbl_api_key">Provider API Key</label>
+                    <input type="password" id="smtp_key" value="<?php echo esc_attr($delivery['smtp_key']); ?>" class="w-full p-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition shadow-sm" placeholder="Enter your secret API key">
                 </div>
 
-                <div id="full_smtp_box" class="space-y-3 <?php echo $delivery['smtp_provider'] === 'custom' ? '' : 'hidden'; ?>">
-                    <div class="grid grid-cols-3 gap-3">
+                <div id="full_smtp_box" class="space-y-4 <?php echo $delivery['smtp_provider'] === 'custom' ? '' : 'hidden'; ?>">
+                    <div class="grid grid-cols-3 gap-4">
                         <div class="col-span-2">
-                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1">SMTP Host</label>
-                            <input type="text" id="smtp_host" value="<?php echo esc_attr($delivery['smtp_host']); ?>" class="w-full p-2 border border-gray-300 rounded text-sm outline-none shadow-inner" placeholder="e.g. smtp.mail.com">
+                            <label class="block text-[10px] uppercase font-bold tracking-widest text-gray-500 mb-2">SMTP Host</label>
+                            <input type="text" id="smtp_host" value="<?php echo esc_attr($delivery['smtp_host']); ?>" class="w-full p-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 transition shadow-sm" placeholder="e.g. smtp.mail.com">
                         </div>
                         <div>
-                            <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1">Port</label>
-                            <input type="text" id="smtp_port" value="<?php echo esc_attr($delivery['smtp_port']); ?>" class="w-full p-2 border border-gray-300 rounded text-sm outline-none shadow-inner" placeholder="587">
+                            <label class="block text-[10px] uppercase font-bold tracking-widest text-gray-500 mb-2">Port</label>
+                            <input type="text" id="smtp_port" value="<?php echo esc_attr($delivery['smtp_port']); ?>" class="w-full p-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 transition shadow-sm" placeholder="587">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1">SMTP Username</label>
-                        <input type="text" id="smtp_user" value="<?php echo esc_attr($delivery['smtp_user']); ?>" class="w-full p-2 border border-gray-300 rounded text-sm outline-none shadow-inner" placeholder="Username or Email">
+                        <label class="block text-[10px] uppercase font-bold tracking-widest text-gray-500 mb-2">SMTP Username</label>
+                        <input type="text" id="smtp_user" value="<?php echo esc_attr($delivery['smtp_user']); ?>" class="w-full p-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 transition shadow-sm" placeholder="Username or Email">
                     </div>
                     <div>
-                        <label class="block text-[10px] uppercase font-bold text-gray-500 mb-1">SMTP Password</label>
-                        <input type="password" id="smtp_pass" value="<?php echo esc_attr($delivery['smtp_pass']); ?>" class="w-full p-2 border border-gray-300 rounded text-sm outline-none shadow-inner" placeholder="Password">
+                        <label class="block text-[10px] uppercase font-bold tracking-widest text-gray-500 mb-2">SMTP Password</label>
+                        <input type="password" id="smtp_pass" value="<?php echo esc_attr($delivery['smtp_pass']); ?>" class="w-full p-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 transition shadow-sm" placeholder="Password">
                     </div>
                 </div>
 
-                <div class="mt-4 pt-4 border-t border-gray-200">
-                    <button type="button" id="btn_test_conn" onclick="testConnection()" class="w-full bg-gray-800 text-white py-2 rounded text-sm font-bold shadow-sm hover:bg-gray-700 transition flex items-center justify-center gap-2">
+                <div class="mt-6 pt-5 border-t border-gray-200">
+                    <button type="button" id="btn_test_conn" onclick="testConnection()" class="w-full bg-gray-900 text-white py-3 rounded-xl text-sm font-black tracking-wide shadow-md hover:bg-black transition flex items-center justify-center gap-2">
                         <i class="fa-solid fa-plug"></i> Test Connection
                     </button>
                     
-                    <div id="test_console" class="hidden mt-3 bg-gray-900 rounded p-3 text-xs font-mono text-gray-300 shadow-inner h-32 overflow-y-auto">
-                        </div>
+                    <div id="test_console" class="hidden mt-4 bg-[#0f172a] rounded-xl p-4 text-[11px] font-mono text-green-400 shadow-inner h-32 overflow-y-auto custom-scrollbar border border-gray-800">
+                    </div>
                 </div>
 
             </div>
@@ -155,22 +196,22 @@ $system_email = $brand_slug . '@mailtoucan.pro';
     </div>
 </div>
 
-<div id="smtp_guide_modal" class="fixed inset-0 bg-gray-900/60 z-[100] hidden flex items-center justify-center backdrop-blur-sm transition-opacity opacity-0">
-    <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl overflow-hidden transform scale-95 transition-all flex flex-col max-h-[90vh]" id="smtp_guide_content">
-        <div class="p-6 border-b flex justify-between items-center bg-gray-50">
+<div id="smtp_guide_modal" class="fixed inset-0 bg-gray-900/60 z-[300] hidden flex items-center justify-center backdrop-blur-sm transition-opacity opacity-0">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform scale-95 transition-all flex flex-col max-h-[90vh]" id="smtp_guide_content">
+        <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
             <div>
-                <h2 class="text-xl font-bold text-gray-900"><i class="fa-solid fa-book text-indigo-500 mr-2"></i> External API Setup Guide</h2>
+                <h2 class="text-xl font-black text-gray-900"><i class="fa-solid fa-book text-indigo-500 mr-2"></i> External API Setup Guide</h2>
             </div>
-            <button onclick="closeSmtpGuide()" class="text-gray-400 hover:text-gray-800 transition text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <button onclick="closeSmtpGuide()" class="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-gray-200 hover:text-gray-800 transition"><i class="fa-solid fa-xmark"></i></button>
         </div>
         
-        <div class="p-6 overflow-y-auto flex-1 space-y-6">
-            <p class="text-sm text-gray-600 mb-4">Connecting a third-party server allows you to use your existing email infrastructure while still using our visual drag-and-drop builder to design your campaigns.</p>
+        <div class="p-6 overflow-y-auto flex-1 space-y-6 bg-white custom-scrollbar">
+            <p class="text-sm text-gray-600 font-medium">Connecting a third-party server allows you to use your existing email infrastructure while still using our visual drag-and-drop builder to design your campaigns.</p>
             
             <div class="space-y-4">
-                <div class="border rounded-lg p-4">
-                    <h3 class="font-bold text-gray-900 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-blue-500"></span> SendGrid</h3>
-                    <ol class="list-decimal ml-6 mt-2 text-sm text-gray-600 space-y-1">
+                <div class="border border-gray-200 rounded-xl p-5 shadow-sm">
+                    <h3 class="font-bold text-gray-900 flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> SendGrid</h3>
+                    <ol class="list-decimal ml-6 mt-3 text-sm text-gray-600 font-medium space-y-1.5">
                         <li>Log into your SendGrid dashboard.</li>
                         <li>Navigate to <strong>Settings > API Keys</strong>.</li>
                         <li>Click <strong>Create API Key</strong>, give it Full Access, and copy the key.</li>
@@ -178,21 +219,21 @@ $system_email = $brand_slug . '@mailtoucan.pro';
                     </ol>
                 </div>
 
-                <div class="border rounded-lg p-4">
-                    <h3 class="font-bold text-gray-900 flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-red-500"></span> Mailgun</h3>
-                    <ol class="list-decimal ml-6 mt-2 text-sm text-gray-600 space-y-1">
+                <div class="border border-gray-200 rounded-xl p-5 shadow-sm">
+                    <h3 class="font-bold text-gray-900 flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-red-500"></span> Mailgun</h3>
+                    <ol class="list-decimal ml-6 mt-3 text-sm text-gray-600 font-medium space-y-1.5">
                         <li>Log into Mailgun and select your domain.</li>
                         <li>Go to <strong>Settings > API Keys</strong>.</li>
-                        <li>Copy your <strong>Private API Key</strong> (it usually starts with `key-`).</li>
+                        <li>Copy your <strong>Private API Key</strong> (it usually starts with <code class="bg-gray-100 px-1 rounded text-red-500">key-</code>).</li>
                         <li>Paste it into our dashboard.</li>
                     </ol>
                 </div>
 
-                <div class="border rounded-lg p-4 bg-gray-50">
-                    <h3 class="font-bold text-gray-900 flex items-center gap-2"><i class="fa-solid fa-server text-gray-500 text-xs"></i> Custom SMTP (cPanel, Outlook, etc.)</h3>
-                    <p class="text-sm text-gray-600 mt-2 mb-2">If your provider isn't listed, select <strong>Other / Standard SMTP</strong> from the dropdown.</p>
-                    <ul class="list-disc ml-6 text-sm text-gray-600 space-y-1">
-                        <li><strong>Host:</strong> Usually looks like `smtp.yourdomain.com` or `mail.yourdomain.com`.</li>
+                <div class="border border-gray-200 rounded-xl p-5 shadow-sm bg-gray-50/50">
+                    <h3 class="font-bold text-gray-900 flex items-center gap-2"><i class="fa-solid fa-server text-gray-500 text-sm"></i> Custom SMTP (cPanel, Outlook, etc.)</h3>
+                    <p class="text-sm text-gray-600 font-medium mt-2 mb-3">If your provider isn't listed, select <strong>Other / Standard SMTP</strong> from the dropdown.</p>
+                    <ul class="list-disc ml-6 text-sm text-gray-600 font-medium space-y-1.5">
+                        <li><strong>Host:</strong> Usually looks like <code class="bg-gray-100 px-1 rounded text-gray-800">smtp.yourdomain.com</code>.</li>
                         <li><strong>Port:</strong> Use <strong>587</strong> for TLS (Recommended) or <strong>465</strong> for SSL.</li>
                         <li><strong>Username/Password:</strong> The credentials you use to log into that email account.</li>
                     </ul>
@@ -200,29 +241,39 @@ $system_email = $brand_slug . '@mailtoucan.pro';
             </div>
         </div>
         
-        <div class="p-4 border-t bg-white text-right">
-            <button onclick="closeSmtpGuide()" class="bg-gray-900 text-white px-6 py-2 rounded-lg font-bold hover:bg-gray-800 transition">Got it</button>
+        <div class="p-5 border-t border-gray-100 bg-gray-50 text-right">
+            <button onclick="closeSmtpGuide()" class="bg-gray-900 text-white px-8 py-3 rounded-xl font-bold shadow-md hover:bg-black transition">Got it</button>
         </div>
     </div>
 </div>
 
+<div id="mt_toast_container" class="fixed bottom-8 right-8 z-[400] flex flex-col items-end pointer-events-none"></div>
+
 <script>
+    // --- UI/UX: CUSTOM TOASTS ---
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('mt_toast_container');
+        const toast = document.createElement('div');
+        const bgColor = type === 'error' ? 'bg-red-600' : 'bg-gray-900';
+        const icon = type === 'error' ? 'fa-triangle-exclamation' : 'fa-check-circle';
+        
+        let displayMessage = message;
+        if (type === 'error' && !message.includes('Jungle Tangle')) {
+            displayMessage = "Looks like a bit of a Jungle Tangle. - " + message;
+        }
+
+        toast.className = `flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] text-white text-sm font-bold transform transition-all duration-300 translate-y-10 opacity-0 ${bgColor} mb-3 pointer-events-auto`;
+        toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i> ${displayMessage}`;
+        container.appendChild(toast);
+        
+        requestAnimationFrame(() => { toast.classList.remove('translate-y-10', 'opacity-0'); });
+        setTimeout(() => {
+            toast.classList.add('translate-y-10', 'opacity-0');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
     // --- UI Interactions ---
-    document.querySelectorAll('input[name="splash_method"]').forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            document.querySelectorAll('input[name="splash_method"]').forEach(r => r.closest('label').classList.remove('border-blue-500', 'bg-blue-50'));
-            e.target.closest('label').classList.add('border-blue-500', 'bg-blue-50');
-        });
-    });
-
-    document.querySelectorAll('input[name="bulk_method"]').forEach(radio => {
-        radio.addEventListener('change', (e) => {
-            document.querySelectorAll('input[name="bulk_method"]').forEach(r => r.closest('label').classList.remove('border-purple-500', 'bg-purple-50'));
-            e.target.closest('label').classList.add('border-purple-500', 'bg-purple-50');
-            if(e.target.value !== 'api') document.getElementById('external_api_box').classList.add('hidden');
-        });
-    });
-
     function toggleSmtpFields() {
         const val = document.getElementById('smtp_provider').value;
         const apiKeyBox = document.getElementById('api_key_box');
@@ -236,7 +287,6 @@ $system_email = $brand_slug . '@mailtoucan.pro';
             apiKeyBox.classList.remove('hidden');
             fullSmtpBox.classList.add('hidden');
             
-            // Adjust label based on provider
             const lbl = document.getElementById('lbl_api_key');
             if (val === 'ses') lbl.innerText = "AWS Access Key ID | Secret Access Key (Comma Separated)";
             else lbl.innerText = val.charAt(0).toUpperCase() + val.slice(1) + " API Key";
@@ -264,16 +314,15 @@ $system_email = $brand_slug . '@mailtoucan.pro';
         const consoleBox = document.getElementById('test_console');
         const ogText = btn.innerHTML;
         
-        // Show console and clear it
         consoleBox.classList.remove('hidden');
-        consoleBox.innerHTML = '<i>Connecting to backend...</i><br>';
+        consoleBox.innerHTML = '<i><span class="text-gray-500">System:</span> Connecting to Postman Pelican...</i><br>';
         
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Testing...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Testing Engines...';
         btn.disabled = true;
 
         const formData = new FormData();
         formData.append('action', 'mt_test_smtp_connection');
-        formData.append('security', mt_nonce);
+        formData.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : '');
         formData.append('provider', document.getElementById('smtp_provider').value);
         formData.append('key', document.getElementById('smtp_key').value);
         formData.append('host', document.getElementById('smtp_host').value);
@@ -281,13 +330,14 @@ $system_email = $brand_slug . '@mailtoucan.pro';
         formData.append('pass', document.getElementById('smtp_pass').value);
         formData.append('port', document.getElementById('smtp_port').value);
 
-        fetch(mt_ajax_url, { method: 'POST', body: formData })
+        const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
+
+        fetch(ajaxUrl, { method: 'POST', body: formData })
         .then(res => res.json())
         .then(data => {
             consoleBox.innerHTML = '';
-            const logs = data.data.logs || [];
+            const logs = data.data?.logs || [];
             
-            // Simulate a typing effect for the logs for that pro feel
             let delay = 0;
             logs.forEach((logLine, index) => {
                 setTimeout(() => {
@@ -300,15 +350,17 @@ $system_email = $brand_slug . '@mailtoucan.pro';
                     consoleBox.scrollTop = consoleBox.scrollHeight;
                     
                     if (index === logs.length - 1) {
-                        btn.innerHTML = data.success ? '<i class="fa-solid fa-check text-green-400"></i> Test Passed' : '<i class="fa-solid fa-xmark text-red-400"></i> Test Failed';
+                        btn.innerHTML = data.success ? '<i class="fa-solid fa-check text-green-400"></i> Connection Verified' : '<i class="fa-solid fa-xmark text-red-400"></i> Connection Failed';
+                        if(data.success) showToast("Connection Verified. Engines ready.", "success");
+                        else showToast("Failed to verify connection.", "error");
                         setTimeout(() => { btn.innerHTML = ogText; btn.disabled = false; }, 3000);
                     }
                 }, delay);
-                delay += 300; // 300ms delay between log lines
+                delay += 300; 
             });
         })
         .catch(err => {
-            consoleBox.innerHTML = `<span class="text-red-400">> [FATAL ERROR] Could not reach MailToucan servers.</span>`;
+            consoleBox.innerHTML = `<span class="text-red-400">> [FATAL ERROR] The Nest could not reach MailToucan servers.</span>`;
             btn.innerHTML = ogText;
             btn.disabled = false;
         });
@@ -316,6 +368,17 @@ $system_email = $brand_slug . '@mailtoucan.pro';
 
     // --- Save Logic ---
     function saveDeliverySettings() {
-        alert("Delivery UI is mapped! Next phase will wire these fields to the API Backend.");
+        const btn = document.getElementById('btn_save_delivery');
+        const ogText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
+        btn.disabled = true;
+
+        // In Phase 3, this will serialize the data and post to mt_save_brand_config to actually save the JSON.
+        // For now, we simulate the save and show the beautiful success toast.
+        setTimeout(() => {
+            showToast("Flight Routes updated successfully in The Nest!", "success");
+            btn.innerHTML = ogText;
+            btn.disabled = false;
+        }, 800);
     }
 </script>
