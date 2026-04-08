@@ -475,6 +475,11 @@ class MT_Dashboard {
                 'config_json' => $config_json
             ), array('id' => $camp_id) );
         }
+
+        // --- NEW: TRIGGER THE BATCH QUEUE ---
+        if ($type === 'sent') {
+            do_action('mt_campaign_launched', $camp_id, $brand_id);
+        }
         
         wp_send_json_success(array('message' => 'Campaign Saved.', 'campaign_id' => $camp_id));
     }
@@ -548,6 +553,11 @@ class MT_Dashboard {
         ) );
 
         if ($result) {
+            $new_lead_id = $wpdb->insert_id;
+            
+            // --- NEW: TRIGGER THE AUTOPILOT ---
+            do_action('mt_lead_captured', $new_lead_id, $brand_id);
+            
             wp_send_json_success('Lead Saved');
         } else {
             wp_send_json_error('DB Error');
@@ -713,6 +723,7 @@ class MT_Dashboard {
                     function toggleNav(group) {
                         const items = document.getElementById('nav_' + group);
                         const icon = document.getElementById('icon_' + group);
+                        
                         if (items.classList.contains('open')) {
                             items.classList.remove('open');
                             icon.classList.remove('fa-chevron-up');
