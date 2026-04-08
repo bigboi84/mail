@@ -3,8 +3,17 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 global $wpdb;
 $table_templates = $wpdb->prefix . 'mt_email_templates';
+$table_campaigns = $wpdb->prefix . 'mt_campaigns'; // We store workflows here too, using campaign_type = 'workflow'
+$table_stores    = $wpdb->prefix . 'mt_stores';
+
 // Fetch user's saved templates for the payload step
 $active_templates = $wpdb->get_results( $wpdb->prepare("SELECT * FROM $table_templates WHERE brand_id = %d AND status = 'active' ORDER BY created_at DESC", $brand->id) );
+
+// Fetch active and draft workflows
+$workflows = $wpdb->get_results( $wpdb->prepare("SELECT * FROM $table_campaigns WHERE brand_id = %d AND campaign_type IN ('workflow', 'workflow_draft') ORDER BY created_at DESC", $brand->id) );
+
+// Fetch Locations for the Location Filter
+$locations = $wpdb->get_results( $wpdb->prepare("SELECT id, store_name FROM $table_stores WHERE brand_id = %d", $brand->id) );
 
 // FETCH DYNAMIC BRANDING
 $brand_color = !empty($brand->primary_color) ? $brand->primary_color : '#0f172a';
@@ -46,25 +55,92 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
     <header class="mb-8 flex justify-between items-end">
         <div>
             <h1 class="text-3xl font-black text-gray-900 flex items-center gap-3">Autopilot</h1>
-            <p class="text-gray-500 text-sm mt-1">Set up automated drips that trigger while you sleep.</p>
+            <p class="text-gray-500 text-sm mt-1">Set up automated background rules that trigger while you sleep.</p>
         </div>
-        <button onclick="startWizard()" class="text-white px-6 py-3 rounded-xl font-bold shadow-lg transition flex items-center gap-2 hover:opacity-90" style="background-color: var(--mt-brand);">
+        <button onclick="startWizard(0)" class="text-white px-6 py-3 rounded-xl font-bold shadow-lg transition flex items-center gap-2 hover:opacity-90" style="background-color: var(--mt-brand);">
             <i class="fa-solid fa-robot"></i> New Automation
         </button>
     </header>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden text-center py-24">
-        <div class="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-indigo-100">
-            <i class="fa-solid fa-gears text-3xl text-indigo-400"></i>
+    <?php if(empty($workflows)): ?>
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden text-center py-24">
+            <div class="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-indigo-100">
+                <i class="fa-solid fa-gears text-3xl text-indigo-400"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-700">Autopilot is disengaged</h3>
+            <p class="text-sm text-gray-500 mb-6">Build workflows to automatically welcome guests or celebrate birthdays.</p>
+            <button onclick="startWizard(0)" class="text-indigo-600 font-bold hover:text-indigo-800 transition">Create your first rule &rarr;</button>
         </div>
-        <h3 class="text-xl font-bold text-gray-700">Autopilot is disengaged</h3>
-        <p class="text-sm text-gray-500 mb-6">Build workflows to automatically welcome guests or celebrate birthdays.</p>
-        <button onclick="startWizard()" class="text-indigo-600 font-bold hover:text-indigo-800 transition">Create your first rule &rarr;</button>
-    </div>
+    <?php else: ?>
+        <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+            <table class="w-full text-left text-sm">
+                <thead class="bg-gray-50 border-b text-[10px] uppercase text-gray-500 font-bold tracking-wider">
+                    <tr>
+                        <th class="p-5 pl-6">Automation Rule</th>
+                        <th class="p-5">Trigger</th>
+                        <th class="p-5">Status</th>
+                        <th class="p-5 text-right pr-6">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($workflows as $wf): 
+                        $is_draft = ($wf->campaign_type === 'workflow_draft');
+                        $config = json_decode($wf->config_json, true) ?: [];
+                        
+                        // Map Trigger to friendly name
+                        $trigger_labels = [
+                            'first_visit' => 'First Time Connect',
+                            'birthday' => 'Guest Birthday',
+                            'winback' => 'Missing Guest',
+                            'tag' => 'Specific Campaign Tag'
+                        ];
+                        $trigger_type = $config['trigger_type'] ?? 'first_visit';
+                        $trigger_name = $trigger_labels[$trigger_type] ?? 'Unknown Trigger';
+                    ?>
+                    <tr class="border-b border-gray-50 hover:bg-gray-50/50 transition">
+                        <td class="p-5 pl-6">
+                            <p class="font-bold text-gray-900"><?php echo esc_html($wf->campaign_name); ?></p>
+                            <?php if(!empty($config['location_id']) && $config['location_id'] !== 'all'): 
+                                // Lookup Location name
+                                $loc_name = 'Specific Location';
+                                foreach($locations as $l) { if($l->id == $config['location_id']) $loc_name = $l->store_name; }
+                            ?>
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1"><i class="fa-solid fa-location-dot mr-1"></i> <?php echo esc_html($loc_name); ?></p>
+                            <?php else: ?>
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1"><i class="fa-solid fa-globe mr-1"></i> Global Reach</p>
+                            <?php endif; ?>
+                        </td>
+                        <td class="p-5 font-medium text-gray-600">
+                            <?php echo esc_html($trigger_name); ?>
+                        </td>
+                        <td class="p-5">
+                            <?php if($is_draft): ?>
+                                <span class="px-3 py-1 bg-gray-100 text-gray-600 border border-gray-200 text-[10px] font-black uppercase tracking-widest rounded-md">Draft / Paused</span>
+                            <?php else: ?>
+                                <span class="px-3 py-1 bg-green-50 text-green-700 border border-green-200 text-[10px] font-black uppercase tracking-widest rounded-md"><i class="fa-solid fa-bolt text-green-500 mr-1"></i> Active</span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="p-5 pr-6 text-right flex justify-end gap-3">
+                            <button onclick="editWorkflow(<?php echo $wf->id; ?>, this)" 
+                                    data-name="<?php echo esc_attr($wf->campaign_name); ?>" 
+                                    data-config="<?php echo esc_attr($wf->config_json); ?>" 
+                                    class="w-8 h-8 rounded-lg bg-gray-50 text-gray-500 hover:bg-indigo-50 hover:text-indigo-600 transition flex items-center justify-center border border-gray-200" title="Edit Automation">
+                                <i class="fa-solid fa-pen text-xs"></i>
+                            </button>
+                            <button onclick="trashWorkflow(<?php echo $wf->id; ?>)" class="w-8 h-8 rounded-lg bg-gray-50 text-gray-400 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition flex items-center justify-center border border-gray-200"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
 </div>
 
 <div id="view_workflow_wizard" class="fixed inset-0 bg-[#f8fafc] z-[100] hidden flex-col font-sans overflow-hidden">
     
+    <input type="hidden" id="wf_id" value="0">
+
     <div class="h-16 bg-white border-b border-gray-200 px-6 flex justify-between items-center shrink-0 z-30 shadow-sm">
         <div class="flex items-center gap-4">
             <button onclick="exitWizard()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500 transition" title="Exit">
@@ -82,17 +158,22 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
             <div class="w-8 h-px bg-gray-200"></div>
             <div class="step-indicator flex items-center gap-2" id="nav-step-2">
                 <div class="step-icon w-6 h-6 rounded-full border-2 border-gray-300 text-[10px] flex items-center justify-center text-gray-400 font-bold transition-colors">2</div>
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Timeline</span>
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Flight Rules</span>
             </div>
             <div class="w-8 h-px bg-gray-200"></div>
             <div class="step-indicator flex items-center gap-2" id="nav-step-3">
                 <div class="step-icon w-6 h-6 rounded-full border-2 border-gray-300 text-[10px] flex items-center justify-center text-gray-400 font-bold transition-colors">3</div>
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Payload</span>
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Plumage</span>
+            </div>
+            <div class="w-8 h-px bg-gray-200"></div>
+            <div class="step-indicator flex items-center gap-2" id="nav-step-4">
+                <div class="step-icon w-6 h-6 rounded-full border-2 border-gray-300 text-[10px] flex items-center justify-center text-gray-400 font-bold transition-colors">4</div>
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-wide">Pre-Flight Check</span>
             </div>
         </div>
 
         <div class="flex items-center gap-3">
-            <span class="text-xs font-bold text-gray-400 bg-gray-100 px-3 py-1 rounded-full uppercase tracking-widest mr-4">Draft</span>
+            <button onclick="saveDraftAndExit()" id="btn_save_draft" class="text-gray-500 hover:text-gray-900 text-sm font-bold transition mr-4">Save & Exit</button>
         </div>
     </div>
 
@@ -101,8 +182,13 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
 
             <div id="step-1" class="wizard-step active">
                 <h2 class="text-3xl font-black text-gray-900 mb-2">The Trigger</h2>
-                <p class="text-gray-500 mb-8">What event should awaken this automation?</p>
+                <p class="text-gray-500 mb-8">Name your rule and select the event that awakens this automation.</p>
                 
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-8">
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Automation Rule Name</label>
+                    <input type="text" id="wf_name" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl text-sm font-normal text-gray-800 placeholder-gray-400 focus:border-indigo-500 outline-none transition" placeholder="e.g. South Store Welcome Sequence">
+                </div>
+
                 <div class="grid grid-cols-2 gap-4">
                     <label class="block relative">
                         <input type="radio" name="wf_trigger" value="first_visit" class="custom-radio-input" checked>
@@ -155,22 +241,22 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
             </div>
 
             <div id="step-2" class="wizard-step">
-                <h2 class="text-3xl font-black text-gray-900 mb-2">Timeline</h2>
-                <p class="text-gray-500 mb-8">When should we drop this payload after the trigger fires?</p>
+                <h2 class="text-3xl font-black text-gray-900 mb-2">Flight Rules</h2>
+                <p class="text-gray-500 mb-8">When should we drop this payload, and to which locations?</p>
                 
-                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-6">
                     <div class="p-8">
                         <div class="flex items-center gap-4 mb-6">
                             <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 text-xl shrink-0"><i class="fa-solid fa-stopwatch"></i></div>
                             <div class="flex-1">
-                                <h3 class="font-bold text-gray-900">Wait Time</h3>
-                                <p class="text-sm text-gray-500">How long to delay the send.</p>
+                                <h3 class="font-bold text-gray-900">Timeline Delay</h3>
+                                <p class="text-sm text-gray-500">How long to wait after the trigger fires before sending the email.</p>
                             </div>
                         </div>
 
                         <div class="flex items-center gap-4">
-                            <input type="number" id="wf_delay_val" value="0" class="w-24 p-3 border border-gray-300 rounded-lg text-lg font-bold text-center outline-none focus:border-indigo-500">
-                            <select id="wf_delay_unit" class="flex-1 p-3 border border-gray-300 rounded-lg text-sm font-bold text-gray-700 outline-none focus:border-indigo-500 bg-white">
+                            <input type="number" id="wf_delay_val" value="0" class="w-24 p-3 border border-gray-300 rounded-lg text-lg font-normal text-gray-800 text-center outline-none focus:border-indigo-500">
+                            <select id="wf_delay_unit" class="flex-1 p-3 border border-gray-300 rounded-lg text-sm font-bold text-gray-700 outline-none focus:border-indigo-500 bg-white cursor-pointer">
                                 <option value="minutes">Minutes (0 = Instantly)</option>
                                 <option value="hours">Hours</option>
                                 <option value="days">Days</option>
@@ -183,10 +269,29 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
                         </div>
                     </div>
                 </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-8">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-gray-400 text-xl shrink-0"><i class="fa-solid fa-store"></i></div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-gray-900">Location Filter</h3>
+                                <p class="text-sm text-gray-500">Only trigger this rule for guests who visited a specific venue.</p>
+                            </div>
+                        </div>
+                        <select id="wf_location_filter" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-700 outline-none focus:border-indigo-500 shadow-sm cursor-pointer">
+                            <option value="all">All Locations (Global Reach)</option>
+                            <?php if(!empty($locations)): foreach($locations as $loc): ?>
+                                <option value="<?php echo esc_attr($loc->id); ?>"><?php echo esc_html($loc->store_name); ?></option>
+                            <?php endforeach; endif; ?>
+                        </select>
+                    </div>
+                </div>
+
             </div>
 
             <div id="step-3" class="wizard-step">
-                <h2 class="text-3xl font-black text-gray-900 mb-2">The Payload</h2>
+                <h2 class="text-3xl font-black text-gray-900 mb-2">Pick Your Plumage</h2>
                 <p class="text-gray-500 mb-8">Select the design from Toucan Studio that this automation will deliver.</p>
                 
                 <input type="hidden" id="selected_template_id" value="">
@@ -215,6 +320,44 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
                         <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
+            </div>
+
+            <div id="step-4" class="wizard-step">
+                <h2 class="text-3xl font-black text-gray-900 mb-2">Pre-Flight Check</h2>
+                <p class="text-gray-500 mb-8">Review your automation rules before engaging Autopilot.</p>
+                
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-8 space-y-6">
+                        
+                        <div class="flex items-start gap-4 pb-6 border-b border-gray-100">
+                            <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 shrink-0"><i class="fa-solid fa-bolt"></i></div>
+                            <div class="flex-1">
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Trigger Event</p>
+                                <p id="review_trigger" class="text-lg font-black text-gray-900">...</p>
+                            </div>
+                            <button onclick="goToStep(1)" class="text-xs font-bold text-indigo-600 hover:underline">Edit</button>
+                        </div>
+
+                        <div class="flex items-start gap-4 pb-6 border-b border-gray-100">
+                            <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 shrink-0"><i class="fa-solid fa-stopwatch"></i></div>
+                            <div class="flex-1">
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Flight Rules</p>
+                                <p id="review_delay" class="text-lg font-black text-gray-900">...</p>
+                                <p id="review_location" class="text-sm text-gray-500 mt-1">...</p>
+                            </div>
+                            <button onclick="goToStep(2)" class="text-xs font-bold text-indigo-600 hover:underline">Edit</button>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 shrink-0"><i class="fa-solid fa-palette"></i></div>
+                            <div class="flex-1">
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Payload Design</p>
+                                <p id="review_template" class="text-lg font-black text-gray-900">...</p>
+                            </div>
+                            <button onclick="goToStep(3)" class="text-xs font-bold text-indigo-600 hover:underline">Edit</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -284,17 +427,132 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
 
     // --- WIZARD LOGIC ---
     let currentStep = 1;
-    const totalSteps = 3;
+    const totalSteps = 4;
 
-    function startWizard() {
+    function editWorkflow(id, btnElement) {
+        const name = btnElement.getAttribute('data-name');
+        let config = {};
+        try { config = JSON.parse(btnElement.getAttribute('data-config') || '{}'); } catch(e) {}
+
+        // Repopulate Step 1
+        document.getElementById('wf_id').value = id;
+        document.getElementById('wf_name').value = name;
+        
+        const trigger = config.trigger_type || 'first_visit';
+        const radio = document.querySelector(`input[name="wf_trigger"][value="${trigger}"]`);
+        if(radio) radio.checked = true;
+
+        // Repopulate Step 2
+        document.getElementById('wf_delay_val').value = config.delay_val || 0;
+        document.getElementById('wf_delay_unit').value = config.delay_unit || 'minutes';
+        
+        if(config.location_id) {
+            document.getElementById('wf_location_filter').value = config.location_id;
+        }
+
+        // Repopulate Step 3
+        document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+        document.getElementById('selected_template_id').value = '';
+        if(config.template_id) {
+            const tplCard = document.querySelector(`.template-card[onclick*="selectTemplate(this, ${config.template_id})"]`);
+            if(tplCard) {
+                selectTemplate(tplCard, config.template_id);
+            } else {
+                document.getElementById('selected_template_id').value = config.template_id;
+            }
+        }
+
+        // Open Wizard
         document.getElementById('view_workflow_list').style.display = 'none';
         document.getElementById('view_workflow_wizard').classList.remove('hidden');
         document.getElementById('view_workflow_wizard').classList.add('flex');
+        
+        goToStep(1);
+    }
+
+    function startWizard(id) {
+        if(id === 0) {
+            document.getElementById('wf_id').value = 0;
+            document.getElementById('wf_name').value = '';
+            document.querySelector('input[name="wf_trigger"][value="first_visit"]').checked = true;
+            document.getElementById('wf_delay_val').value = 0;
+            document.getElementById('wf_delay_unit').value = 'minutes';
+            document.getElementById('wf_location_filter').value = 'all';
+            document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('selected_template_id').value = '';
+
+            document.getElementById('view_workflow_list').style.display = 'none';
+            document.getElementById('view_workflow_wizard').classList.remove('hidden');
+            document.getElementById('view_workflow_wizard').classList.add('flex');
+            
+            goToStep(1);
+            silentDraftSave(); // Auto save new rule
+        }
     }
 
     function exitWizard() {
         mtConfirm("Abort Setup?", "Are you sure you want to exit? Your unsaved automation rules will be lost.", function() {
             window.location.reload();
+        });
+    }
+
+    function silentDraftSave() {
+        const now = new Date();
+        const draftName = 'Automation Rule - ' + now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        const fd = new FormData();
+        fd.append('action', 'mt_save_campaign'); 
+        fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
+        fd.append('campaign_id', 0); 
+        fd.append('campaign_name', draftName);
+        fd.append('campaign_type', 'workflow_draft');
+        fd.append('config', JSON.stringify({})); 
+        
+        const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
+        fetch(ajaxUrl, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
+            if(res.success) { document.getElementById('wf_id').value = res.data.campaign_id; }
+        }).catch(err => console.error("Silent Draft Save Failed", err));
+    }
+
+    function saveDraftAndExit() {
+        const btn = document.getElementById('btn_save_draft');
+        btn.innerHTML = "Saving...";
+        
+        const id = document.getElementById('wf_id').value;
+        const name = document.getElementById('wf_name').value || "Untitled Rule";
+        
+        const config = {
+            trigger_type: document.querySelector('input[name="wf_trigger"]:checked')?.value || 'first_visit',
+            delay_val: document.getElementById('wf_delay_val').value,
+            delay_unit: document.getElementById('wf_delay_unit').value,
+            location_id: document.getElementById('wf_location_filter').value,
+            template_id: document.getElementById('selected_template_id').value
+        };
+
+        const fd = new FormData();
+        fd.append('action', 'mt_save_campaign'); 
+        fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
+        fd.append('campaign_id', id); 
+        fd.append('campaign_name', name);
+        fd.append('campaign_type', 'workflow_draft');
+        fd.append('config', JSON.stringify(config));
+        
+        const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
+        fetch(ajaxUrl, { method: 'POST', body: fd }).then(() => {
+            showToast("Progress tucked safely into The Nest.", "success");
+            setTimeout(() => { window.location.reload(); }, 1000);
+        });
+    }
+
+    function trashWorkflow(id) {
+        mtConfirm("Delete Automation", "Are you sure you want to permanently delete this background rule?", function() {
+            const fd = new FormData(); 
+            fd.append('action','mt_delete_campaign'); 
+            fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
+            fd.append('campaign_id',id); 
+            
+            const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
+            fetch(ajaxUrl,{method:'POST',body:fd}).then(()=>window.location.reload());
         });
     }
 
@@ -307,11 +565,13 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
     function goToStep(step) {
         // Validation
         if (step > currentStep) {
-            if (currentStep === 3) {
-                if(!document.getElementById('selected_template_id').value) {
-                    showToast("Please pick a Payload design to deliver.", "error");
-                    return;
-                }
+            if (currentStep === 1 && !document.getElementById('wf_name').value) {
+                showToast("Please give this automation a name.", "error");
+                return;
+            }
+            if (currentStep === 3 && !document.getElementById('selected_template_id').value) {
+                showToast("Please pick a Payload design to deliver.", "error");
+                return;
             }
         }
 
@@ -356,6 +616,7 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
         if(currentStep === totalSteps) {
             btnNext.style.display = 'none';
             btnFinish.style.display = 'flex';
+            populateReviewScreen();
         } else {
             btnNext.style.display = 'flex';
             btnFinish.style.display = 'none';
@@ -365,25 +626,62 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
     function nextStep() { if(currentStep < totalSteps) goToStep(currentStep + 1); }
     function prevStep() { if(currentStep > 1) goToStep(currentStep - 1); }
 
-    function activateAutopilot() {
-        const trigger = document.querySelector('input[name="wf_trigger"]:checked').value;
+    function populateReviewScreen() {
+        // Trigger
+        const triggerLabels = {
+            'first_visit': 'First Time Connect',
+            'birthday': 'Guest Birthday',
+            'winback': 'Missing Guest',
+            'tag': 'Specific Campaign Tag'
+        };
+        const trigger = document.querySelector('input[name="wf_trigger"]:checked')?.value || 'first_visit';
+        document.getElementById('review_trigger').innerText = triggerLabels[trigger];
+
+        // Delay & Location
         const delayVal = document.getElementById('wf_delay_val').value;
-        const delayUnit = document.getElementById('wf_delay_unit').value;
-        const templateId = document.getElementById('selected_template_id').value;
+        const delayUnit = document.getElementById('wf_delay_unit').options[document.getElementById('wf_delay_unit').selectedIndex].text;
+        document.getElementById('review_delay').innerText = `Wait ${delayVal} ${delayUnit}`;
 
-        if(!templateId) {
-            showToast("Please select an email template payload.", "error");
-            return;
-        }
+        let locFilterText = "All Locations (Global Reach)";
+        const locSelect = document.getElementById('wf_location_filter');
+        if (locSelect.value !== 'all') locFilterText = locSelect.options[locSelect.selectedIndex].text;
+        document.getElementById('review_location').innerText = "Filtered to: " + locFilterText;
 
-        const btn = document.getElementById('btn-finish');
-        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Initializing...';
-        btn.disabled = true;
+        // Template
+        let templateText = "Selected Template ID: " + document.getElementById('selected_template_id').value;
+        const selectedTplCard = document.querySelector('.template-card.selected h3');
+        if(selectedTplCard) templateText = selectedTplCard.innerText;
+        document.getElementById('review_template').innerText = templateText;
+    }
 
-        // Phase 3: We will submit this logic map to a 'mt_save_workflow' AJAX endpoint.
-        setTimeout(() => {
-            showToast("Autopilot Rules Generated! The engine is humming.", "success");
-            setTimeout(() => { window.location.reload(); }, 1500);
-        }, 1200);
+    function activateAutopilot() {
+        mtConfirm("Engage Autopilot?", "This automation will run silently in the background and deliver payloads based on these rules. Proceed?", function() {
+            const btn = document.getElementById('btn-finish');
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Initializing...';
+            btn.disabled = true;
+
+            const id = document.getElementById('wf_id').value;
+            const config = {
+                trigger_type: document.querySelector('input[name="wf_trigger"]:checked')?.value || 'first_visit',
+                delay_val: document.getElementById('wf_delay_val').value,
+                delay_unit: document.getElementById('wf_delay_unit').value,
+                location_id: document.getElementById('wf_location_filter').value,
+                template_id: document.getElementById('selected_template_id').value
+            };
+
+            const fd = new FormData();
+            fd.append('action', 'mt_save_campaign'); 
+            fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
+            fd.append('campaign_id', id); 
+            fd.append('campaign_name', document.getElementById('wf_name').value);
+            fd.append('campaign_type', 'workflow'); // Flags it as ACTIVE
+            fd.append('config', JSON.stringify(config));
+            
+            const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
+            fetch(ajaxUrl, { method: 'POST', body: fd }).then(() => {
+                showToast("Autopilot Rules Generated! The engine is humming.", "success");
+                setTimeout(() => { window.location.reload(); }, 1500);
+            });
+        });
     }
 </script>
