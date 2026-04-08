@@ -1,110 +1,107 @@
 <?php
-// Secure the view
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-// We have access to $brand and $wpdb from the router
-$total_stores = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(id) FROM {$wpdb->prefix}mt_stores WHERE brand_id = %d", $brand->id) );
-$total_roost = $wpdb->get_var( $wpdb->prepare("SELECT COUNT(id) FROM {$wpdb->prefix}mt_roost WHERE brand_id = %d", $brand->id) );
+global $wpdb;
+$table_leads = $wpdb->prefix . 'mt_guest_leads';
+$table_stores = $wpdb->prefix . 'mt_stores';
 
-// For UI demonstration, mock emails sent until we build the Mail.baby engine
-$emails_sent = 0; 
-$storage_used_mb = round($brand->storage_used_kb / 1024, 2);
+// Fetch global account metrics
+$total_flock = $wpdb->get_var($wpdb->prepare("SELECT COUNT(id) FROM $table_leads WHERE brand_id = %d", $brand->id));
+$total_locations = $wpdb->get_var($wpdb->prepare("SELECT COUNT(id) FROM $table_stores WHERE brand_id = %d", $brand->id));
 
-// Calculate Percentages for Progress Bars
-$loc_percent = ($brand->location_limit > 0) ? ($total_stores / $brand->location_limit) * 100 : 0;
-$store_percent = ($brand->storage_limit_mb > 0) ? ($storage_used_mb / $brand->storage_limit_mb) * 100 : 0;
-$email_percent = ($brand->email_limit > 0) ? ($emails_sent / $brand->email_limit) * 100 : 0;
+// Mock Quota Data (In Phase 3, this will pull from a billing table)
+$monthly_limit = 50000;
+$emails_sent_this_month = 12450;
+$quota_percentage = ($emails_sent_this_month / $monthly_limit) * 100;
 
-$plan_name = str_replace('mt_', '', $brand->package_slug);
+// FETCH DYNAMIC BRANDING
+$brand_color = !empty($brand->primary_color) ? $brand->primary_color : '#0f172a';
+$mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => '#1A232E'] );
+$current_user = wp_get_current_user();
+$first_name = !empty($current_user->user_firstname) ? $current_user->user_firstname : $current_user->display_name;
 ?>
 
-<header class="mb-8 flex justify-between items-center">
-    <div>
-        <h1 class="text-2xl font-bold text-gray-900">Welcome back, <?php echo esc_html($brand->brand_name); ?>!</h1>
-        <p class="text-gray-500">Here is your current account status and system limits.</p>
-    </div>
-    
-    <div class="bg-white px-5 py-3 rounded-xl shadow-sm border border-gray-200 flex items-center gap-4 text-right">
-        <div>
-            <p class="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-1">Current Plan</p>
-            <p class="text-sm font-bold text-gray-900 uppercase"><?php echo esc_html($plan_name); ?></p>
-        </div>
-        <div class="h-8 w-px bg-gray-200"></div>
-        <div>
-            <p class="text-[10px] uppercase tracking-widest font-bold text-gray-400 mb-1">Renewal Date</p>
-            <p class="text-sm font-bold text-blue-600">
-                <?php echo $brand->renewal_date ? esc_html(date('M j, Y', strtotime($brand->renewal_date))) : 'N/A'; ?>
-            </p>
-        </div>
-    </div>
-</header>
+<style>
+    :root {
+        --mt-brand: <?php echo esc_html($brand_color); ?>;
+        --mt-accent: <?php echo esc_html($mt_palette['accent']); ?>;
+    }
+</style>
 
-<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-    
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-        <h2 class="text-lg font-bold text-gray-800 border-b pb-4 mb-6"><i class="fa-solid fa-server text-gray-400 mr-2"></i> Allocation Limits</h2>
-        
-        <div class="mb-6">
-            <div class="flex justify-between items-end mb-2">
-                <span class="text-sm font-bold text-gray-700">Active Locations</span>
-                <span class="text-xs font-bold text-gray-500"><?php echo esc_html($total_stores); ?> / <?php echo esc_html($brand->location_limit); ?></span>
-            </div>
-            <div class="w-full bg-gray-100 rounded-full h-2.5">
-                <div class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: <?php echo min(100, $loc_percent); ?>%"></div>
-            </div>
-            <?php if ($total_stores >= $brand->location_limit) : ?>
-                <p class="text-xs text-red-500 mt-2 font-semibold"><i class="fa-solid fa-triangle-exclamation"></i> Location limit reached. Contact support to upgrade.</p>
-            <?php endif; ?>
+<div class="max-w-7xl mx-auto">
+    <header class="mb-10 flex justify-between items-end bg-white p-8 rounded-3xl shadow-sm border border-gray-200 relative overflow-hidden">
+        <div class="relative z-10">
+            <p class="text-sm font-bold uppercase tracking-widest text-gray-400 mb-1">Global Account Status</p>
+            <h1 class="text-3xl font-black text-gray-900">Hello, <?php echo esc_html($first_name); ?> 👋</h1>
+            <p class="text-gray-500 mt-2 font-medium">Here is the top-level overview of your MailToucan account.</p>
+        </div>
+        <div class="flex gap-3 relative z-10">
+            <button onclick="alert('Billing portal coming soon!')" class="bg-gray-50 border border-gray-200 text-gray-700 px-6 py-3 rounded-xl font-bold shadow-sm hover:bg-white transition flex items-center gap-2">
+                <i class="fa-solid fa-credit-card"></i> Manage Plan
+            </button>
+        </div>
+        <div class="absolute right-0 top-0 bottom-0 w-64 opacity-5 pointer-events-none flex items-center justify-center transform translate-x-10">
+            <i class="fa-solid fa-chart-pie text-[150px]" style="color: var(--mt-brand);"></i>
+        </div>
+    </header>
+
+    <div class="grid grid-cols-4 gap-6 mb-10">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 relative overflow-hidden group">
+            <div class="absolute top-4 right-4 w-10 h-10 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center text-lg"><i class="fa-solid fa-crown"></i></div>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Current Plan</p>
+            <h3 class="text-3xl font-black text-gray-900 mb-1">Pro Tier</h3>
+            <p class="text-xs text-green-500 font-bold flex items-center gap-1"><i class="fa-solid fa-check-circle"></i> Active & Healthy</p>
         </div>
 
-        <div class="mb-6">
-            <div class="flex justify-between items-end mb-2">
-                <span class="text-sm font-bold text-gray-700">Media Vault Storage</span>
-                <span class="text-xs font-bold text-gray-500"><?php echo $storage_used_mb; ?> MB / <?php echo esc_html($brand->storage_limit_mb); ?> MB</span>
-            </div>
-            <div class="w-full bg-gray-100 rounded-full h-2.5">
-                <div class="bg-indigo-500 h-2.5 rounded-full transition-all duration-500" style="width: <?php echo min(100, $store_percent); ?>%"></div>
-            </div>
-        </div>
-
-        <div>
-            <div class="flex justify-between items-end mb-2">
-                <span class="text-sm font-bold text-gray-700">Monthly Emails Sent</span>
-                <span class="text-xs font-bold text-gray-500"><?php echo number_format($emails_sent); ?> / <?php echo number_format($brand->email_limit); ?></span>
-            </div>
-            <div class="w-full bg-gray-100 rounded-full h-2.5">
-                <div class="bg-green-500 h-2.5 rounded-full transition-all duration-500" style="width: <?php echo min(100, $email_percent); ?>%"></div>
-            </div>
-            <p class="text-xs text-gray-400 mt-2">Limits reset on your billing renewal date.</p>
-        </div>
-    </div>
-
-    <div class="space-y-6">
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
-            <div>
-                <h3 class="text-gray-500 text-sm font-bold uppercase tracking-wider mb-1">Total CRM Subscribers</h3>
-                <p class="text-4xl font-bold text-gray-900"><?php echo number_format($total_roost); ?></p>
-            </div>
-            <div class="bg-orange-50 text-orange-500 p-4 rounded-xl"><i class="fa-solid fa-users text-3xl"></i></div>
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 relative overflow-hidden group">
+            <div class="absolute top-4 right-4 w-10 h-10 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-lg"><i class="fa-solid fa-store"></i></div>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Connected Locations</p>
+            <h3 class="text-3xl font-black text-gray-900 mb-1"><?php echo number_format($total_locations); ?></h3>
+            <p class="text-xs text-gray-400 font-medium">Active WiFi Zones</p>
         </div>
         
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between opacity-75">
-            <div>
-                <h3 class="text-gray-500 text-sm font-bold uppercase tracking-wider mb-1">Emails Opened (30 Days)</h3>
-                <p class="text-4xl font-bold text-gray-900">0</p>
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 relative overflow-hidden group">
+            <div class="absolute top-4 right-4 w-10 h-10 bg-purple-50 text-purple-500 rounded-full flex items-center justify-center text-lg"><i class="fa-solid fa-users"></i></div>
+            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Global Flock Size</p>
+            <h3 class="text-3xl font-black text-gray-900 mb-1"><?php echo number_format($total_flock); ?></h3>
+            <p class="text-xs text-gray-400 font-medium">Total Captured Guests</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 relative overflow-hidden group">
+            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Monthly Email Quota</p>
+            <h3 class="text-xl font-black text-gray-900 mb-3"><?php echo number_format($emails_sent_this_month); ?> <span class="text-sm font-medium text-gray-400">/ <?php echo number_format($monthly_limit); ?></span></h3>
+            
+            <div class="w-full bg-gray-100 rounded-full h-2 mb-2">
+                <div class="bg-indigo-500 h-2 rounded-full" style="width: <?php echo esc_attr($quota_percentage); ?>%"></div>
             </div>
-            <div class="bg-blue-50 text-blue-500 p-4 rounded-xl"><i class="fa-solid fa-envelope-open-text text-3xl"></i></div>
+            <p class="text-[10px] font-bold text-gray-500 text-right"><?php echo round($quota_percentage, 1); ?>% Used</p>
         </div>
     </div>
 
-</div>
-
-<div class="bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl shadow-lg border border-gray-700 p-8 text-white flex items-center justify-between">
-    <div>
-        <h2 class="text-xl font-bold mb-2">Ready to scale up?</h2>
-        <p class="text-gray-400 text-sm max-w-lg">If you are hitting your storage or location limits, you can easily upgrade your plan to unlock more bandwidth and premium Enterprise features.</p>
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-8">
+        <h2 class="text-lg font-black text-gray-900 mb-6">Quick Links</h2>
+        <div class="grid grid-cols-3 gap-6">
+            <a href="?view=brand" class="flex items-start gap-4 p-4 rounded-xl border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50 transition group">
+                <div class="w-10 h-10 rounded-full bg-gray-100 group-hover:bg-indigo-100 text-gray-500 group-hover:text-indigo-600 flex items-center justify-center shrink-0 transition"><i class="fa-solid fa-palette"></i></div>
+                <div>
+                    <h4 class="font-bold text-gray-900 text-sm">Brand Identity</h4>
+                    <p class="text-xs text-gray-500 mt-1">Update your logos and core colors.</p>
+                </div>
+            </a>
+            <a href="?view=locations" class="flex items-start gap-4 p-4 rounded-xl border border-gray-100 hover:border-blue-200 hover:bg-blue-50 transition group">
+                <div class="w-10 h-10 rounded-full bg-gray-100 group-hover:bg-blue-100 text-gray-500 group-hover:text-blue-600 flex items-center justify-center shrink-0 transition"><i class="fa-solid fa-network-wired"></i></div>
+                <div>
+                    <h4 class="font-bold text-gray-900 text-sm">Manage Routers</h4>
+                    <p class="text-xs text-gray-500 mt-1">Add new venues to your network.</p>
+                </div>
+            </a>
+            <a href="?view=crm" class="flex items-start gap-4 p-4 rounded-xl border border-gray-100 hover:border-purple-200 hover:bg-purple-50 transition group">
+                <div class="w-10 h-10 rounded-full bg-gray-100 group-hover:bg-purple-100 text-gray-500 group-hover:text-purple-600 flex items-center justify-center shrink-0 transition"><i class="fa-solid fa-users"></i></div>
+                <div>
+                    <h4 class="font-bold text-gray-900 text-sm">View CRM (The Roost)</h4>
+                    <p class="text-xs text-gray-500 mt-1">Export or manage your guest data.</p>
+                </div>
+            </a>
+        </div>
     </div>
-    <button class="bg-white text-gray-900 px-6 py-3 rounded-lg font-bold shadow-md hover:bg-gray-100 transition">
-        Upgrade Plan
-    </button>
 </div>
