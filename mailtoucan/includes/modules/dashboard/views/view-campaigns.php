@@ -5,6 +5,7 @@ global $wpdb;
 $table_templates = $wpdb->prefix . 'mt_email_templates';
 $table_campaigns = $wpdb->prefix . 'mt_campaigns';
 $table_leads     = $wpdb->prefix . 'mt_guest_leads';
+$table_stores    = $wpdb->prefix . 'mt_stores'; // Added to fetch locations
 
 // Fetch user's saved templates for Step 3
 $active_templates = $wpdb->get_results( $wpdb->prepare("SELECT * FROM $table_templates WHERE brand_id = %d AND status = 'active' ORDER BY created_at DESC", $brand->id) );
@@ -14,6 +15,9 @@ $campaigns = $wpdb->get_results( $wpdb->prepare("SELECT * FROM $table_campaigns 
 
 // Fetch distinct Campaign Tags from the CRM for the "Custom" Audience dropdown
 $roost_tags = $wpdb->get_col( $wpdb->prepare("SELECT DISTINCT campaign_tag FROM $table_leads WHERE brand_id = %d AND campaign_tag != ''", $brand->id) );
+
+// Fetch Locations for the Location Filter
+$locations = $wpdb->get_results( $wpdb->prepare("SELECT id, store_name FROM $table_stores WHERE brand_id = %d", $brand->id) );
 
 // FETCH DYNAMIC BRANDING
 $brand_color = !empty($brand->primary_color) ? $brand->primary_color : '#0f172a';
@@ -106,7 +110,12 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
                         </td>
                         <td class="p-5 pr-6 text-right flex justify-end gap-3">
                             <?php if($is_draft): ?>
-                                <button onclick="showToast('Resume Draft logic coming in Phase 3!', 'success')" class="w-8 h-8 rounded-lg bg-gray-50 text-gray-500 hover:bg-indigo-50 hover:text-indigo-600 transition flex items-center justify-center border border-gray-200"><i class="fa-solid fa-pen text-xs"></i></button>
+                                <button onclick="editCampaign(<?php echo $camp->id; ?>, this)" 
+                                        data-name="<?php echo esc_attr($camp->campaign_name); ?>" 
+                                        data-config="<?php echo esc_attr($camp->config_json); ?>" 
+                                        class="w-8 h-8 rounded-lg bg-gray-50 text-gray-500 hover:bg-indigo-50 hover:text-indigo-600 transition flex items-center justify-center border border-gray-200" title="Resume Draft">
+                                    <i class="fa-solid fa-pen text-xs"></i>
+                                </button>
                             <?php else: ?>
                                 <button onclick="showToast('Insights coming soon!', 'success')" class="w-8 h-8 rounded-lg bg-gray-50 text-gray-500 hover:bg-green-50 hover:text-green-600 transition flex items-center justify-center border border-gray-200"><i class="fa-solid fa-chart-simple text-xs"></i></button>
                             <?php endif; ?>
@@ -170,7 +179,7 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 space-y-6">
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Internal Campaign Name</label>
-                        <input type="text" id="camp_name" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl text-sm font-normal text-gray-800 placeholder-gray-400 focus:border-indigo-500 outline-none transition" placeholder="e.g. Black Friday 2026 - VIP Early Access (Internal use only)">
+                        <input type="text" id="camp_name" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl text-sm font-normal text-gray-800 placeholder-gray-400 focus:border-indigo-500 outline-none transition" placeholder="e.g. October 2026 Promo - VIP Segment (Not seen by customers)">
                     </div>
                     <div class="border-t border-gray-100 pt-6">
                         <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Email Subject Line</label>
@@ -265,6 +274,21 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
                         </div>
                     </div>
                 </div>
+
+                <div class="mt-8 pt-8 border-t border-gray-200">
+                    <div class="flex items-center gap-3 mb-2">
+                        <h3 class="text-lg font-black text-gray-900">Location Filter</h3>
+                        <span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-1 rounded font-bold uppercase tracking-widest">Optional</span>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-4">Only send this email to guests who originally connected at a specific venue.</p>
+                    
+                    <select id="camp_location_filter" class="w-full p-4 bg-white border border-gray-300 rounded-xl text-sm font-bold text-gray-700 outline-none focus:border-indigo-500 shadow-sm cursor-pointer">
+                        <option value="all">All Locations (Global Reach)</option>
+                        <?php if(!empty($locations)): foreach($locations as $loc): ?>
+                            <option value="<?php echo esc_attr($loc->id); ?>"><?php echo esc_html($loc->store_name); ?></option>
+                        <?php endforeach; endif; ?>
+                    </select>
+                </div>
             </div>
 
             <div id="step-3" class="wizard-step">
@@ -322,6 +346,15 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
                                 <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Audience</p>
                                 <p id="review_audience" class="text-lg font-black text-gray-900">...</p>
                                 <p id="review_audience_sub" class="text-sm text-gray-500 mt-1 hidden"></p>
+                            </div>
+                            <button onclick="goToStep(2)" class="text-xs font-bold text-indigo-600 hover:underline">Edit</button>
+                        </div>
+
+                        <div class="flex items-start gap-4 pb-6 border-b border-gray-100">
+                            <div class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 shrink-0"><i class="fa-solid fa-store"></i></div>
+                            <div class="flex-1">
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Location Filter</p>
+                                <p id="review_location" class="text-lg font-black text-gray-900">...</p>
                             </div>
                             <button onclick="goToStep(2)" class="text-xs font-bold text-indigo-600 hover:underline">Edit</button>
                         </div>
@@ -390,7 +423,6 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
         const icon = type === 'error' ? 'fa-triangle-exclamation' : 'fa-check-circle';
         
         let displayMessage = message;
-        // Toucan slang for errors!
         if (type === 'error' && !message.includes('Jungle Tangle')) {
             displayMessage = "Looks like a bit of a Jungle Tangle. - " + message;
         }
@@ -421,13 +453,12 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
     }
     function executeConfirm() { if(confirmCallback) confirmCallback(); closeConfirmModal(); }
 
-    // --- WIZARD LOGIC ---
+    // --- WIZARD LOGIC & EDIT DRAFT RESTORE ---
     let currentStep = 1;
     const totalSteps = 4;
 
     function triggerAI() {
         showToast('Connecting to Toucan AI Engine...', 'success');
-        // AI logic will go here in Phase 3
     }
 
     function toggleCustomAudience() {
@@ -440,16 +471,82 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
         }
     }
 
-    function startWizard(id) {
+    // THE EDIT DRAFT RESTORE ENGINE
+    function editCampaign(id, btnElement) {
+        const name = btnElement.getAttribute('data-name');
+        let config = {};
+        
+        try {
+            // Parse the stored JSON config payload
+            config = JSON.parse(btnElement.getAttribute('data-config') || '{}');
+        } catch(e) {
+            console.error("Failed to parse campaign config", e);
+        }
+
+        // Repopulate Step 1
+        document.getElementById('campaign_id').value = id;
+        document.getElementById('camp_name').value = name;
+        document.getElementById('camp_subject').value = config.subject || '';
+        document.getElementById('camp_preview').value = config.preview || '';
+        
+        // Repopulate Step 2: Audience Radio
+        const audience = config.audience || 'all';
+        const radio = document.querySelector(`input[name="audience"][value="${audience}"]`);
+        if(radio) {
+            radio.checked = true;
+            toggleCustomAudience();
+        }
+        
+        // Repopulate Filters
+        if(config.audience_tag) {
+            document.getElementById('camp_segment_tag').value = config.audience_tag;
+        }
+        if(config.location_id) {
+            document.getElementById('camp_location_filter').value = config.location_id;
+        }
+        
+        // Repopulate Step 3: Template Selection
+        document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+        document.getElementById('selected_template_id').value = '';
+        if(config.template_id) {
+            const tplCard = document.querySelector(`.template-card[onclick*="selectTemplate(this, ${config.template_id})"]`);
+            if(tplCard) {
+                selectTemplate(tplCard, config.template_id);
+            } else {
+                // If template card doesn't exist on screen but id is saved
+                document.getElementById('selected_template_id').value = config.template_id;
+            }
+        }
+
+        // Open the Wizard Interface
         document.getElementById('view_campaign_list').style.display = 'none';
         document.getElementById('view_campaign_wizard').classList.remove('hidden');
         document.getElementById('view_campaign_wizard').classList.add('flex');
         
-        if (id === 0) {
-            silentDraftSave();
-        } else {
-            // Load existing draft logic
-            document.getElementById('campaign_id').value = id;
+        goToStep(1);
+    }
+
+    function startWizard(id) {
+        // This is a brand new campaign
+        if(id === 0) {
+            // Clear out all fields from any previous session
+            document.getElementById('campaign_id').value = 0;
+            document.getElementById('camp_name').value = '';
+            document.getElementById('camp_subject').value = '';
+            document.getElementById('camp_preview').value = '';
+            document.querySelector('input[name="audience"][value="all"]').checked = true;
+            toggleCustomAudience();
+            document.getElementById('camp_segment_tag').value = '';
+            document.getElementById('camp_location_filter').value = 'all';
+            document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('selected_template_id').value = '';
+
+            document.getElementById('view_campaign_list').style.display = 'none';
+            document.getElementById('view_campaign_wizard').classList.remove('hidden');
+            document.getElementById('view_campaign_wizard').classList.add('flex');
+            
+            goToStep(1);
+            silentDraftSave(); // Secure their work immediately
         }
     }
 
@@ -459,7 +556,6 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
         });
     }
 
-    // Connects to mt_save_campaign
     function silentDraftSave() {
         const now = new Date();
         const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
@@ -472,7 +568,7 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
         fd.append('campaign_id', 0); 
         fd.append('campaign_name', draftName);
         fd.append('campaign_type', 'draft');
-        fd.append('config', JSON.stringify({})); // Empty config for now
+        fd.append('config', JSON.stringify({})); 
         
         const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
         fetch(ajaxUrl, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
@@ -482,7 +578,6 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
         }).catch(err => console.error("Silent Draft Save Failed", err));
     }
 
-    // Connects to mt_delete_campaign
     function trashCampaign(id) {
         mtConfirm("Delete Campaign", "Are you sure you want to permanently delete this campaign?", function() {
             const fd = new FormData(); 
@@ -507,6 +602,8 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
             subject: subject,
             preview: document.getElementById('camp_preview').value,
             audience: document.querySelector('.audience-radio:checked')?.value || 'all',
+            audience_tag: document.getElementById('camp_segment_tag').value,
+            location_id: document.getElementById('camp_location_filter').value,
             template_id: document.getElementById('selected_template_id').value
         };
 
@@ -624,6 +721,12 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
             }
         }
 
+        let locFilterText = "All Locations (Global Reach)";
+        const locSelect = document.getElementById('camp_location_filter');
+        if (locSelect.value !== 'all') {
+            locFilterText = locSelect.options[locSelect.selectedIndex].text;
+        }
+
         let templateText = "Selected Template ID: " + document.getElementById('selected_template_id').value;
         const selectedTplCard = document.querySelector('.template-card.selected h3');
         if(selectedTplCard) templateText = selectedTplCard.innerText;
@@ -631,6 +734,7 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
         document.getElementById('review_subject').innerText = subject;
         document.getElementById('review_preview').innerText = preview || 'No preview text provided.';
         document.getElementById('review_audience').innerText = audienceText;
+        document.getElementById('review_location').innerText = locFilterText;
         document.getElementById('review_template').innerText = templateText;
     }
 
@@ -647,6 +751,7 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
                 preview: document.getElementById('camp_preview').value,
                 audience: document.querySelector('.audience-radio:checked')?.value || 'all',
                 audience_tag: document.getElementById('camp_segment_tag').value,
+                location_id: document.getElementById('camp_location_filter').value,
                 template_id: document.getElementById('selected_template_id').value
             };
 
