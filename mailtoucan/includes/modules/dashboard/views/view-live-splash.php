@@ -62,6 +62,9 @@ if ($campaign_id > 0) {
 
 // Ensure defaults for rendering
 $flow_type = isset($config['flow_type']) ? intval($config['flow_type']) : 1;
+// --- BUG FIX: Extract redirect URL properly from config or state ---
+$redirect_url = !empty($config['redirect_url']) ? $config['redirect_url'] : (!empty($state['redirect_url']) ? $state['redirect_url'] : '');
+
 $s1 = $state['step1'] ?? [];
 $s2 = $state['step2'] ?? [];
 $s3 = $state['step3'] ?? [];
@@ -236,7 +239,8 @@ $tos_url = $config['tos_url'] ?? '#';
         
         // 2. Data Payloads from PHP
         const flowType = <?php echo $flow_type; ?>;
-        const redirectUrl = "<?php echo esc_js($state['redirect_url'] ?? ''); ?>";
+        // --- BUG FIX: Properly passed redirectUrl from PHP ---
+        const redirectUrl = "<?php echo esc_js($redirect_url); ?>";
         const hasCampaign = <?php echo $campaign_data ? 'true' : 'false'; ?>;
         const campType = "<?php echo $campaign_data ? esc_js($campaign_data['type']) : ''; ?>";
         
@@ -253,6 +257,11 @@ $tos_url = $config['tos_url'] ?? '#';
             3: <?php echo !empty($s3['hide_logo']) ? 'true' : 'false'; ?>
         };
 
+        // --- BUG FIX: Extract the Router's URL params ---
+        const urlParams = new URLSearchParams(window.location.search);
+        let clientMac = urlParams.get('client_mac') || urlParams.get('mac') || urlParams.get('ap_mac') || '';
+        let loginUrl = urlParams.get('loginurl') || urlParams.get('link-login') || '';
+
         // Lead Data Payload to send to Server
         const leadData = {
             store_id: <?php echo $store_id; ?>,
@@ -260,6 +269,7 @@ $tos_url = $config['tos_url'] ?? '#';
             campaign_id: <?php echo $campaign_id; ?>,
             email: '',
             name: '',
+            mac: clientMac, // --- BUG FIX: Push the MAC into the payload ---
             survey_data: {}
         };
 
@@ -430,14 +440,22 @@ $tos_url = $config['tos_url'] ?? '#';
             const btn = document.getElementById('step_3').querySelector('button');
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authorizing...';
             
+            // --- BUG FIX: Delayed redirect to allow Server to ping RackNerd ---
             setTimeout(() => {
-                if(redirectUrl && redirectUrl !== '#') {
-                    window.location.href = redirectUrl;
-                } else {
-                    btn.innerHTML = 'Connected!';
-                    btn.classList.add('bg-green-500');
-                }
-            }, 1000);
+                btn.innerHTML = 'Connected!';
+                btn.classList.add('bg-green-500');
+                
+                setTimeout(() => {
+                    if(redirectUrl && redirectUrl !== '#') {
+                        let finalUrl = redirectUrl.includes('http') ? redirectUrl : 'https://' + redirectUrl;
+                        window.location.href = finalUrl;
+                    } else if(loginUrl) {
+                        window.location.href = loginUrl;
+                    } else {
+                        window.location.href = "https://www.google.com";
+                    }
+                }, 1000);
+            }, 1500);
         }
     </script>
 </body>
