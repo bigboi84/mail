@@ -1,20 +1,11 @@
 <?php
 /**
- * The WiFi Module: Splash Screens, Direct Router Handshakes, and RADIUS Auth
+ * The WiFi Module: Splash Screens, Direct Router Handshakes, and RADIUS Auth via API Bridge
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 class MT_Wifi_Controller {
-
-    // --- LIVE RACKNERD RADIUS CREDENTIALS ---
-    private $radius_host = '107.173.49.14';
-    private $radius_user = 'mt_radius';
-    private $radius_pass = 'JLAmX7sPoWffb7N3GVcp';
-    private $radius_db   = 'radius';
-    private $radius_port = 3306;
-    
-    private $pdo = null;
 
     public function init() {
         // Listen for the Form Submission FIRST (When they click connect via direct POST)
@@ -23,7 +14,7 @@ class MT_Wifi_Controller {
         // Listen for the Router Redirect (When they first join the network on older routers)
         add_action('init', array($this, 'catch_router_redirect'));
 
-        // Listen for the modern AJAX lead capture to trigger RADIUS Auth
+        // Listen for the modern AJAX lead capture to trigger RADIUS Auth via API Bridge
         add_action('mt_lead_captured', array($this, 'authorize_guest_mac'), 10, 2);
     }
 
@@ -166,25 +157,8 @@ class MT_Wifi_Controller {
     }
 
     // ========================================================================
-    // 2. NEW ENTERPRISE FREERADIUS CONTROLLER (A62, UniFi, Mikrotik RADIUS)
+    // 2. NEW ENTERPRISE FREERADIUS CONTROLLER (API BRIDGE)
     // ========================================================================
-
-    private function connect() {
-        if ( $this->pdo !== null ) return true;
-
-        try {
-            $dsn = "mysql:host={$this->radius_host};dbname={$this->radius_db};port={$this->radius_port};charset=utf8";
-            $this->pdo = new PDO($dsn, $this->radius_user, $this->radius_pass, [
-                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_TIMEOUT            => 5 
-            ]);
-            return true;
-        } catch (PDOException $e) {
-            error_log('MailToucan RADIUS DB Error: ' . $e->getMessage());
-            return false;
-        }
-    }
 
     public function authorize_guest_mac( $lead_id, $brand_id ) {
         global $wpdb;
@@ -209,36 +183,37 @@ class MT_Wifi_Controller {
         $bandwidth_limit_mb = isset($config['bandwidth_limit_mb']) ? intval($config['bandwidth_limit_mb']) : 500; 
         $bandwidth_limit_bytes = $bandwidth_limit_mb * 1024 * 1024; 
 
-        if ( ! $this->connect() ) return false;
+        // --- THE FIREWALL BYPASS: Send data over HTTP instead of SQL ---
+        $api_url = "http://107.173.49.14/mt-receiver.php";
+        
+        $payload = array(
+            'api_key' => 'JLAmX7sPoWffb7N3GVcp',
+            'mac'     => $mac,
+            'time'    => $session_time_seconds,
+            'bytes'   => $bandwidth_limit_bytes
+        );
 
-        try {
-            $this->pdo->beginTransaction();
+        $response = wp_remote_post( $api_url, array(
+            'method'      => 'POST',
+            'timeout'     => 5,
+            'redirection' => 5,
+            'httpversion' => '1.0',
+            'blocking'    => true,
+            'body'        => $payload,
+            'cookies'     => array()
+        ) );
 
-            $stmt = $this->pdo->prepare("DELETE FROM radcheck WHERE username = ?");
-            $stmt->execute([$mac]);
-            $stmt = $this->pdo->prepare("DELETE FROM radreply WHERE username = ?");
-            $stmt->execute([$mac]);
+        if ( is_wp_error( $response ) ) {
+            error_log('MailToucan API Bridge Network Error: ' . $response->get_error_message());
+            return false;
+        }
 
-            $stmt = $this->pdo->prepare("INSERT INTO radcheck (username, attribute, op, value) VALUES (?, 'Auth-Type', ':=', 'Accept')");
-            $stmt->execute([$mac]);
-
-            $stmt = $this->pdo->prepare("INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'Session-Timeout', '=', ?)");
-            $stmt->execute([$mac, $session_time_seconds]);
-
-            if ($bandwidth_limit_mb > 0) {
-                $stmt = $this->pdo->prepare("INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'Mikrotik-Total-Limit', '=', ?)");
-                $stmt->execute([$mac, $bandwidth_limit_bytes]);
-
-                $stmt = $this->pdo->prepare("INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'ChilliSpot-Max-Total-Octets', '=', ?)");
-                $stmt->execute([$mac, $bandwidth_limit_bytes]);
-            }
-
-            $this->pdo->commit();
+        $body = wp_remote_retrieve_body( $response );
+        
+        if ( trim($body) === 'SUCCESS' ) {
             return true;
-
-        } catch (PDOException $e) {
-            $this->pdo->rollBack();
-            error_log('MailToucan RADIUS Injection Failed: ' . $e->getMessage());
+        } else {
+            error_log('MailToucan API Bridge Failed: ' . $body);
             return false;
         }
     }
