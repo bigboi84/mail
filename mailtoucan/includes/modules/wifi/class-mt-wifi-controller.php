@@ -1,17 +1,35 @@
 <?php
 /**
- * The WiFi Module: Splash Screens & Router Handshakes
+ * The WiFi Module: Splash Screens, Direct Router Handshakes, and RADIUS Auth
  */
+
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 class MT_Wifi_Controller {
 
+    // --- LIVE RACKNERD RADIUS CREDENTIALS ---
+    private $radius_host = '107.173.49.14';
+    private $radius_user = 'mt_radius';
+    private $radius_pass = 'JLAmX7sPoWffb7N3GVcp';
+    private $radius_db   = 'radius';
+    private $radius_port = 3306;
+    
+    private $pdo = null;
+
     public function init() {
-        // Listen for the Form Submission FIRST (When they click connect)
+        // Listen for the Form Submission FIRST (When they click connect via direct POST)
         add_action('init', array($this, 'process_wifi_login'));
         
-        // Listen for the Router Redirect (When they first join the network)
+        // Listen for the Router Redirect (When they first join the network on older routers)
         add_action('init', array($this, 'catch_router_redirect'));
+
+        // Listen for the modern AJAX lead capture to trigger RADIUS Auth
+        add_action('mt_lead_captured', array($this, 'authorize_guest_mac'), 10, 2);
     }
+
+    // ========================================================================
+    // 1. LEGACY / DIRECT MIKROTIK HOTSPOT FEATURES (PRESERVED)
+    // ========================================================================
 
     public function catch_router_redirect() {
         // Ensure we are on the /connect/ page
@@ -52,31 +70,41 @@ class MT_Wifi_Controller {
             $mikrotik_url = esc_url_raw($_POST['mikrotik_url']);
 
             if (is_email($email)) {
-                // 1. Save the Subscriber to the CRM
-                $table_roost = $wpdb->prefix . 'mt_roost';
+                // 1. Save the Subscriber to the New CRM Table (Updated from mt_roost to mt_guest_leads)
+                $table_leads = $wpdb->prefix . 'mt_guest_leads';
                 
                 // Check if they already exist
-                $exists = $wpdb->get_var($wpdb->prepare("SELECT id FROM $table_roost WHERE email = %s AND store_id = %d", $email, $store_id));
+                $lead_id = $wpdb->get_var($wpdb->prepare("SELECT id FROM $table_leads WHERE email = %s AND store_id = %d", $email, $store_id));
                 
-                if (!$exists) {
-                    $wpdb->insert($table_roost, array(
+                if (!$lead_id) {
+                    $wpdb->insert($table_leads, array(
                         'email' => $email,
                         'brand_id' => $brand_id,
                         'store_id' => $store_id,
-                        'status' => 'verified', // Captured via WiFi, so it's a real person
-                        'captured_via' => 'wifi'
+                        'guest_mac' => $client_mac,
+                        'status' => 'active', 
+                        'consent_log' => 'Captured via Direct WiFi POST',
+                        'unsub_token' => bin2hex(random_bytes(16))
                     ));
+                    $lead_id = $wpdb->insert_id;
+                } else {
+                    // Update their MAC address if they are a returning guest using a new device
+                    $wpdb->update($table_leads, array('guest_mac' => $client_mac), array('id' => $lead_id));
                 }
 
                 // 2. Log the Connection Session
                 $table_wifi = $wpdb->prefix . 'mt_wifi_logs';
-                $wpdb->insert($table_wifi, array(
-                    'mac_address' => $client_mac,
-                    'store_id' => $store_id
-                ));
+                if ($wpdb->get_var("SHOW TABLES LIKE '{$table_wifi}'") === $table_wifi) {
+                    $wpdb->insert($table_wifi, array(
+                        'mac_address' => $client_mac,
+                        'store_id' => $store_id
+                    ));
+                }
 
-                // 3. The MikroTik Handshake (Auto-Submit Login)
-                // We generate a hidden form that auto-submits to the MikroTik router to grant access.
+                // --- NEW: TRIGGER THE RADIUS & AUTOPILOT ENGINE ---
+                do_action('mt_lead_captured', $lead_id, $brand_id);
+
+                // 3. The MikroTik Handshake (Auto-Submit Login for non-RADIUS setups)
                 ?>
                 <!DOCTYPE html>
                 <html>
@@ -102,7 +130,6 @@ class MT_Wifi_Controller {
     private function render_splash_screen($store_data, $client_mac, $router_mac) {
         // We grab the MikroTik login URL (usually sent as 'link-login' in the URL by the router)
         $mikrotik_login_url = isset($_GET['link-login']) ? esc_url($_GET['link-login']) : 'http://192.168.88.1/login';
-        
         ?>
         <!DOCTYPE html>
         <html>
@@ -137,4 +164,85 @@ class MT_Wifi_Controller {
         </html>
         <?php
     }
+
+    // ========================================================================
+    // 2. NEW ENTERPRISE FREERADIUS CONTROLLER (A62, UniFi, Mikrotik RADIUS)
+    // ========================================================================
+
+    private function connect() {
+        if ( $this->pdo !== null ) return true;
+
+        try {
+            $dsn = "mysql:host={$this->radius_host};dbname={$this->radius_db};port={$this->radius_port};charset=utf8";
+            $this->pdo = new PDO($dsn, $this->radius_user, $this->radius_pass, [
+                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_TIMEOUT            => 5 
+            ]);
+            return true;
+        } catch (PDOException $e) {
+            error_log('MailToucan RADIUS DB Error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    public function authorize_guest_mac( $lead_id, $brand_id ) {
+        global $wpdb;
+        
+        $lead = $wpdb->get_row( $wpdb->prepare("SELECT guest_mac, store_id FROM {$wpdb->prefix}mt_guest_leads WHERE id = %d", $lead_id) );
+        
+        if ( ! $lead || empty($lead->guest_mac) || $lead->guest_mac === 'UNKNOWN' ) {
+            return false; 
+        }
+
+        // Format exactly to AA:BB:CC:DD:EE:FF for FreeRADIUS
+        $mac = strtoupper(preg_replace('/[^a-fA-F0-9]/', '', $lead->guest_mac));
+        $mac = implode(':', str_split($mac, 2));
+
+        // Fetch Limits
+        $store = $wpdb->get_row( $wpdb->prepare("SELECT local_offer_json FROM {$wpdb->prefix}mt_stores WHERE id = %d", $lead->store_id) );
+        $config = $store ? (json_decode($store->local_offer_json, true) ?: []) : [];
+        
+        $session_time_minutes = isset($config['session_limit_min']) ? intval($config['session_limit_min']) : 120; 
+        $session_time_seconds = $session_time_minutes * 60;
+        
+        $bandwidth_limit_mb = isset($config['bandwidth_limit_mb']) ? intval($config['bandwidth_limit_mb']) : 500; 
+        $bandwidth_limit_bytes = $bandwidth_limit_mb * 1024 * 1024; 
+
+        if ( ! $this->connect() ) return false;
+
+        try {
+            $this->pdo->beginTransaction();
+
+            $stmt = $this->pdo->prepare("DELETE FROM radcheck WHERE username = ?");
+            $stmt->execute([$mac]);
+            $stmt = $this->pdo->prepare("DELETE FROM radreply WHERE username = ?");
+            $stmt->execute([$mac]);
+
+            $stmt = $this->pdo->prepare("INSERT INTO radcheck (username, attribute, op, value) VALUES (?, 'Auth-Type', ':=', 'Accept')");
+            $stmt->execute([$mac]);
+
+            $stmt = $this->pdo->prepare("INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'Session-Timeout', '=', ?)");
+            $stmt->execute([$mac, $session_time_seconds]);
+
+            if ($bandwidth_limit_mb > 0) {
+                $stmt = $this->pdo->prepare("INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'Mikrotik-Total-Limit', '=', ?)");
+                $stmt->execute([$mac, $bandwidth_limit_bytes]);
+
+                $stmt = $this->pdo->prepare("INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'ChilliSpot-Max-Total-Octets', '=', ?)");
+                $stmt->execute([$mac, $bandwidth_limit_bytes]);
+            }
+
+            $this->pdo->commit();
+            return true;
+
+        } catch (PDOException $e) {
+            $this->pdo->rollBack();
+            error_log('MailToucan RADIUS Injection Failed: ' . $e->getMessage());
+            return false;
+        }
+    }
 }
+
+$mt_wifi_hw = new MT_Wifi_Controller();
+$mt_wifi_hw->init();
