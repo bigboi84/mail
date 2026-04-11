@@ -1,6 +1,6 @@
 <?php
 /**
- * The WiFi Module: Splash Screens, Direct Router Handshakes, and RADIUS Auth via API Bridge
+ * The WiFi Module: Splash Screens, Direct Router Handshakes, and RADIUS Auth
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -14,24 +14,21 @@ class MT_Wifi_Controller {
         // Listen for the Router Redirect (When they first join the network on older routers)
         add_action('init', array($this, 'catch_router_redirect'));
 
-        // Listen for the modern AJAX lead capture to trigger RADIUS Auth via API Bridge
+        // Listen for the modern AJAX lead capture to trigger RADIUS Auth via Direct DB
         add_action('mt_lead_captured', array($this, 'authorize_guest_mac'), 10, 2);
     }
 
     // ========================================================================
-    // 1. LEGACY / DIRECT MIKROTIK HOTSPOT FEATURES (PRESERVED)
+    // 1. LEGACY / DIRECT MIKROTIK HOTSPOT FEATURES
     // ========================================================================
 
     public function catch_router_redirect() {
-        // Ensure we are on the /connect/ page
         $request_uri = $_SERVER['REQUEST_URI'];
         if (strpos($request_uri, '/connect/') !== false) {
             
-            // Grab the Router's ID (MAC address) sent by the MikroTik
             $router_mac = isset($_GET['ap_mac']) ? sanitize_text_field($_GET['ap_mac']) : '';
             $client_mac = isset($_GET['client_mac']) ? sanitize_text_field($_GET['client_mac']) : '';
 
-            // Look up which Store owns this Router
             global $wpdb;
             $table_stores = $wpdb->prefix . 'mt_stores';
             $store_data = $wpdb->get_row($wpdb->prepare(
@@ -40,11 +37,9 @@ class MT_Wifi_Controller {
             ));
 
             if ($store_data) {
-                // We found the store! Load their specific Splash Screen
                 $this->render_splash_screen($store_data, $client_mac, $router_mac);
-                exit; // Stop WordPress from loading the normal theme
+                exit; 
             } else {
-                // Router not found in database. 
                 wp_die("Unregistered Access Point. Please contact MailToucan Support.");
             }
         }
@@ -61,10 +56,7 @@ class MT_Wifi_Controller {
             $mikrotik_url = esc_url_raw($_POST['mikrotik_url']);
 
             if (is_email($email)) {
-                // 1. Save the Subscriber to the New CRM Table (Updated from mt_roost to mt_guest_leads)
                 $table_leads = $wpdb->prefix . 'mt_guest_leads';
-                
-                // Check if they already exist
                 $lead_id = $wpdb->get_var($wpdb->prepare("SELECT id FROM $table_leads WHERE email = %s AND store_id = %d", $email, $store_id));
                 
                 if (!$lead_id) {
@@ -79,11 +71,9 @@ class MT_Wifi_Controller {
                     ));
                     $lead_id = $wpdb->insert_id;
                 } else {
-                    // Update their MAC address if they are a returning guest using a new device
                     $wpdb->update($table_leads, array('guest_mac' => $client_mac), array('id' => $lead_id));
                 }
 
-                // 2. Log the Connection Session
                 $table_wifi = $wpdb->prefix . 'mt_wifi_logs';
                 if ($wpdb->get_var("SHOW TABLES LIKE '{$table_wifi}'") === $table_wifi) {
                     $wpdb->insert($table_wifi, array(
@@ -92,10 +82,9 @@ class MT_Wifi_Controller {
                     ));
                 }
 
-                // --- NEW: TRIGGER THE RADIUS & AUTOPILOT ENGINE ---
+                // TRIGGER THE RADIUS & AUTOPILOT ENGINE
                 do_action('mt_lead_captured', $lead_id, $brand_id);
 
-                // 3. The MikroTik Handshake (Auto-Submit Login for non-RADIUS setups)
                 ?>
                 <!DOCTYPE html>
                 <html>
@@ -108,7 +97,7 @@ class MT_Wifi_Controller {
                     <script>
                         setTimeout(function() {
                             document.mikrotik_auth.submit();
-                        }, 1000); // 1 second delay to ensure the database saved
+                        }, 1000); 
                     </script>
                 </body>
                 </html>
@@ -119,7 +108,6 @@ class MT_Wifi_Controller {
     }
 
     private function render_splash_screen($store_data, $client_mac, $router_mac) {
-        // We grab the MikroTik login URL (usually sent as 'link-login' in the URL by the router)
         $mikrotik_login_url = isset($_GET['link-login']) ? esc_url($_GET['link-login']) : 'http://192.168.88.1/login';
         ?>
         <!DOCTYPE html>
@@ -139,14 +127,12 @@ class MT_Wifi_Controller {
             <div class="splash-card">
                 <h2>Welcome to <?php echo esc_html($store_data->store_name); ?></h2>
                 <p>Enter your email to access free high-speed WiFi.</p>
-                
                 <form method="POST" action="">
                     <input type="hidden" name="mt_action" value="wifi_login">
                     <input type="hidden" name="store_id" value="<?php echo esc_attr($store_data->id); ?>">
                     <input type="hidden" name="brand_id" value="<?php echo esc_attr($store_data->brand_id); ?>">
                     <input type="hidden" name="client_mac" value="<?php echo esc_attr($client_mac); ?>">
                     <input type="hidden" name="mikrotik_url" value="<?php echo esc_attr($mikrotik_login_url); ?>">
-                    
                     <input type="email" name="guest_email" placeholder="you@email.com" required>
                     <button type="submit">Connect to WiFi</button>
                 </form>
@@ -157,7 +143,7 @@ class MT_Wifi_Controller {
     }
 
     // ========================================================================
-    // 2. NEW ENTERPRISE FREERADIUS CONTROLLER (API BRIDGE)
+    // 2. ENTERPRISE FREERADIUS CONTROLLER (DIRECT PDO CONNECTION)
     // ========================================================================
 
     public function authorize_guest_mac( $lead_id, $brand_id ) {
@@ -173,7 +159,7 @@ class MT_Wifi_Controller {
         $mac = strtoupper(preg_replace('/[^a-fA-F0-9]/', '', $lead->guest_mac));
         $mac = implode(':', str_split($mac, 2));
 
-        // Fetch Limits
+        // Fetch Limits from Store Config
         $store = $wpdb->get_row( $wpdb->prepare("SELECT local_offer_json FROM {$wpdb->prefix}mt_stores WHERE id = %d", $lead->store_id) );
         $config = $store ? (json_decode($store->local_offer_json, true) ?: []) : [];
         
@@ -181,39 +167,59 @@ class MT_Wifi_Controller {
         $session_time_seconds = $session_time_minutes * 60;
         
         $bandwidth_limit_mb = isset($config['bandwidth_limit_mb']) ? intval($config['bandwidth_limit_mb']) : 500; 
-        $bandwidth_limit_bytes = $bandwidth_limit_mb * 1024 * 1024; 
 
-        // --- THE FIREWALL BYPASS: Send data over HTTP instead of SQL ---
-        $api_url = "http://107.173.49.14/mt-receiver.php";
-        
-        $payload = array(
-            'api_key' => 'JLAmX7sPoWffb7N3GVcp',
-            'mac'     => $mac,
-            'time'    => $session_time_seconds,
-            'bytes'   => $bandwidth_limit_bytes
-        );
-
-        $response = wp_remote_post( $api_url, array(
-            'method'      => 'POST',
-            'timeout'     => 5,
-            'redirection' => 5,
-            'httpversion' => '1.0',
-            'blocking'    => true,
-            'body'        => $payload,
-            'cookies'     => array()
-        ) );
-
-        if ( is_wp_error( $response ) ) {
-            error_log('MailToucan API Bridge Network Error: ' . $response->get_error_message());
+        // Direct connection to the 107.173.49.14 RADIUS Database
+        try {
+            $pdo = new PDO(
+                'mysql:host=107.173.49.14;dbname=radius;port=3306;charset=utf8mb4',
+                'mt_radius',
+                'JLAmX7sPoWffb7N3GVcp',
+                [
+                    PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_TIMEOUT    => 5,
+                ]
+            );
+        } catch (PDOException $e) {
+            error_log('MailToucan RADIUS DB Error: ' . $e->getMessage());
             return false;
         }
 
-        $body = wp_remote_retrieve_body( $response );
-        
-        if ( trim($body) === 'SUCCESS' ) {
+        try {
+            $pdo->beginTransaction();
+
+            // Clear any previous session for this MAC to prevent conflicts
+            $pdo->prepare('DELETE FROM radcheck WHERE username = ?')->execute([$mac]);
+            $pdo->prepare('DELETE FROM radreply WHERE username = ?')->execute([$mac]);
+
+            // Authorize this MAC address
+            $pdo->prepare(
+                "INSERT INTO radcheck (username, attribute, op, value) VALUES (?, 'Auth-Type', ':=', 'Accept')"
+            )->execute([$mac]);
+
+            // Set session time limit (seconds)
+            $pdo->prepare(
+                "INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'Session-Timeout', '=', ?)"
+            )->execute([$mac, $session_time_seconds]);
+
+            // Set data cap for MikroTik and CoovaChilli/A62 attributes
+            if ($bandwidth_limit_mb > 0) {
+                $bytes = $bandwidth_limit_mb * 1024 * 1024;
+                
+                $pdo->prepare(
+                    "INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'Mikrotik-Total-Limit', '=', ?)"
+                )->execute([$mac, $bytes]);
+
+                $pdo->prepare(
+                    "INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'ChilliSpot-Max-Total-Octets', '=', ?)"
+                )->execute([$mac, $bytes]);
+            }
+
+            $pdo->commit();
             return true;
-        } else {
-            error_log('MailToucan API Bridge Failed: ' . $body);
+
+        } catch (PDOException $e) {
+            $pdo->rollBack();
+            error_log('MailToucan RADIUS Injection Failed: ' . $e->getMessage());
             return false;
         }
     }
