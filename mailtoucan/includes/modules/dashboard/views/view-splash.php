@@ -5,18 +5,16 @@ global $wpdb;
 $table_campaigns = $wpdb->prefix . 'mt_campaigns';
 $table_stores = $wpdb->prefix . 'mt_stores';
 
-// Fetch Data
 $campaigns = $wpdb->get_results( $wpdb->prepare("SELECT id, campaign_name, campaign_type, config_json FROM $table_campaigns WHERE brand_id = %d ORDER BY created_at DESC", $brand->id) );
 $stores = $wpdb->get_results( $wpdb->prepare("SELECT id, store_name, splash_config FROM $table_stores WHERE brand_id = %d ORDER BY store_name ASC", $brand->id) );
 
 $brand_config = json_decode($brand->brand_config, true) ?: [];
-$brand_logo = isset($brand_config['logos']['main']) && !empty($brand_config['logos']['main']) ? $brand_config['logos']['main'] : 'https://via.placeholder.com/150x50?text=Brand+Logo';
+$brand_logo = isset($brand_config['logos']['main']) && !empty($brand_config['logos']['main']) ? $brand_config['logos']['main'] : '';
 $ext_colors = isset($brand_config['extended_colors']) && count($brand_config['extended_colors']) === 5 ? $brand_config['extended_colors'] : ['#ffffff', '#f3f4f6', '#d1d5db', '#9ca3af', '#4b5563'];
 $sec_color = isset($brand_config['secondary_color']) ? $brand_config['secondary_color'] : '#111827';
 
 $global_config = json_decode($brand->splash_config, true) ?: [];
-
-$is_pro_tier = true; // SAAS TIER HOOK
+$is_pro_tier = true;
 
 function render_swatches($target_id, $primary, $sec, $ext) {
     $html = '<div class="flex gap-1 mt-1.5">';
@@ -58,6 +56,7 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         <div id="save_success_icon" class="text-green-500 text-6xl mb-5 hidden"><i class="fa-solid fa-circle-check"></i></div>
         <h3 id="save_modal_title" class="text-xl font-bold text-gray-900">Syncing...</h3>
         <p id="save_modal_desc" class="text-xs text-gray-500 mt-2 text-center">Publishing your design to the WiFi routers.</p>
+        
         <div id="save_modal_actions" class="mt-6 w-full hidden">
             <button onclick="closeSaveModal()" class="w-full bg-gray-100 text-gray-800 font-bold py-2 rounded-lg hover:bg-gray-200 transition">Close</button>
         </div>
@@ -126,7 +125,7 @@ function render_swatches($target_id, $primary, $sec, $ext) {
                 <div class="flex items-center justify-between bg-white p-3 rounded-lg border shadow-sm">
                     <div>
                         <p class="font-bold text-gray-800 text-sm">Require Email Verification</p>
-                        <p class="text-xs text-gray-500">Sends a link they must click to browse.</p>
+                        <p class="text-xs text-gray-500">Sends a link they must click to keep browsing.</p>
                     </div>
                     <input type="checkbox" id="check_verify_email" class="w-5 h-5 text-indigo-600 rounded cursor-pointer" onchange="updateLivePreview()">
                 </div>
@@ -226,6 +225,21 @@ function render_swatches($target_id, $primary, $sec, $ext) {
                         </div>
                     </div>
                     
+                    <div class="bg-gray-50 p-3 rounded border mt-3">
+                        <label class="text-xs font-bold text-gray-500 border-b pb-1 mb-2 block">Form Fields</label>
+                        <div class="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
+                            <label class="flex items-center gap-1"><input type="checkbox" id="check_show_name" onchange="updateLivePreview()" checked> Show Name</label>
+                            <label class="flex items-center gap-1"><input type="checkbox" id="check_req_name" onchange="updateLivePreview()"> Require Name</label>
+                            <label class="flex items-center gap-1"><input type="checkbox" id="check_show_email" onchange="updateLivePreview()" checked> Show Email</label>
+                        </div>
+                        <label class="text-xs font-bold text-gray-500 border-b pb-1 mb-2 block">Social Logins</label>
+                        <div class="flex flex-wrap gap-4 text-sm text-gray-600">
+                            <label class="flex items-center gap-1"><input type="checkbox" id="check_google" onchange="updateLivePreview()"> Google</label>
+                            <label class="flex items-center gap-1"><input type="checkbox" id="check_fb" onchange="updateLivePreview()"> Facebook</label>
+                            <label class="flex items-center gap-1"><input type="checkbox" id="check_apple" onchange="updateLivePreview()"> Apple</label>
+                        </div>
+                    </div>
+
                     <div class="bg-white p-3 border rounded-lg">
                         <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1">Terms & Conditions URL <span class="text-red-500">*</span></label>
                         <p class="text-[9px] text-gray-500 mb-2">Required for compliance. This links at the bottom of the login form.</p>
@@ -272,11 +286,6 @@ function render_swatches($target_id, $primary, $sec, $ext) {
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="flex gap-4 text-sm text-gray-600 mt-1">
-                        <label class="flex items-center gap-1"><input type="checkbox" id="check_google" onchange="updateLivePreview()"> Google</label>
-                        <label class="flex items-center gap-1"><input type="checkbox" id="check_fb" onchange="updateLivePreview()"> Facebook</label>
                     </div>
                 </div>
             </div>
@@ -483,71 +492,83 @@ function render_swatches($target_id, $primary, $sec, $ext) {
                     
                     <div id="preview_content_wrapper" class="w-full max-w-sm mx-auto flex flex-col h-full relative z-10 p-6 overflow-y-auto custom-scrollbar">
                         
-                        <img id="preview_logo" src="" class="mt-8 mx-auto z-10 relative object-contain transition-opacity" alt="Brand Logo">
+                        <img id="preview_logo" src="" class="z-10 relative object-contain transition-opacity" style="margin: 0 auto; display: block;" alt="Brand Logo">
                         
-                        <div id="preview_1" class="preview-pane active flex-col items-center justify-center flex-1 w-full z-10 relative pb-6 mt-6">
-                            <h2 id="prev_title_1" class="transition-all whitespace-pre-wrap leading-tight"></h2>
-                            <p id="prev_desc_1" class="transition-all whitespace-pre-wrap leading-tight"></p>
+                        <div id="preview_1" class="preview-pane active flex-col items-center justify-center flex-1 w-full z-10 relative mt-6 bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-2xl text-center border border-gray-100">
+                            <h2 id="prev_title_1" class="transition-all whitespace-pre-wrap leading-tight font-extrabold tracking-tight"></h2>
+                            <p id="prev_desc_1" class="transition-all whitespace-pre-wrap leading-tight text-gray-600 mb-6"></p>
+                            
                             <div class="w-full">
-                                <button id="prev_btn_1" class="w-full text-white font-bold py-3 rounded-lg shadow-md transition-colors"></button>
-                                <div id="social_btns" class="mt-4 flex flex-col gap-2">
-                                    <button id="btn_google" class="w-full bg-white border border-gray-300 text-gray-700 font-bold py-2 rounded-lg text-sm flex items-center justify-center gap-2 shadow-sm"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="16"> Continue with Google</button>
-                                    <button id="btn_fb" class="w-full bg-blue-600 text-white font-bold py-2 rounded-lg text-sm flex items-center justify-center gap-2 shadow-sm"><i class="fa-brands fa-facebook-f text-white"></i> Continue with Facebook</button>
+                                <input type="text" id="prev_input_name" placeholder="Your Name" class="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-sm outline-none mb-3 text-center font-normal" disabled>
+                                <input type="email" id="prev_input_email" placeholder="Email Address *" class="w-full px-4 py-3 border border-gray-200 rounded-lg bg-gray-50 text-sm outline-none mb-3 text-center font-bold" disabled>
+                                
+                                <div id="prev_tos_block" class="text-left mt-2 mb-4 flex items-start gap-2">
+                                    <input type="checkbox" checked disabled class="mt-1">
+                                    <p class="text-[10px] text-gray-500 leading-tight">I agree to the <a href="#" id="prev_tos_link" class="text-blue-500 font-bold" target="_blank">Terms & Conditions</a> and Privacy Policy.</p>
+                                </div>
+
+                                <button id="prev_btn_1" class="w-full text-white font-bold py-3.5 rounded-xl shadow-md transition-colors flex justify-center items-center gap-2"></button>
+                                
+                                <div id="social_btns" class="mt-4 flex flex-col gap-2 border-t border-gray-200 pt-4">
+                                    <button id="btn_google" class="w-full bg-white border border-gray-300 text-gray-700 font-bold py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 shadow-sm"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="16"> Continue with Google</button>
+                                    <button id="btn_fb" class="w-full bg-blue-600 text-white font-bold py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 shadow-sm"><i class="fa-brands fa-facebook-f text-white"></i> Continue with Facebook</button>
+                                    <button id="btn_apple" class="w-full bg-black text-white font-bold py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 shadow-sm"><i class="fa-brands fa-apple text-white text-lg"></i> Continue with Apple</button>
                                 </div>
                             </div>
-                            <p class="text-[9px] text-center text-gray-400 mt-6 leading-tight">By connecting, you agree to our <a href="#" id="prev_tos_link" class="underline text-blue-500" target="_blank">Terms & Conditions</a>.</p>
                         </div>
                         
-                        <div id="preview_2" class="preview-pane flex-col items-center justify-center flex-1 w-full z-10 relative mt-6">
-                            <div class="w-full bg-white/95 backdrop-blur p-6 rounded-xl shadow-lg border border-gray-100">
-                                
-                                <div id="prev_camp_empty" class="text-xs text-gray-400 italic py-4">
-                                    Select a campaign from the left to preview it here.
-                                </div>
-
-                                <div id="prev_camp_survey" class="w-full text-left hidden">
-                                    <div id="prev_camp_stars" class="text-center mb-4">
-                                        <h2 class="text-sm font-bold text-gray-900 mb-2">Rate your experience:</h2>
-                                        <div class="flex gap-2 justify-center text-gray-300"><i class="fa-solid fa-star text-2xl"></i><i class="fa-solid fa-star text-2xl"></i><i class="fa-solid fa-star text-2xl"></i><i class="fa-solid fa-star text-2xl"></i><i class="fa-solid fa-star text-2xl"></i></div>
-                                    </div>
-                                    <div id="prev_camp_q_container" class="space-y-3"></div>
-                                </div>
-
-                                <div id="prev_camp_promo" class="w-full hidden">
-                                    <div class="bg-gray-100 w-full rounded-lg overflow-hidden flex items-center justify-center text-gray-300 font-bold min-h-[120px] mb-4">
-                                        <img id="prev_camp_img_promo" src="" class="w-full h-full object-cover hidden">
-                                    </div>
-                                    <h2 id="prev_camp_promo_title" class="text-lg font-bold text-gray-900 whitespace-pre-wrap leading-tight mb-4"></h2>
-                                </div>
-
-                                <div id="prev_camp_versus" class="w-full hidden">
-                                    <h2 id="prev_camp_vs_title" class="text-lg font-bold text-gray-900 whitespace-pre-wrap leading-tight mb-4"></h2>
-                                    <div class="flex items-center justify-center gap-2 mb-4">
-                                        <button class="flex-1 flex flex-col items-center border-2 border-gray-200 bg-gray-50 rounded-xl overflow-hidden shadow-sm">
-                                            <img id="prev_camp_img_vsa" src="" class="w-full h-20 object-cover hidden">
-                                            <span id="prev_camp_vs_a" class="font-bold py-2 text-[10px] text-gray-700 leading-tight"></span>
-                                        </button>
-                                        <span id="prev_camp_vs_mid" class="text-xs font-bold text-gray-400"></span>
-                                        <button class="flex-1 flex flex-col items-center border-2 border-gray-200 bg-gray-50 rounded-xl overflow-hidden shadow-sm">
-                                            <img id="prev_camp_img_vsb" src="" class="w-full h-20 object-cover hidden">
-                                            <span id="prev_camp_vs_b" class="font-bold py-2 text-[10px] text-gray-700 leading-tight"></span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                <div id="prev_camp_birthday" class="w-full hidden mb-4">
-                                    <h2 id="prev_camp_bday_text" class="text-lg font-bold text-gray-900 whitespace-pre-wrap leading-tight mb-4"></h2>
-                                    <input type="date" class="w-full px-4 py-3 border rounded-lg text-center text-gray-600 font-bold" disabled>
-                                </div>
-
-                                <button id="prev_btn_2" class="w-full text-white font-bold py-3 rounded-lg shadow-md hidden transition-colors"></button>
+                        <div id="preview_2" class="preview-pane flex-col items-center justify-center flex-1 w-full z-10 relative mt-6 bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-2xl text-center border border-gray-100">
+                            
+                            <div id="prev_camp_empty" class="text-xs text-gray-400 italic py-4">
+                                Select a campaign from the left to preview it here.
                             </div>
+
+                            <div id="prev_camp_survey" class="w-full text-left hidden">
+                                <div id="prev_camp_stars" class="text-center mb-4">
+                                    <h2 class="text-sm font-bold text-gray-900 mb-2">Rate your experience:</h2>
+                                    <div class="flex gap-2 justify-center text-gray-300"><i class="fa-solid fa-star text-2xl"></i><i class="fa-solid fa-star text-2xl"></i><i class="fa-solid fa-star text-2xl"></i><i class="fa-solid fa-star text-2xl"></i><i class="fa-solid fa-star text-2xl"></i></div>
+                                </div>
+                                <div id="prev_camp_q_container" class="space-y-3"></div>
+                            </div>
+
+                            <div id="prev_camp_promo" class="w-full hidden">
+                                <div class="bg-gray-100 w-full rounded-lg overflow-hidden flex items-center justify-center text-gray-300 font-bold min-h-[120px] mb-4">
+                                    <img id="prev_camp_img_promo" src="" class="w-full h-full object-cover hidden">
+                                </div>
+                                <h2 id="prev_camp_promo_title" class="text-lg font-bold text-gray-900 whitespace-pre-wrap leading-tight mb-4"></h2>
+                            </div>
+
+                            <div id="prev_camp_versus" class="w-full hidden">
+                                <h2 id="prev_camp_vs_title" class="text-lg font-bold text-gray-900 whitespace-pre-wrap leading-tight mb-4"></h2>
+                                <div class="flex items-center justify-center gap-2 mb-4">
+                                    <button class="flex-1 flex flex-col items-center border-2 border-gray-200 bg-gray-50 rounded-xl overflow-hidden shadow-sm">
+                                        <img id="prev_camp_img_vsa" src="" class="w-full h-20 object-cover hidden">
+                                        <span id="prev_camp_vs_a" class="font-bold py-2 text-[10px] text-gray-700 leading-tight"></span>
+                                    </button>
+                                    <span id="prev_camp_vs_mid" class="text-xs font-bold text-gray-400"></span>
+                                    <button class="flex-1 flex flex-col items-center border-2 border-gray-200 bg-gray-50 rounded-xl overflow-hidden shadow-sm">
+                                        <img id="prev_camp_img_vsb" src="" class="w-full h-20 object-cover hidden">
+                                        <span id="prev_camp_vs_b" class="font-bold py-2 text-[10px] text-gray-700 leading-tight"></span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="prev_camp_birthday" class="w-full hidden mb-4">
+                                <h2 id="prev_camp_bday_text" class="text-lg font-bold text-gray-900 whitespace-pre-wrap leading-tight mb-4"></h2>
+                                <input type="date" class="w-full px-4 py-3 border rounded-lg text-center text-gray-600 font-bold" disabled>
+                            </div>
+
+                            <button id="prev_btn_2" class="w-full text-white font-bold py-3.5 rounded-xl shadow-md hidden transition-colors"></button>
                         </div>
 
-                        <div id="preview_3" class="preview-pane flex-col items-center justify-center flex-1 w-full z-10 relative mt-6">
-                            <div class="bg-green-100 text-green-600 w-16 h-16 rounded-full flex items-center justify-center text-2xl mb-4 mx-auto"><i class="fa-solid fa-check"></i></div>
-                            <h2 id="prev_success_title" class="text-2xl font-bold whitespace-pre-wrap leading-tight"></h2>
-                            <button id="prev_btn_3" class="w-full text-white font-bold py-3 rounded-lg shadow-md"></button>
+                        <div id="preview_3" class="preview-pane flex-col items-center justify-center flex-1 w-full z-10 relative mt-6 bg-white/95 backdrop-blur-md rounded-2xl p-6 shadow-2xl text-center border border-gray-100">
+                            <div class="bg-green-100 text-green-600 w-16 h-16 rounded-full flex items-center justify-center text-2xl mb-4 mx-auto"><i class="fa-solid fa-wifi"></i></div>
+                            <h2 id="prev_success_title" class="text-2xl font-extrabold whitespace-pre-wrap leading-tight mb-2"></h2>
+                            <p id="prev_success_desc" class="text-sm text-gray-600 mb-6">Your connection is ready. Tap the button below to sync with the network.</p>
+                            <button id="prev_btn_3" class="w-full text-white font-bold py-3.5 rounded-xl shadow-md flex justify-center items-center gap-2"></button>
+                            <p class="text-[10px] text-gray-500 mt-6 leading-tight text-left bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                <i class="fa-brands fa-apple mr-1"></i> <b>iPhone/iPad Users:</b><br>After clicking connect, tap <b>"Done"</b> in the top right corner of your screen to close this window.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -581,11 +602,11 @@ function render_swatches($target_id, $primary, $sec, $ext) {
     function loadTargetConfig() {
         const target = document.getElementById('target_location').value;
         let dbConfig = target === 'global' ? globalConfig : (storeConfigs[target] || {});
-        
+
         if (!dbConfig.mobile) {
             let legacyData = JSON.parse(JSON.stringify(dbConfig));
             if(Object.keys(legacyData).length === 0) legacyData = { step1:{}, step2:{}, step3:{logo:{}} };
-            
+
             dbConfig = {
                 verify_email: legacyData.verify_email ?? true,
                 flow_type: legacyData.flow_type || 1,
@@ -600,14 +621,14 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         }
 
         currentConfig = dbConfig;
-        
+
         document.getElementById('check_verify_email').checked = currentConfig.verify_email ?? true;
         document.getElementById('splash_campaign').value = currentConfig.campaign_id || '';
         document.getElementById('input_redirect_url').value = currentConfig.redirect_url || '';
         document.getElementById('input_tos_url').value = currentConfig.tos_url || '';
+
         toggleFlow(currentConfig.flow_type || 1);
 
-        // Dynamically build the Live Portal URL
         const brandSlug = "<?php echo strtolower(str_replace(' ', '-', $brand->brand_name)); ?>";
         const locSelect = document.getElementById('target_location');
         const locSlug = locSelect.options[locSelect.selectedIndex].getAttribute('data-slug');
@@ -620,14 +641,14 @@ function render_swatches($target_id, $primary, $sec, $ext) {
     function applyStateToUI() {
         let state = currentConfig[activeDevice] || {};
         
-        const s1 = state.step1 || { title:{}, desc:{}, bg:{}, spacing:{} };
+        const s1 = state.step1 || { title:{}, desc:{}, bg:{}, spacing:{}, fields:{} };
         const s2 = state.step2 || { bg:{}, spacing:{} };
         const s3 = state.step3 || { bg:{}, spacing:{} };
 
-        // Logo Settings
         document.getElementById('logo_size').value = state.logo?.width || (activeDevice==='desktop'?40:80);
         document.getElementById('logo_margin').value = state.logo?.margin_bottom || 24;
         let logoImg = state.logo?.image || '';
+
         if(logoImg) {
             document.getElementById('img_logo').src = logoImg;
             document.getElementById('img_logo').classList.remove('hidden');
@@ -641,7 +662,6 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         document.getElementById('check_hide_logo_2').checked = s2.hide_logo || false;
         document.getElementById('check_hide_logo_3').checked = s3.hide_logo || false;
 
-        // Step 1 Load
         document.getElementById('input_title_1').value = s1.title?.text || 'Welcome to WiFi';
         document.getElementById('input_title_color_1').value = s1.title?.color || '#111827';
         document.getElementById('input_title_size_1').value = s1.title?.size || 'text-2xl';
@@ -657,15 +677,20 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         document.getElementById('input_btn_text_1').value = s1.btn_text || 'Connect to WiFi';
         document.getElementById('input_btn_color_1').value = s1.btn_color || '#4f46e5';
         document.getElementById('input_btn_mt_1').value = s1.spacing?.btn_mt || 32;
-        document.getElementById('check_google').checked = s1.google_auth ?? true;
-        document.getElementById('check_fb').checked = s1.fb_auth ?? false;
+        
+        // Field toggles
+        document.getElementById('check_show_name').checked = s1.fields?.show_name ?? true;
+        document.getElementById('check_req_name').checked = s1.fields?.req_name ?? false;
+        document.getElementById('check_show_email').checked = s1.fields?.show_email ?? true;
 
-        // Step 2 Load
+        document.getElementById('check_google').checked = s1.google_auth ?? false;
+        document.getElementById('check_fb').checked = s1.fb_auth ?? false;
+        document.getElementById('check_apple').checked = s1.apple_auth ?? false;
+
         document.getElementById('input_btn_text_2').value = s2.btn_text || 'Next Step';
         document.getElementById('input_btn_color_2').value = s2.btn_color || '#4f46e5';
         document.getElementById('input_btn_mt_2').value = s2.spacing?.btn_mt || 16;
 
-        // Step 3 Load
         document.getElementById('input_success_title').value = s3.title || "You're connected!";
         document.getElementById('input_success_color').value = s3.title_color || '#111827';
         document.getElementById('input_title_mb_3').value = s3.spacing?.title_mb || 8;
@@ -673,7 +698,6 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         document.getElementById('input_btn_color_3').value = s3.btn_color || '#111827';
         document.getElementById('input_btn_mt_3').value = s3.spacing?.btn_mt || 32;
 
-        // Backgrounds Load
         [1, 2, 3].forEach(step => {
             let bgObj = (step===1)?s1.bg : ((step===2)?s2.bg : s3.bg);
             if(!bgObj) bgObj = {};
@@ -715,6 +739,17 @@ function render_swatches($target_id, $primary, $sec, $ext) {
     }
 
     function applyUIToState() {
+        [1, 2, 3].forEach(step => {
+            if (document.getElementById(`input_bg_type_${step}`)) {
+                currentBg[step].type = document.getElementById(`input_bg_type_${step}`).value;
+                currentBg[step].color = document.getElementById(`input_bg_color_${step}`).value;
+                currentBg[step].size = document.getElementById(`input_bg_size_${step}`).value;
+                currentBg[step].position = document.getElementById(`input_bg_pos_${step}`).value;
+                currentBg[step].overlay_c = document.getElementById(`input_overlay_color_${step}`).value;
+                currentBg[step].overlay_o = document.getElementById(`input_overlay_opacity_${step}`).value;
+            }
+        });
+
         const state = {
             logo: { 
                 image: document.getElementById('img_logo').src.includes('via.placeholder') ? '' : document.getElementById('img_logo').src, 
@@ -728,8 +763,14 @@ function render_swatches($target_id, $primary, $sec, $ext) {
                 btn_color: document.getElementById('input_btn_color_1').value,
                 bg: currentBg[1],
                 spacing: { title_mb: document.getElementById('input_title_mb_1').value, desc_mb: document.getElementById('input_desc_mb_1').value, btn_mt: document.getElementById('input_btn_mt_1').value },
+                fields: {
+                    show_name: document.getElementById('check_show_name').checked,
+                    req_name: document.getElementById('check_req_name').checked,
+                    show_email: document.getElementById('check_show_email').checked
+                },
                 google_auth: document.getElementById('check_google').checked,
-                fb_auth: document.getElementById('check_fb').checked
+                fb_auth: document.getElementById('check_fb').checked,
+                apple_auth: document.getElementById('check_apple').checked
             },
             step2: {
                 hide_logo: document.getElementById('check_hide_logo_2').checked,
@@ -757,7 +798,6 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         currentConfig[activeDevice] = state;
     }
 
-    // --- BG DROPDOWN TOGGLE ---
     function toggleBgMode(step) {
         const type = document.getElementById(`input_bg_type_${step}`).value;
         currentBg[step].type = type;
@@ -771,7 +811,6 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         applyBackgrounds(step);
     }
 
-    // --- DEVICE SWITCHER ---
     function switchDeviceMode(device) {
         if(activeDevice === device) return;
         applyUIToState(); 
@@ -799,11 +838,11 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         if(device === 'desktop') {
             frame.className = 'desktop-mockup flex flex-col text-center shadow-2xl relative transition-all duration-300 bg-center bg-no-repeat';
             notch.style.display = 'none';
-            contentWrap.className = 'w-full max-w-lg mx-auto flex flex-col h-full relative z-10 p-6 overflow-y-auto custom-scrollbar'; 
+            contentWrap.className = 'w-full max-w-lg mx-auto flex flex-col h-full relative z-10 p-6 overflow-y-auto custom-scrollbar';
         } else {
             frame.className = 'phone-mockup flex flex-col text-center shadow-2xl relative transition-all duration-300 bg-center bg-no-repeat';
             notch.style.display = 'block';
-            contentWrap.className = 'w-full max-w-sm mx-auto flex flex-col h-full relative z-10 p-6 overflow-y-auto custom-scrollbar'; 
+            contentWrap.className = 'w-full max-w-sm mx-auto flex flex-col h-full relative z-10 p-6 overflow-y-auto custom-scrollbar';
         }
 
         applyStateToUI();
@@ -812,7 +851,7 @@ function render_swatches($target_id, $primary, $sec, $ext) {
     }
 
     function syncDeviceToOther() {
-        applyUIToState(); 
+        applyUIToState();
         if(activeDevice === 'mobile') {
             if(confirm("Overwrite Desktop design with current Mobile design?")) {
                 currentConfig.desktop = JSON.parse(JSON.stringify(currentConfig.mobile));
@@ -826,7 +865,6 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         }
     }
 
-    // --- UI CONTROLLERS ---
     function triggerProUpgradeModal() {
         alert("Campaign Limit Reached or Feature Locked. Upgrade to the Pro Plan to unlock Data Capture Steps.");
     }
@@ -858,13 +896,13 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         if(step === 2) document.getElementById('step_2_container').classList.add('border-indigo-400');
         if(step === 3) document.getElementById('step_3_container').classList.add('border-green-400');
 
-        updateLivePreview(); 
+        updateLivePreview();
     }
 
     function toggleBold(targetId, btn) { 
         document.getElementById(targetId).classList.toggle('font-bold'); 
         btn.classList.toggle('bg-gray-300'); 
-        updateLivePreview(); 
+        updateLivePreview();
     }
 
     function setColor(el, targetId) {
@@ -876,10 +914,9 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         } else { hex = color; }
         let input = document.getElementById(targetId);
         input.value = hex;
-        input.dispatchEvent(new Event('input')); 
+        input.dispatchEvent(new Event('input'));
     }
 
-    // --- LIVE PREVIEW ENGINE ---
     function applyBackgrounds(step) {
         const frame = document.getElementById('device_frame');
         const overlay = document.getElementById('bg_overlay');
@@ -903,7 +940,6 @@ function render_swatches($target_id, $primary, $sec, $ext) {
     function updateLivePreview() {
         const activeStep = document.querySelector('.preview-pane.active')?.id.split('_')[1] || 1;
         
-        // Logo Hide Logic
         let hideLogo = false;
         if(activeStep == 2 && document.getElementById('check_hide_logo_2').checked) hideLogo = true;
         if(activeStep == 3 && document.getElementById('check_hide_logo_3').checked) hideLogo = true;
@@ -912,15 +948,15 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         const logoEl = document.getElementById('preview_logo');
         
         if(hideLogo || (!customLogo.includes('http') && !brandLogo)) {
-            logoEl.classList.add('opacity-0', 'h-0', 'mb-0', 'mt-0');
+            logoEl.classList.add('opacity-0', 'h-0', 'mb-0', 'mt-0', 'hidden');
         } else {
-            logoEl.classList.remove('opacity-0', 'h-0', 'mb-0', 'mt-0');
+            logoEl.classList.remove('opacity-0', 'h-0', 'mb-0', 'mt-0', 'hidden');
             logoEl.src = (customLogo && !customLogo.includes(window.location.href)) ? customLogo : brandLogo;
             logoEl.style.width = document.getElementById('logo_size').value + '%';
             logoEl.style.marginBottom = document.getElementById('logo_margin').value + 'px';
         }
 
-        // Step 1
+        // Step 1 UI Updates
         const tosUrl = document.getElementById('input_tos_url').value;
         document.getElementById('prev_tos_link').href = tosUrl ? tosUrl : '#';
 
@@ -928,22 +964,59 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         document.getElementById('prev_title_1').style.color = document.getElementById('input_title_color_1').value;
         document.getElementById('prev_title_1').style.marginBottom = document.getElementById('input_title_mb_1').value + 'px';
         const t1El = document.getElementById('prev_title_1');
-        t1El.className = `${document.getElementById('btn_title_bold_1').classList.contains('bg-gray-300') ? 'font-bold' : ''} transition-all whitespace-pre-wrap leading-tight ${document.getElementById('input_title_size_1').value}`;
+        t1El.className = `${document.getElementById('btn_title_bold_1').classList.contains('bg-gray-300') ? 'font-extrabold' : 'font-bold'} transition-all whitespace-pre-wrap leading-tight tracking-tight ${document.getElementById('input_title_size_1').value}`;
 
         document.getElementById('prev_desc_1').innerText = document.getElementById('input_desc_1').value;
         document.getElementById('prev_desc_1').style.color = document.getElementById('input_desc_color_1').value;
         document.getElementById('prev_desc_1').style.marginBottom = document.getElementById('input_desc_mb_1').value + 'px';
         const d1El = document.getElementById('prev_desc_1');
-        d1El.className = `${document.getElementById('btn_desc_bold_1').classList.contains('bg-gray-300') ? 'font-bold' : ''} transition-all whitespace-pre-wrap leading-tight ${document.getElementById('input_desc_size_1').value}`;
+        d1El.className = `${document.getElementById('btn_desc_bold_1').classList.contains('bg-gray-300') ? 'font-bold' : ''} transition-all whitespace-pre-wrap leading-tight text-gray-600 mb-6 ${document.getElementById('input_desc_size_1').value}`;
 
         document.getElementById('prev_btn_1').innerText = document.getElementById('input_btn_text_1').value;
         document.getElementById('prev_btn_1').style.backgroundColor = document.getElementById('input_btn_color_1').value;
         document.getElementById('prev_btn_1').style.marginTop = document.getElementById('input_btn_mt_1').value + 'px';
         
-        document.getElementById('btn_google').classList.toggle('hidden', !document.getElementById('check_google').checked);
-        document.getElementById('btn_fb').classList.toggle('hidden', !document.getElementById('check_fb').checked);
+        // Field Visibility
+        const showName = document.getElementById('check_show_name').checked;
+        const reqName = document.getElementById('check_req_name').checked;
+        const showEmail = document.getElementById('check_show_email').checked;
 
-        // Step 2 Campaign Integration
+        const nameInput = document.getElementById('prev_input_name');
+        nameInput.classList.toggle('hidden', !showName);
+        nameInput.placeholder = reqName ? "Your Name *" : "Your Name (Optional)";
+        
+        document.getElementById('prev_input_email').classList.toggle('hidden', !showEmail);
+
+        // Hide Main Connect Button if BOTH fields are hidden (Pure Social login)
+        if(!showName && !showEmail) {
+            document.getElementById('prev_btn_1').classList.add('hidden');
+            document.getElementById('prev_tos_block').classList.add('hidden');
+        } else {
+            document.getElementById('prev_btn_1').classList.remove('hidden');
+            document.getElementById('prev_tos_block').classList.remove('hidden');
+        }
+
+        const showG = document.getElementById('check_google').checked;
+        const showF = document.getElementById('check_fb').checked;
+        const showA = document.getElementById('check_apple').checked;
+
+        document.getElementById('btn_google').classList.toggle('hidden', !showG);
+        document.getElementById('btn_fb').classList.toggle('hidden', !showF);
+        document.getElementById('btn_apple').classList.toggle('hidden', !showA);
+
+        const socialWrap = document.getElementById('social_btns');
+        if(!showG && !showF && !showA) {
+            socialWrap.classList.add('hidden');
+        } else {
+            socialWrap.classList.remove('hidden');
+            if(!showName && !showEmail) {
+                socialWrap.classList.remove('border-t', 'pt-4');
+            } else {
+                socialWrap.classList.add('border-t', 'pt-4');
+            }
+        }
+
+        // Step 2 & 3 Updates (Standard)
         const campSelect = document.getElementById('splash_campaign');
         const emptyState = document.getElementById('prev_camp_empty');
         const btn2 = document.getElementById('prev_btn_2');
@@ -951,7 +1024,6 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         btn2.innerText = document.getElementById('input_btn_text_2').value;
         btn2.style.backgroundColor = document.getElementById('input_btn_color_2').value;
         btn2.style.marginTop = document.getElementById('input_btn_mt_2').value + 'px';
-
         ['survey', 'promo', 'versus', 'birthday'].forEach(t => document.getElementById('prev_camp_'+t).classList.add('hidden'));
 
         if (campSelect.value) {
@@ -963,7 +1035,6 @@ function render_swatches($target_id, $primary, $sec, $ext) {
             try { campConfig = JSON.parse(opt.getAttribute('data-config')); } catch(e){}
 
             document.getElementById('prev_camp_'+type).classList.remove('hidden');
-
             if(type === 'survey') {
                 document.getElementById('prev_camp_stars').classList.toggle('hidden', !campConfig.stars);
                 const qCont = document.getElementById('prev_camp_q_container');
@@ -1000,24 +1071,28 @@ function render_swatches($target_id, $primary, $sec, $ext) {
             btn2.classList.add('hidden');
         }
 
-        // Step 3
+        // Step 3 Verification Check
         document.getElementById('prev_success_title').innerText = document.getElementById('input_success_title').value;
         document.getElementById('prev_success_title').style.color = document.getElementById('input_success_color').value;
         document.getElementById('prev_success_title').style.marginBottom = document.getElementById('input_title_mb_3').value + 'px';
         document.getElementById('prev_btn_3').innerText = document.getElementById('input_btn_text_3').value;
         document.getElementById('prev_btn_3').style.backgroundColor = document.getElementById('input_btn_color_3').value;
         document.getElementById('prev_btn_3').style.marginTop = document.getElementById('input_btn_mt_3').value + 'px';
+        
+        if (document.getElementById('check_verify_email').checked) {
+            document.getElementById('prev_success_desc').innerText = "You have temporary access. Check your email to verify your connection and keep browsing.";
+        } else {
+            document.getElementById('prev_success_desc').innerText = "Your connection is ready. Tap the button below to sync with the network.";
+        }
 
         if(activeStep) applyBackgrounds(activeStep);
     }
 
-    // Bind real-time inputs
     ['input_title_1', 'input_desc_1', 'input_btn_text_1', 'input_btn_text_2', 'input_success_title', 'input_btn_text_3', 'logo_size', 'logo_margin', 'input_title_mb_1', 'input_desc_mb_1', 'input_btn_mt_1', 'input_btn_mt_2', 'input_title_mb_3', 'input_btn_mt_3', 'input_title_color_1', 'input_desc_color_1', 'input_btn_color_1', 'input_btn_color_2', 'input_success_color', 'input_btn_color_3', 'input_title_size_1', 'input_desc_size_1', 'input_tos_url'].forEach(id => {
         document.getElementById(id).addEventListener('input', updateLivePreview);
         document.getElementById(id).addEventListener('change', updateLivePreview);
     });
-    
-    // Bind BG specific real-time inputs
+
     [1, 2, 3].forEach(step => {
         document.getElementById(`input_bg_color_${step}`).addEventListener('input', e => { applyBackgrounds(step); });
         document.getElementById(`input_bg_size_${step}`).addEventListener('change', e => { applyBackgrounds(step); });
@@ -1026,7 +1101,6 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         document.getElementById(`input_overlay_opacity_${step}`).addEventListener('input', e => { document.getElementById(`val_overlay_${step}`).innerText = e.target.value; applyBackgrounds(step); });
     });
 
-    // --- UPLOAD ENGINE ---
     async function uploadAndGetUrl(file, type) {
         const formData = new FormData();
         formData.append('action', 'mt_upload_vault_media');
@@ -1075,7 +1149,8 @@ function render_swatches($target_id, $primary, $sec, $ext) {
     });
 
     function removeImage(event, type) {
-        event.preventDefault(); event.stopPropagation();
+        event.preventDefault();
+        event.stopPropagation();
         if(type === 'logo') {
             document.getElementById(`img_logo`).src = '';
             document.getElementById(`img_logo`).classList.add('hidden');
@@ -1089,7 +1164,6 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         updateLivePreview();
     }
 
-    // --- FULLSCREEN MODAL SAVING ENGINE ---
     function closeSaveModal() {
         const modal = document.getElementById('save_modal_overlay');
         const box = document.getElementById('save_modal_box');
@@ -1131,9 +1205,13 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         document.getElementById('splash_error_banner').classList.add('hidden');
         
         let hasError = false;
-        const btnText1 = document.getElementById('input_btn_text_1');
-        if(!btnText1.value.trim()) { btnText1.classList.add('input-error'); hasError = true; } 
-        else { btnText1.classList.remove('input-error'); }
+        
+        // Only require button text if either name or email is showing
+        if(document.getElementById('check_show_name').checked || document.getElementById('check_show_email').checked) {
+            const btnText1 = document.getElementById('input_btn_text_1');
+            if(!btnText1.value.trim()) { btnText1.classList.add('input-error'); hasError = true; } 
+            else { btnText1.classList.remove('input-error'); }
+        }
 
         const tosUrl = document.getElementById('input_tos_url');
         if(!tosUrl.value.trim()) { tosUrl.classList.add('input-error'); hasError = true; } 
@@ -1158,7 +1236,6 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         const modal = document.getElementById('save_modal_overlay');
         const box = document.getElementById('save_modal_box');
         
-        // Reset Modal State
         document.getElementById('save_spinner').classList.remove('hidden');
         document.getElementById('save_success_icon').classList.add('hidden');
         document.getElementById('save_modal_title').innerText = 'Syncing...';
@@ -1173,10 +1250,9 @@ function render_swatches($target_id, $primary, $sec, $ext) {
             box.classList.remove('scale-95');
             box.classList.add('scale-100');
         }, 10);
-        
+
         try {
-            applyUIToState(); 
-            
+            applyUIToState();
             const masterConfig = {
                 verify_email: document.getElementById('check_verify_email').checked,
                 flow_type: document.querySelector('.step-btn.active') ? (document.querySelector('.step-btn.active').innerText.includes('1-Step') ? 1 : 3) : 1,
@@ -1219,6 +1295,5 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         }
     }
 
-    // Init on load
     window.addEventListener('DOMContentLoaded', () => { loadTargetConfig(); });
 </script>
