@@ -95,7 +95,6 @@ class MT_Dashboard {
         ) $charset_collate;";
         dbDelta( $sql_domains );
 
-        // UPGRADED: Email Templates Table
         $table_templates = $wpdb->prefix . 'mt_email_templates';
         $sql_templates = "CREATE TABLE $table_templates (
             id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -476,7 +475,6 @@ class MT_Dashboard {
             ), array('id' => $camp_id) );
         }
 
-        // --- NEW: TRIGGER THE BATCH QUEUE ---
         if ($type === 'sent') {
             do_action('mt_campaign_launched', $camp_id, $brand_id);
         }
@@ -516,10 +514,17 @@ class MT_Dashboard {
             wp_send_json_error('Missing data');
         }
 
+        $email = sanitize_email($payload['email']);
+        
+        // --- SAFE BACKEND VALIDATION (DNS Ping Removed to Prevent Server Crash) ---
+        if (!is_email($email)) {
+            wp_send_json_error('Invalid email format.');
+        }
+        // -------------------------------------------------------------------------
+
         $brand_id = intval($payload['brand_id']); 
         $store_id = intval($payload['store_id']); 
         $campaign_id = intval($payload['campaign_id']);
-        $email = sanitize_email($payload['email']);
         $name = sanitize_text_field($payload['name']); 
         $mac = sanitize_text_field($payload['mac'] ?? 'UNKNOWN');
         $survey_data = wp_json_encode($payload['survey_data'] ?? []);
@@ -555,7 +560,7 @@ class MT_Dashboard {
         if ($result) {
             $new_lead_id = $wpdb->insert_id;
             
-            // --- NEW: TRIGGER THE AUTOPILOT ---
+            // --- TRIGGER THE RADIUS AUTOPILOT ---
             do_action('mt_lead_captured', $new_lead_id, $brand_id);
             
             wp_send_json_success('Lead Saved');
@@ -598,16 +603,14 @@ class MT_Dashboard {
             $logout_url = wp_logout_url( home_url('/app/') );
             $avatar_url = get_avatar_url($current_user->ID, ['size' => 60]);
             
-            // FETCH GLOBAL ADMIN BRANDING
             $mt_palette = get_option( 'mt_brand_palette', [
                 'accent' => '#FCC753', 
                 'dark' => '#1A232E'
             ] );
-            $mt_mascot_url = get_option( 'mt_ai_mascot_url' );
 
             $core_views = ['brand', 'locations', 'domains'];
             $wifi_views = ['splash', 'crm'];
-            $email_views = ['email_insights', 'studio', 'campaigns', 'workflows', 'delivery']; // REORDERED ARRAY
+            $email_views = ['email_insights', 'studio', 'campaigns', 'workflows', 'delivery']; 
             
             $is_core = in_array($view, $core_views);
             $is_wifi = in_array($view, $wifi_views);
