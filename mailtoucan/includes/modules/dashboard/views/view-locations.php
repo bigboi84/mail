@@ -5,9 +5,27 @@ $stores = $wpdb->get_results( $wpdb->prepare("SELECT * FROM {$wpdb->prefix}mt_st
 $total_stores = count($stores);
 $at_limit = ($brand->location_limit !== -1 && $total_stores >= $brand->location_limit);
 
-// The global SaaS IP for the RADIUS Server (can be dynamic later)
-$saas_radius_ip = "radius.mailtoucan.pro"; 
-$brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
+// Pointing to your Cloudflare DNS Subdomain for Disaster Recovery
+$saas_radius_ip = "radius.mailtoucan.com"; 
+$brand_slug = sanitize_title($brand->brand_name); 
+
+// Fetch all active router pings from the WordPress Transients (RAM Cache)
+$active_pings = [];
+foreach($stores as $s) {
+    $c = json_decode($s->local_offer_json, true);
+    if(!empty($c['hardware'])) {
+        foreach($c['hardware'] as $hw) {
+            $mac = is_array($hw) ? $hw['mac'] : $hw;
+            $clean_mac = strtoupper(preg_replace('/[^A-F0-9]/', '', $mac));
+            if(strlen($clean_mac) === 12) $clean_mac = implode(':', str_split($clean_mac, 2));
+            
+            $ping = get_transient('mt_ping_' . md5($clean_mac));
+            if($ping) {
+                $active_pings[$clean_mac] = $ping;
+            }
+        }
+    }
+}
 ?>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -19,7 +37,6 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
     .tab-content.active { display: block; }
     #map { height: 300px; width: 100%; border-radius: 0.5rem; z-index: 10; }
     
-    /* Setup Modal Animations */
     #setup_modal { transition: opacity 0.3s ease; }
     #setup_modal.hidden { opacity: 0; pointer-events: none; }
     #setup_modal:not(.hidden) { opacity: 1; pointer-events: auto; }
@@ -125,7 +142,7 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-6">
-                            <div><label class="block text-sm font-bold text-gray-700 mb-2">Location Email</label><input type="email" id="loc_email" class="w-full p-2 border border-gray-300 rounded outline-none"></div>
+                            <div><label class="block text-sm font-bold text-gray-700 mb-2">Location Email</label><input type="email" id="loc_email" class="w-full p-2 border border-gray-300 rounded outline-none" placeholder="e.g., manager@hakka.com"></div>
                             <div><label class="block text-sm font-bold text-gray-700 mb-2">Location Phone</label><input type="text" id="loc_phone" class="w-full p-2 border border-gray-300 rounded outline-none"></div>
                         </div>
                     </div>
@@ -162,7 +179,7 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
 
                 <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
                     <h3 class="font-bold text-gray-900 mb-2"><i class="fa-solid fa-link text-indigo-500 mr-2"></i> Permanent Router URL (Splash Link)</h3>
-                    <p class="text-sm text-gray-600 mb-4">This is the secure, unbreakable link for this specific location. Copy and paste this directly into your MikroTik router's Splash Page settings.</p>
+                    <p class="text-sm text-gray-600 mb-4">This is the secure, unbreakable link for this specific location. Copy and paste this directly into your router's Splash Page settings.</p>
                     <div class="flex items-center gap-2">
                         <div class="flex-1 bg-white p-3 border border-gray-300 rounded-lg font-mono text-sm text-gray-800 shadow-inner select-all overflow-hidden whitespace-nowrap overflow-ellipsis" id="lbl_permanent_url">Generating...</div>
                         <button onclick="copyRouterUrl()" class="bg-indigo-600 text-white px-4 py-3 rounded-lg font-bold shadow-md hover:bg-indigo-700 transition" title="Copy to clipboard"><i class="fa-regular fa-copy"></i></button>
@@ -210,23 +227,45 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
                         <div class="col-span-3">
                             <label class="text-[10px] font-bold text-gray-500 uppercase block mb-1">Brand / Controller</label>
                             <select id="hw_brand" class="w-full p-2 border border-gray-300 rounded text-sm outline-none bg-white font-bold">
-                                <option value="mikrotik">MikroTik</option><option value="unifi">Ubiquiti UniFi</option><option value="omada">TP-Link Omada</option><option value="meraki">Cisco Meraki</option>
+                                <option value="openmesh">Open Mesh / CloudTrax</option>
+                                <option value="mikrotik">MikroTik</option>
+                                <option value="unifi">Ubiquiti UniFi</option>
+                                <option value="omada">TP-Link Omada</option>
+                                <option value="meraki">Cisco Meraki</option>
+                                <option value="other">Other / Generic CoovaChilli</option>
                             </select>
                         </div>
                         <div class="col-span-1"><button onclick="addRouter()" class="w-full bg-indigo-600 text-white p-2 rounded text-sm font-bold hover:bg-indigo-700 transition">+</button></div>
                     </div>
                 </div>
                 
-                <div class="bg-white border rounded-lg overflow-hidden">
+                <div class="bg-white border rounded-lg overflow-hidden mb-6">
                     <table class="w-full text-left">
                         <thead class="bg-gray-50 border-b"><tr>
-                            <th class="p-3 font-bold text-gray-600 text-xs uppercase tracking-wide">Device Name</th>
-                            <th class="p-3 font-bold text-gray-600 text-xs uppercase tracking-wide">MAC Address</th>
-                            <th class="p-3 font-bold text-gray-600 text-xs uppercase tracking-wide">Brand</th>
+                            <th class="p-3 font-bold text-gray-600 text-xs uppercase tracking-wide">Device Details</th>
+                            <th class="p-3 font-bold text-gray-600 text-xs uppercase tracking-wide">Network Status</th>
                             <th class="p-3 font-bold text-gray-600 text-xs uppercase tracking-wide text-right">Actions / Setup</th>
                         </tr></thead>
                         <tbody id="mac_list_body"></tbody>
                     </table>
+                </div>
+
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                    <h3 class="font-bold text-gray-900 mb-2"><i class="fa-solid fa-heart-pulse text-red-500 mr-2"></i> Uptime Monitoring & Alerts</h3>
+                    <p class="text-sm text-gray-600 mb-4">MailToucan acts as a watchdog for your network. If any access point stops sending its 5-minute heartbeat for 15 consecutive minutes, we will immediately flag it as offline and notify your team so you don't lose valuable marketing time.</p>
+                    
+                    <div class="space-y-4">
+                        <label class="flex items-center gap-2 cursor-pointer w-max">
+                            <input type="checkbox" id="hw_alerts_enabled" class="rounded text-indigo-600 w-4 h-4 cursor-pointer" onchange="toggleAlertEmail()">
+                            <span class="text-sm font-bold text-gray-700">Enable Offline Email Alerts</span>
+                        </label>
+                        
+                        <div id="hw_alerts_email_container" class="hidden pl-6 border-l-2 border-indigo-200 transition-all">
+                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Send Alerts To (IT / Manager Email)</label>
+                            <input type="email" id="hw_alerts_email" class="w-full max-w-md p-2 border border-gray-300 rounded text-sm outline-none focus:ring-2 focus:ring-indigo-100" placeholder="e.g., support@it-company.com">
+                            <p class="text-[10px] text-gray-400 mt-1 italic">We will also send a follow-up email the moment the device reconnects to the internet.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -273,8 +312,8 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
             <div class="border rounded-lg p-4">
                 <h3 class="font-bold text-gray-800 text-sm mb-3">3. Walled Garden (Allowed Domains)</h3>
                 <p class="text-xs text-gray-500 mb-3">Your router must allow free access to these domains before the user logs in, otherwise the Splash Screen and Social Logins will fail to load.</p>
-                <div class="bg-gray-900 p-3 rounded font-mono text-xs text-green-400 select-all leading-relaxed">
-                    *.mailtoucan.pro<br>*.googleapis.com<br>*.gstatic.com<br>*.facebook.com
+                <div class="bg-gray-900 p-3 rounded font-mono text-[11px] text-green-400 select-all leading-relaxed">
+                    mailtoucan.com<br>cdn.tailwindcss.com<br>cdnjs.cloudflare.com<br>abs.twitter.com<br>facebook.com<br>connect.facebook.net<br>fbcdn.net<br>atdmt.com<br>fbsbx.com<br>akamaihd.net<br>twitter.com<br>twimg.com<br>linkedin.com<br>licdn.net<br>licdn.com<br>instagram.com
                 </div>
             </div>
         </div>
@@ -286,10 +325,11 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
 </div>
 
 <script>
+    const mt_active_pings = <?php echo wp_json_encode($active_pings); ?>;
     let currentStoreImage = '';
     let currentRouters = [];
-    const brandSlug = "<?php echo $brand_slug; ?>";
-    const baseUrl = "<?php echo home_url('/splash/'); ?>";
+    const brandSlug = "<?php echo esc_js($brand_slug); ?>";
+    const baseUrl = "<?php echo esc_js(home_url('/splash/')); ?>";
 
     function toggleView(view) {
         document.getElementById('view_list').style.display = view === 'list' ? 'block' : 'none';
@@ -322,10 +362,7 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
     }
 
     function generateRadiusSecret() {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-        let secret = '';
-        for (let i = 0; i < 12; i++) secret += chars.charAt(Math.floor(Math.random() * chars.length));
-        return secret;
+        return 'ToucanGlobalSecret999';
     }
 
     document.getElementById('hw_mac').addEventListener('input', function (e) {
@@ -333,6 +370,22 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
         let formatted = val.match(/.{1,2}/g)?.join(':') || '';
         e.target.value = formatted.substring(0, 17);
     });
+
+    function toggleAlertEmail() {
+        const isEnabled = document.getElementById('hw_alerts_enabled').checked;
+        const container = document.getElementById('hw_alerts_email_container');
+        const emailInput = document.getElementById('hw_alerts_email');
+        const mainLocEmail = document.getElementById('loc_email').value;
+
+        if (isEnabled) {
+            container.classList.remove('hidden');
+            if (emailInput.value === '' && mainLocEmail !== '') {
+                emailInput.value = mainLocEmail;
+            }
+        } else {
+            container.classList.add('hidden');
+        }
+    }
 
     function openEditor(storeId) {
         document.getElementById('current_store_id').value = storeId;
@@ -353,6 +406,10 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
             document.getElementById('loc_session_limit').value = '60';
             document.getElementById('loc_bandwidth').value = '5';
             document.getElementById('loc_auto_shutoff').checked = false;
+            
+            document.getElementById('hw_alerts_enabled').checked = false;
+            document.getElementById('hw_alerts_email').value = '';
+            toggleAlertEmail();
         } else {
             const btn = event.currentTarget;
             const name = btn.getAttribute('data-name');
@@ -376,6 +433,15 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
                 if(config.wifi.time_on) document.getElementById('loc_time_on').value = config.wifi.time_on;
                 if(config.wifi.time_off) document.getElementById('loc_time_off').value = config.wifi.time_off;
             }
+
+            if(config.hardware_alerts) {
+                document.getElementById('hw_alerts_enabled').checked = config.hardware_alerts.enabled || false;
+                document.getElementById('hw_alerts_email').value = config.hardware_alerts.email || '';
+            } else {
+                document.getElementById('hw_alerts_enabled').checked = false;
+                document.getElementById('hw_alerts_email').value = '';
+            }
+            toggleAlertEmail();
             
             if(config.image) {
                 currentStoreImage = config.image;
@@ -409,7 +475,7 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
         const tbody = document.getElementById('mac_list_body');
         tbody.innerHTML = '';
         if(currentRouters.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-sm text-gray-400 italic">No devices linked. Add your first router above.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-sm text-gray-400 italic">No devices linked. Add your first router above.</td></tr>';
             return;
         }
         currentRouters.forEach((router, index) => {
@@ -419,17 +485,73 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
             if(router.brand === 'unifi') brandName = "Ubiquiti UniFi";
             if(router.brand === 'omada') brandName = "TP-Link Omada";
             if(router.brand === 'meraki') brandName = "Cisco Meraki";
+            if(router.brand === 'openmesh') brandName = "Open Mesh / CloudTrax";
+            if(router.brand === 'other') brandName = "Generic CoovaChilli";
+
+            let clean_mac = router.mac.replace(/[^A-Fa-f0-9]/g, '').toUpperCase();
+            if(clean_mac.length === 12) clean_mac = clean_mac.match(/.{2}/g).join(':');
+            
+            let lastPing = mt_active_pings[clean_mac];
+            let statusBadge = '';
+            let statusText = '';
+
+            if (lastPing) {
+                let diffMins = Math.floor((Date.now()/1000 - lastPing) / 60);
+                if (diffMins < 15) {
+                    statusBadge = '<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider shadow-sm"><i class="fa-solid fa-circle-check mr-1"></i> Online</span>';
+                    statusText = 'Last seen ' + diffMins + ' min ago';
+                } else {
+                    statusBadge = '<span class="bg-red-100 text-red-700 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider shadow-sm"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Offline</span>';
+                    statusText = 'Offline for ' + diffMins + ' mins';
+                }
+            } else {
+                statusBadge = '<span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider shadow-sm"><i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Pending Connection</span>';
+                statusText = 'Awaiting first Ping...';
+            }
 
             tr.innerHTML = `
-                <td class="p-3 font-bold text-sm text-gray-800">${router.name}</td>
-                <td class="p-3 font-mono text-sm text-gray-600">${router.mac}</td>
-                <td class="p-3 text-sm text-gray-500"><span class="bg-gray-200 px-2 py-1 rounded text-xs font-bold">${brandName}</span></td>
-                <td class="p-3 text-right flex justify-end gap-3 items-center">
-                    <button class="text-indigo-600 font-bold text-xs hover:underline" onclick="openSetupModal(${index})"><i class="fa-solid fa-gear mr-1"></i> Setup Guide</button>
-                    <button class="text-red-400 hover:text-red-600 font-bold text-xs transition" onclick="removeMac(${index})"><i class="fa-solid fa-trash"></i></button>
+                <td class="p-3">
+                    <div class="font-bold text-sm text-gray-900">${router.name}</div>
+                    <div class="font-mono text-[10px] text-gray-500 uppercase mt-0.5">${router.mac}</div>
+                </td>
+                <td class="p-3">
+                    ${statusBadge}
+                    <div class="text-[10px] text-gray-400 mt-1 italic">${statusText}</div>
+                </td>
+                <td class="p-3 text-right">
+                    <div class="flex justify-end gap-3 items-center">
+                        <span class="bg-gray-200 px-2 py-1 rounded text-[10px] font-bold text-gray-600">${brandName}</span>
+                        <button class="text-green-500 font-bold text-xs hover:text-green-700 transition flex items-center" onclick="simulatePing('${router.mac}', this)" title="Test Webhook Connection"><i class="fa-solid fa-satellite-dish mr-1"></i> Simulate Ping</button>
+                        <button class="text-indigo-600 font-bold text-xs hover:underline" onclick="openSetupModal(${index})"><i class="fa-solid fa-gear mr-1"></i> Setup Guide</button>
+                        <button class="text-red-400 hover:text-red-600 font-bold text-xs transition" onclick="removeMac(${index})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
                 </td>
             `;
             tbody.appendChild(tr);
+        });
+    }
+
+    // NEW DIAGNOSTIC FUNCTION
+    function simulatePing(mac, btnElement) {
+        const ogHtml = btnElement.innerHTML;
+        btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        
+        fetch(window.location.origin + '/wp-json/mt/v1/heartbeat', { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ mac: mac }) 
+        })
+        .then(res => {
+            if (!res.ok) throw new Error("API Route Missing");
+            return res.json();
+        })
+        .then(data => {
+            alert("Heartbeat successfully received! The page will now refresh to show the green Online badge.");
+            window.location.reload();
+        })
+        .catch(err => {
+            alert("API Endpoint Not Found!\n\nYou must go to your WordPress Admin -> Settings -> Permalinks and click 'Save Changes' to activate the Heartbeat URL. Once saved, come back and click this button again.");
+            btnElement.innerHTML = ogHtml;
         });
     }
 
@@ -463,7 +585,7 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
         const storeId = document.getElementById('current_store_id').value;
         const tenantDomain = window.location.hostname;
         
-        document.getElementById('setup_secret').innerText = router.secret;
+        document.getElementById('setup_secret').innerText = 'ToucanGlobalSecret999';
         document.getElementById('setup_mac').innerText = router.mac;
         document.getElementById('setup_url').innerText = updatePermanentUrl();
 
@@ -479,12 +601,12 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
             
             const formData = new FormData();
             formData.append('action', 'mt_upload_vault_media');
-            formData.append('security', mt_nonce);
+            formData.append('security', "<?php echo wp_create_nonce('mt_app_nonce'); ?>");
             formData.append('media_type', 'wifi'); 
             formData.append('file', e.target.files[0]);
 
             try {
-                const res = await fetch(mt_ajax_url, { method: 'POST', body: formData });
+                const res = await fetch("<?php echo admin_url('admin-ajax.php'); ?>", { method: 'POST', body: formData });
                 const data = await res.json();
                 if(data.success) {
                     currentStoreImage = data.data.url;
@@ -509,6 +631,10 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
             timezone: document.getElementById('loc_tz').value,
             image: currentStoreImage,
             hardware: currentRouters,
+            hardware_alerts: {
+                enabled: document.getElementById('hw_alerts_enabled').checked,
+                email: document.getElementById('hw_alerts_email').value
+            },
             email_setup: document.querySelector('input[name="email_sender"]:checked') ? document.querySelector('input[name="email_sender"]:checked').value : 'system',
             wifi: {
                 splash_assignment: document.getElementById('loc_splash_assignment').value,
@@ -521,12 +647,12 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
         };
         const formData = new FormData();
         formData.append('action', 'mt_save_location');
-        formData.append('security', mt_nonce);
+        formData.append('security', "<?php echo wp_create_nonce('mt_app_nonce'); ?>");
         formData.append('store_id', document.getElementById('current_store_id').value);
         formData.append('store_name', document.getElementById('loc_name').value);
         formData.append('config', JSON.stringify(config));
         
-        fetch(mt_ajax_url, { method: 'POST', body: formData })
+        fetch("<?php echo admin_url('admin-ajax.php'); ?>", { method: 'POST', body: formData })
         .then(res => res.json())
         .then(data => {
             if (data.success) {
@@ -545,9 +671,9 @@ $brand_slug = sanitize_title($brand->brand_name); // Clean brand slug for URLs
         if(!confirm("Are you sure you want to completely delete this location?")) return;
         const formData = new FormData();
         formData.append('action', 'mt_delete_location');
-        formData.append('security', mt_nonce);
+        formData.append('security', "<?php echo wp_create_nonce('mt_app_nonce'); ?>");
         formData.append('store_id', storeId);
-        fetch(mt_ajax_url, { method: 'POST', body: formData })
+        fetch("<?php echo admin_url('admin-ajax.php'); ?>", { method: 'POST', body: formData })
         .then(res => res.json())
         .then(data => { if(data.success) window.location.reload(); });
     }
