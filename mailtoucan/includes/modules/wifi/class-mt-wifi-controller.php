@@ -36,7 +36,14 @@ class MT_Wifi_Controller {
         $campaign_id = intval($data['campaign_id'] ?? 0);
         $survey_data = isset($data['survey_data']) ? json_encode($data['survey_data']) : '';
 
-        $existing_lead = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_leads WHERE email = %s AND store_id = %d LIMIT 1", $email, $store_id));
+        $existing_lead = null;
+        if (!empty($mac) && $mac !== 'UNKNOWN') {
+            $existing_lead = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_leads WHERE guest_mac = %s AND store_id = %d ORDER BY id DESC LIMIT 1", $mac, $store_id));
+        }
+        
+        if (!$existing_lead && !empty($email)) {
+            $existing_lead = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_leads WHERE email = %s AND store_id = %d ORDER BY id DESC LIMIT 1", $email, $store_id));
+        }
 
         if ($existing_lead) {
             $wpdb->update($table_leads, [
@@ -161,11 +168,14 @@ class MT_Wifi_Controller {
         $bandwidth_limit_mb = isset($config['bandwidth_limit_mb']) ? intval($config['bandwidth_limit_mb']) : 500;
 
         $session_time_seconds = 0;
+        $idle_timeout_seconds = 0; // New Idle Timeout Variable
         $transient_key = 'mt_wifi_session_' . md5($mac_colon);
 
         if ($require_verification && !$previously_verified && !$force_full_auth && strpos($lead->email, '@local.wifi') === false) {
             
+            // GRACE PERIOD MODE
             $session_time_seconds = 10 * 60; 
+            $idle_timeout_seconds = 3 * 60; // 3 minute idle disconnect during grace period
             $bandwidth_limit_mb = 50; 
             
             $wpdb->update($wpdb->prefix . 'mt_guest_leads', ['status' => 'pending'], ['id' => $lead_id]);
@@ -178,9 +188,13 @@ class MT_Wifi_Controller {
             set_transient($transient_key, time() + $session_time_seconds, $session_time_seconds);
             
         } else {
+            // FULL ACCESS MODE
             if (!$previously_verified && strpos($lead->email, '@local.wifi') === false) {
                 $wpdb->update($wpdb->prefix . 'mt_guest_leads', ['status' => 'verified'], ['id' => $lead_id]);
             }
+
+            // MIDDLE GROUND: 15 Minute Idle Disconnect to force the Splash Screen / Ad impression
+            $idle_timeout_seconds = 15 * 60; 
 
             $active_session_end = get_transient($transient_key);
             $current_time = time();
@@ -215,16 +229,19 @@ class MT_Wifi_Controller {
             $pdo->prepare('DELETE FROM radcheck WHERE username = ?')->execute([$mac_colon]);
             $pdo->prepare('DELETE FROM radreply WHERE username = ?')->execute([$mac_colon]);
             
+            $pdo->prepare("INSERT INTO radcheck (username, attribute, op, value) VALUES (?, 'Auth-Type', ':=', 'Accept')")->execute([$mac_colon]);
             $pdo->prepare("INSERT INTO radcheck (username, attribute, op, value) VALUES (?, 'Cleartext-Password', ':=', ?)")->execute([$mac_colon, $mac_colon]);
             $pdo->prepare("INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'Session-Timeout', '=', ?)")->execute([$mac_colon, $session_time_seconds]);
+            $pdo->prepare("INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'Idle-Timeout', '=', ?)")->execute([$mac_colon, $idle_timeout_seconds]);
 
             // 2. DATTO/OPENMESH INJECTION (Dashes format)
             $pdo->prepare('DELETE FROM radcheck WHERE username = ?')->execute([$mac_dash]);
             $pdo->prepare('DELETE FROM radreply WHERE username = ?')->execute([$mac_dash]);
             
-            // WE NOW USE THE MAC ADDRESS AS THE PASSWORD FOR DATTO TOO!
+            $pdo->prepare("INSERT INTO radcheck (username, attribute, op, value) VALUES (?, 'Auth-Type', ':=', 'Accept')")->execute([$mac_dash]);
             $pdo->prepare("INSERT INTO radcheck (username, attribute, op, value) VALUES (?, 'Cleartext-Password', ':=', ?)")->execute([$mac_dash, $mac_dash]);
             $pdo->prepare("INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'Session-Timeout', '=', ?)")->execute([$mac_dash, $session_time_seconds]);
+            $pdo->prepare("INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'Idle-Timeout', '=', ?)")->execute([$mac_dash, $idle_timeout_seconds]);
 
             if ($bandwidth_limit_mb > 0) {
                 $bytes = $bandwidth_limit_mb * 1024 * 1024;
