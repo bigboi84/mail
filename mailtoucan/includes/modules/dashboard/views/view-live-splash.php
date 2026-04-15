@@ -1,7 +1,7 @@
 <?php
 /**
- * MailToucan Enterprise Splash Engine v8.6
- * Features: True Time Remaining, Router Loop Fix, CoovaChilli Fix, Syntax Patched
+ * MailToucan Enterprise Splash Engine v8.8
+ * Features: True Time Remaining, Router Loop Fix, Campaign Scheduler / Time-Gating
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -46,11 +46,24 @@ $campaign_id = isset($state['campaign_id']) ? intval($state['campaign_id']) : 0;
 if ($campaign_id > 0) {
     $camp = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}mt_campaigns WHERE id = %d", $campaign_id));
     if ($camp) {
-        $campaign_data = [
-            'id' => $camp->id,
-            'type' => $camp->campaign_type,
-            'config' => json_decode($camp->config_json, true)
-        ];
+        $c_conf = json_decode($camp->config_json, true);
+        $is_active = true;
+        
+        // --- NEW CAMPAIGN SCHEDULE CHECK ENGINE ---
+        if (!empty($c_conf['schedule']['start']) && strtotime($c_conf['schedule']['start']) > time()) {
+            $is_active = false; // Campaign hasn't started yet
+        }
+        if (!empty($c_conf['schedule']['end']) && strtotime($c_conf['schedule']['end']) < time()) {
+            $is_active = false; // Campaign has expired
+        }
+
+        if ($is_active) {
+            $campaign_data = [
+                'id' => $camp->id,
+                'type' => $camp->campaign_type,
+                'config' => $c_conf
+            ];
+        }
     }
 }
 
@@ -79,7 +92,8 @@ $known_email = '';
 $known_name = '';
 $time_remaining_html = '';
 
-if (!empty($raw_mac)) {
+// BLOCK THE GHOST PROFILE: Only check the DB if the router actually sent a real MAC address
+if (!empty($raw_mac) && strlen($clean_mac) >= 10) {
     $existing_lead = $wpdb->get_row($wpdb->prepare(
         "SELECT guest_name, email FROM {$wpdb->prefix}mt_guest_leads WHERE guest_mac = %s ORDER BY id DESC LIMIT 1", 
         $raw_mac
@@ -90,7 +104,6 @@ if (!empty($raw_mac)) {
         $known_email = $existing_lead->email;
         $known_name = $existing_lead->guest_name;
 
-        // Fetch remaining time for UI
         $active_session_end = get_transient('mt_wifi_session_' . md5($mac_colon_format));
         if ($active_session_end && $active_session_end > time()) {
             $mins = ceil(($active_session_end - time()) / 60);
@@ -183,13 +196,15 @@ if (!empty($uamip)) {
 
             <div id="step_1" class="step-container active card">
                 
-                <?php if(empty($raw_mac)): ?>
-                    <div style="background: #fee2e2; color: #991b1b; padding: 12px; border-radius: 8px; font-size: 11px; margin-bottom: 15px; text-align: left; word-break: break-all;">
-                        <strong>🚨 MAC Address Missing</strong><br>
-                        The router did not attach the MAC address to this URL. If you are on a real WiFi connection, WordPress likely redirected the page and stripped the router's data.<br><br>
-                        <strong>URL your phone sees:</strong><br>
-                        <script>document.write(window.location.href);</script>
+                <?php if(empty($raw_mac) || strlen($clean_mac) < 10): ?>
+                    <div style="background: #fee2e2; color: #991b1b; padding: 12px; border-radius: 8px; font-size: 13px; margin-bottom: 15px; text-align: left; border: 2px solid #ef4444;">
+                        <strong>🚨 CRITICAL ERROR: NO MAC ADDRESS</strong><br>
+                        Your phone loaded this page, but the router's data was stripped out. We cannot connect you to the internet.<br><br>
+                        <strong>How to fix this in CloudTrax:</strong><br>
+                        Your Splash Page URL must have <code>?source=wifi</code> at the end of it so WordPress doesn't redirect it! Change your CloudTrax URL to exactly this:<br><br>
+                        <code>https://mailtoucan.com/splash/hakka-express/global/?source=wifi</code>
                     </div>
+                    <style>#form_login { display: none !important; }</style>
                 <?php endif; ?>
 
                 <?php if($welcome_back): ?>
