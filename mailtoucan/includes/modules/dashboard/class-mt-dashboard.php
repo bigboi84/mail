@@ -1,6 +1,7 @@
 <?php
 /**
  * The Dashboard Module: The Shell, Router, and AJAX Handlers
+ * v11.0 - Full File: Trash Engine, Smart Leads, and Menu Order
  */
 class MT_Dashboard {
 
@@ -19,6 +20,13 @@ class MT_Dashboard {
         add_action( 'wp_ajax_mt_save_campaign', array( $this, 'ajax_save_campaign' ) );
         add_action( 'wp_ajax_mt_delete_campaign', array( $this, 'ajax_delete_campaign' ) );
         add_action( 'wp_ajax_mt_delete_guest_lead', array( $this, 'ajax_delete_guest_lead' ) );
+
+        // Guest Trash Engine AJAX Handlers
+        add_action( 'wp_ajax_mt_trash_guest_lead', array( $this, 'ajax_trash_guest_lead' ) );
+        add_action( 'wp_ajax_mt_restore_guest_lead', array( $this, 'ajax_restore_guest_lead' ) );
+        add_action( 'wp_ajax_mt_bulk_trash_leads', array( $this, 'ajax_bulk_trash_leads' ) );
+        add_action( 'wp_ajax_mt_empty_guest_trash', array( $this, 'ajax_empty_guest_trash' ) );
+        add_action( 'wp_ajax_mt_delete_guest_lead_permanent', array( $this, 'ajax_delete_guest_lead_permanent' ) );
 
         // Email, Domain & Delivery AJAX Handlers
         add_action( 'wp_ajax_mt_add_domain', array( $this, 'ajax_add_domain' ) );
@@ -62,6 +70,8 @@ class MT_Dashboard {
             unsub_token varchar(64) DEFAULT '',
             consent_ip varchar(45) DEFAULT '',
             consent_log text DEFAULT NULL,
+            last_visit datetime DEFAULT NULL,
+            deleted_at datetime DEFAULT NULL,
             created_at datetime DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY  (id),
             KEY brand_id (brand_id),
@@ -110,6 +120,18 @@ class MT_Dashboard {
             KEY brand_id (brand_id)
         ) $charset_collate;";
         dbDelta( $sql_templates );
+        
+        $table_responses = $wpdb->prefix . 'mt_campaign_responses';
+        $sql_responses = "CREATE TABLE $table_responses (
+            id bigint(20) NOT NULL AUTO_INCREMENT,
+            campaign_id bigint(20) NOT NULL,
+            lead_id bigint(20) NOT NULL,
+            response_data longtext NOT NULL,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY  (id),
+            KEY campaign_id (campaign_id)
+        ) $charset_collate;";
+        dbDelta( $sql_responses );
     }
 
     public function add_rewrite_rules() { 
@@ -491,14 +513,59 @@ class MT_Dashboard {
 
     public function ajax_delete_guest_lead() {
         $brand_id = $this->verify_ajax_request();
-        
         if ( ! current_user_can('manage_options') ) {
             wp_send_json_error('Admin only.');
         }
-        
         global $wpdb;
         $wpdb->delete( $wpdb->prefix . 'mt_guest_leads', array('id' => intval($_POST['lead_id']), 'brand_id' => $brand_id) );
         wp_send_json_success('Deleted.');
+    }
+
+    // --- GUEST TRASH ENGINE ---
+    public function ajax_trash_guest_lead() {
+        $brand_id = $this->verify_ajax_request();
+        global $wpdb;
+        $wpdb->update( $wpdb->prefix . 'mt_guest_leads', 
+            array('status' => 'trashed', 'deleted_at' => current_time('mysql')), 
+            array('id' => intval($_POST['lead_id']), 'brand_id' => $brand_id) 
+        );
+        wp_send_json_success('Moved to Trash.');
+    }
+
+    public function ajax_restore_guest_lead() {
+        $brand_id = $this->verify_ajax_request();
+        global $wpdb;
+        $wpdb->update( $wpdb->prefix . 'mt_guest_leads', 
+            array('status' => 'active', 'deleted_at' => null), 
+            array('id' => intval($_POST['lead_id']), 'brand_id' => $brand_id) 
+        );
+        wp_send_json_success('Guest Restored.');
+    }
+
+    public function ajax_bulk_trash_leads() {
+        $brand_id = $this->verify_ajax_request();
+        global $wpdb;
+        $ids = json_decode(wp_unslash($_POST['lead_ids']), true);
+        if(!empty($ids) && is_array($ids)) {
+            $ids_str = implode(',', array_map('intval', $ids));
+            $wpdb->query("UPDATE {$wpdb->prefix}mt_guest_leads SET status = 'trashed', deleted_at = '" . current_time('mysql') . "' WHERE id IN ($ids_str) AND brand_id = $brand_id");
+        }
+        wp_send_json_success('Guests moved to trash.');
+    }
+
+    public function ajax_empty_guest_trash() {
+        $brand_id = $this->verify_ajax_request();
+        global $wpdb;
+        $wpdb->delete( $wpdb->prefix . 'mt_guest_leads', array('status' => 'trashed', 'brand_id' => $brand_id) );
+        wp_send_json_success('Trash Emptied Permanently.');
+    }
+
+    public function ajax_delete_guest_lead_permanent() {
+        $brand_id = $this->verify_ajax_request();
+        if ( ! current_user_can('manage_options') ) wp_send_json_error('Admin only.');
+        global $wpdb;
+        $wpdb->delete( $wpdb->prefix . 'mt_guest_leads', array('id' => intval($_POST['lead_id']), 'brand_id' => $brand_id) );
+        wp_send_json_success('Deleted Permanently.');
     }
 
     // --- PUBLIC AJAX METHODS ---
@@ -516,11 +583,9 @@ class MT_Dashboard {
 
         $email = sanitize_email($payload['email']);
         
-        // --- SAFE BACKEND VALIDATION (DNS Ping Removed to Prevent Server Crash) ---
         if (!is_email($email)) {
             wp_send_json_error('Invalid email format.');
         }
-        // -------------------------------------------------------------------------
 
         $brand_id = intval($payload['brand_id']); 
         $store_id = intval($payload['store_id']); 
@@ -534,6 +599,15 @@ class MT_Dashboard {
             $camp = $wpdb->get_row($wpdb->prepare("SELECT campaign_name FROM {$wpdb->prefix}mt_campaigns WHERE id = %d", $campaign_id));
             if($camp) {
                 $campaign_tag = $camp->campaign_name;
+                
+                if(!empty($payload['survey_data'])) {
+                    $wpdb->insert( $wpdb->prefix . 'mt_campaign_responses', array(
+                        'campaign_id' => $campaign_id,
+                        'lead_id' => 0, 
+                        'response_data' => $survey_data
+                    ) );
+                    $response_id = $wpdb->insert_id;
+                }
             }
         }
 
@@ -541,32 +615,54 @@ class MT_Dashboard {
         $store_name = $wpdb->get_var($wpdb->prepare("SELECT store_name FROM {$wpdb->prefix}mt_stores WHERE id = %d", $store_id));
         $location_label = $store_name ? $store_name : 'Global Template';
         $consent_log = "Obtained via WiFi Splash at [" . $location_label . "] on " . current_time('Y-m-d H:i:s') . " from IP $ip";
-        $unsub_token = bin2hex(random_bytes(16));
 
-        $result = $wpdb->insert( $wpdb->prefix . 'mt_guest_leads', array(
-            'brand_id' => $brand_id, 
-            'store_id' => $store_id, 
-            'email' => $email, 
-            'guest_name' => $name, 
-            'guest_mac' => $mac,
-            'campaign_tag' => $campaign_tag, 
-            'survey_data' => $survey_data, 
-            'status' => 'active', 
-            'unsub_token' => $unsub_token,
-            'consent_ip' => $ip, 
-            'consent_log' => $consent_log
-        ) );
+        // SMART LEAD UPDATING
+        $existing_lead_id = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$wpdb->prefix}mt_guest_leads WHERE brand_id = %d AND guest_mac = %s", $brand_id, $mac));
 
-        if ($result) {
-            $new_lead_id = $wpdb->insert_id;
+        if ($existing_lead_id) {
+            $wpdb->update( $wpdb->prefix . 'mt_guest_leads', array(
+                'email' => $email,
+                'guest_name' => $name,
+                'campaign_tag' => $campaign_tag,
+                'survey_data' => $survey_data,
+                'last_visit' => current_time('mysql'),
+                'consent_ip' => $ip,
+                'consent_log' => $consent_log
+            ), array('id' => $existing_lead_id) );
             
-            // --- TRIGGER THE RADIUS AUTOPILOT ---
-            do_action('mt_lead_captured', $new_lead_id, $brand_id);
-            
-            wp_send_json_success('Lead Saved');
+            $final_lead_id = $existing_lead_id;
         } else {
-            wp_send_json_error('DB Error');
+            $unsub_token = bin2hex(random_bytes(16));
+            $wpdb->insert( $wpdb->prefix . 'mt_guest_leads', array(
+                'brand_id' => $brand_id, 
+                'store_id' => $store_id, 
+                'email' => $email, 
+                'guest_name' => $name, 
+                'guest_mac' => $mac,
+                'campaign_tag' => $campaign_tag, 
+                'survey_data' => $survey_data, 
+                'status' => 'active', 
+                'unsub_token' => $unsub_token,
+                'consent_ip' => $ip, 
+                'consent_log' => $consent_log,
+                'last_visit' => current_time('mysql')
+            ) );
+            $final_lead_id = $wpdb->insert_id;
         }
+
+        if (isset($response_id)) {
+            $wpdb->update( $wpdb->prefix . 'mt_campaign_responses', array('lead_id' => $final_lead_id), array('id' => $response_id) );
+        }
+
+        // START RADIUS TIMER
+        $clean_mac = strtoupper(preg_replace('/[^a-fA-F0-9]/', '', $mac));
+        $mac_colon_format = !empty($clean_mac) ? implode(':', str_split($clean_mac, 2)) : ''; 
+        if(!empty($mac_colon_format)) {
+            set_transient('mt_wifi_session_' . md5($mac_colon_format), time() + 3600, 3600);
+        }
+
+        do_action('mt_lead_captured', $final_lead_id, $brand_id);
+        wp_send_json_success('Lead Processed & Timer Started');
     }
 
     // --- RENDER ENGINE ---
@@ -609,7 +705,7 @@ class MT_Dashboard {
             ] );
 
             $core_views = ['brand', 'locations', 'domains'];
-            $wifi_views = ['splash', 'crm'];
+            $wifi_views = ['wifi_insights', 'crm', 'splash'];
             $email_views = ['email_insights', 'studio', 'campaigns', 'workflows', 'delivery']; 
             
             $is_core = in_array($view, $core_views);
@@ -674,8 +770,9 @@ class MT_Dashboard {
                             WiFi Marketing <i class="fa-solid fa-chevron-<?php echo $is_wifi ? 'up' : 'down'; ?> ml-auto transition-transform" id="icon_wifi"></i>
                         </button>
                         <div class="nav-group-items <?php echo $is_wifi ? 'open' : ''; ?>" id="nav_wifi">
-                            <a href="?view=splash" class="nav-sub-link <?php echo $view === 'splash' ? 'active' : ''; ?>"><i class="fa-solid fa-wifi mr-3 w-4 text-center"></i> Splash Designer</a>
+                            <a href="?view=wifi_insights" class="nav-sub-link <?php echo $view === 'wifi_insights' ? 'active' : ''; ?>"><i class="fa-solid fa-chart-area mr-3 w-4 text-center"></i> WiFi Insights</a>
                             <a href="?view=crm" class="nav-sub-link <?php echo $view === 'crm' ? 'active' : ''; ?>"><i class="fa-solid fa-users mr-3 w-4 text-center"></i> The Roost (CRM)</a>
+                            <a href="?view=splash" class="nav-sub-link <?php echo $view === 'splash' ? 'active' : ''; ?>"><i class="fa-solid fa-wifi mr-3 w-4 text-center"></i> Splash Designer</a>
                         </div>
 
                         <button class="nav-group-btn <?php echo $is_email ? 'active' : ''; ?>" onclick="toggleNav('email')">
