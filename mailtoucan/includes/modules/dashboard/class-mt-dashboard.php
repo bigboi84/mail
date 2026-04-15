@@ -1,7 +1,7 @@
 <?php
 /**
  * The Dashboard Module: The Shell, Router, and AJAX Handlers
- * v11.0 - Full File: Trash Engine, Smart Leads, and Menu Order
+ * v11.6 - Full File: Heartbeat Webhook safely extracted to standalone module
  */
 class MT_Dashboard {
 
