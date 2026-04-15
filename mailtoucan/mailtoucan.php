@@ -33,6 +33,11 @@ require_once MT_PATH . 'includes/modules/ai/class-mt-ai.php';
 // Boot up the WiFi Cron Engine (Nightly RADIUS Purge)
 require_once MT_PATH . 'includes/modules/wifi/class-mt-cron.php';
 
+// Boot up the API & Webhooks Engine (Lightweight Server-to-Server Listener)
+require_once MT_PATH . 'includes/modules/wifi/class-mt-webhooks.php';
+$plugin_webhooks = new MT_Webhooks();
+$plugin_webhooks->init();
+
 // LOAD NEW ADMIN SETTINGS BACKEND
 require_once MT_PATH . 'includes/class-mt-admin-settings.php';
 $admin_settings = new MT_Admin_Settings();
