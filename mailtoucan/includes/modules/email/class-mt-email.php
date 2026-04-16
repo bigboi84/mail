@@ -1,7 +1,7 @@
 <?php
 /**
- * MailToucan Universal Dispatch Engine
- * Handles Mail.baby, API routing (SendGrid, Mailgun), Custom SMTP, and the Global SuperAdmin Load Balancer.
+ * MailToucan Universal Dispatch Engine (Centralized SaaS Architecture)
+ * Acts as the master gateway for CRM, WiFi, and Bulk Broadcasts.
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -15,15 +15,18 @@ use PHPMailer\PHPMailer\Exception;
 
 class MT_Email {
 
-    public function init() {
+    public function __construct() {
         add_action( 'phpmailer_init', array( $this, 'configure_custom_smtp' ), 999 );
         
-        // UNIQUE DIAGNOSTIC HOOK: Bypasses any old dashboard hooks
-        add_action( 'wp_ajax_mt_fire_diagnostic_test', array( $this, 'ajax_send_diagnostic_email' ) );
+        // Master Diagnostic Hooks - Constructor guarantees they register immediately during AJAX
+        add_action( 'wp_ajax_mt_run_master_diagnostic', array( $this, 'ajax_run_master_diagnostic' ) );
         add_action( 'wp_ajax_mt_test_smtp_connection', array( $this, 'ajax_tenant_test_smtp_connection' ) );
         add_action( 'wp_ajax_mt_admin_test_smtp_connection', array( $this, 'ajax_admin_test_smtp_connection' ) );
     }
 
+    /**
+     * Retrieves routing config and builds the SaaS System Email dynamically
+     */
     private function get_routing_config( $brand_id ) {
         global $wpdb;
         $brand = $wpdb->get_row( $wpdb->prepare("SELECT brand_name, brand_config FROM {$wpdb->prefix}mt_brands WHERE id = %d", $brand_id) );
@@ -33,10 +36,15 @@ class MT_Email {
         $config = json_decode( $brand->brand_config, true ) ?: [];
         $delivery = isset($config['delivery']) ? $config['delivery'] : [];
 
+        // Dynamically fetch the current site domain
+        $site_domain = str_replace('www.', '', parse_url(site_url(), PHP_URL_HOST));
+
         $raw_slug = sanitize_title($brand->brand_name);
         $clean_slug = str_replace('-', '', $raw_slug); 
         if (empty($clean_slug)) $clean_slug = 'hello';
-        $system_email = $clean_slug . '@fly.mailtoucan.com';
+        
+        // Dynamically builds: brand@fly.yourdomain.com
+        $system_email = $clean_slug . '@fly.' . $site_domain;
 
         $configured_domain_email = !empty($delivery['from_email']) ? $delivery['from_email'] : $system_email;
 
@@ -225,7 +233,10 @@ class MT_Email {
         }
     }
 
-    public function ajax_send_diagnostic_email() {
+    /**
+     * UNIFIED MASTER DIAGNOSTIC ENGINE
+     */
+    public function ajax_run_master_diagnostic() {
         if (ob_get_length()) ob_clean();
         if ( ! check_ajax_referer( 'mt_app_nonce', 'security', false ) ) wp_send_json_error( 'Security Token Expired.' );
 
@@ -234,31 +245,49 @@ class MT_Email {
         if ( ! $brand_id ) wp_send_json_error( 'System Error: Brand ID missing.' );
         
         $to_email = sanitize_email( $_POST['to_email'] );
-        $subject  = sanitize_text_field( $_POST['subject'] );
-        $engine   = isset($_POST['engine']) ? sanitize_text_field($_POST['engine']) : 'bulk';
         
-        $raw_payload = isset($_POST['payload']) ? wp_unslash($_POST['payload']) : '';
-        if ( $raw_payload && !str_starts_with($raw_payload, '{') ) $raw_payload = urldecode(base64_decode($raw_payload));
+        global $wpdb;
+        $brand_name = $wpdb->get_var($wpdb->prepare("SELECT brand_name FROM {$wpdb->prefix}mt_brands WHERE id = %d", $brand_id));
+        $mock_lead = ['guest_name' => 'Diagnostic Test', 'email' => $to_email, 'phone' => '555-000-0000', 'birthday' => '1990-01-01'];
         
-        $parsed_data = json_decode($raw_payload, true);
-        $html_body = isset($parsed_data['html']) ? $parsed_data['html'] : '<p>Test Email Body</p>';
+        $results = [
+            'splash' => ['success' => false, 'msg' => ''],
+            'bulk'   => ['success' => false, 'msg' => '']
+        ];
 
-        $mock_lead = [ 'guest_name' => 'John Doe', 'email' => $to_email, 'phone' => '555-000-0000', 'birthday' => '1990-10-31' ];
-        $route = $this->get_routing_config( $brand_id );
-        $final_html = $this->parse_tags( $html_body, $mock_lead, $route['brand_name'], 'HQ Location' );
-
+        // 1. Test WiFi Engine
         try {
-            $result = $this->route_email( $to_email, $subject, $final_html, $brand_id, $engine );
+            $html_splash = $this->parse_tags( "<div style='padding:20px; font-family:sans-serif;'><h2>WiFi Transactional Test</h2><p>This email successfully fired through your WiFi Engine settings.</p></div>", $mock_lead, $brand_name, 'HQ' );
+            $res_splash = $this->route_email( $to_email, 'MailToucan WiFi Route Test 🚀', $html_splash, $brand_id, 'splash' );
             
-            if ( $result === true ) {
-                $used_email = ($engine === 'splash' && $route['splash_method'] === 'system') ? $route['system_email'] : $route['from_email'];
-                wp_send_json_success( 'Fired successfully from: ' . $used_email );
+            if ($res_splash === true) {
+                $route = $this->get_routing_config( $brand_id );
+                $used = ($route['splash_method'] === 'system') ? $route['system_email'] : $route['from_email'];
+                $results['splash'] = ['success' => true, 'msg' => "Passed! Sent from: " . $used];
             } else {
-                wp_send_json_error( is_string($result) ? $result : 'Unknown failure during dispatch.' );
+                $results['splash'] = ['success' => false, 'msg' => is_string($res_splash) ? $res_splash : "WiFi Engine Failed."];
             }
         } catch (Exception $e) {
-            wp_send_json_error('Fatal Error: ' . $e->getMessage());
+            $results['splash'] = ['success' => false, 'msg' => "Crash: " . $e->getMessage()];
         }
+
+        // 2. Test Bulk Engine
+        try {
+            $html_bulk = $this->parse_tags( "<div style='padding:20px; font-family:sans-serif;'><h2>Bulk Broadcast Test</h2><p>This email successfully fired through your Bulk Broadcast settings.</p></div>", $mock_lead, $brand_name, 'HQ' );
+            $res_bulk = $this->route_email( $to_email, 'MailToucan Bulk Route Test 🚀', $html_bulk, $brand_id, 'bulk' );
+            
+            if ($res_bulk === true) {
+                $route = $this->get_routing_config( $brand_id );
+                $used = ($route['bulk_method'] === 'system') ? $route['system_email'] : $route['from_email'];
+                $results['bulk'] = ['success' => true, 'msg' => "Passed! Sent from: " . $used];
+            } else {
+                $results['bulk'] = ['success' => false, 'msg' => is_string($res_bulk) ? $res_bulk : "Bulk Engine Failed."];
+            }
+        } catch (Exception $e) {
+            $results['bulk'] = ['success' => false, 'msg' => "Crash: " . $e->getMessage()];
+        }
+
+        wp_send_json_success( $results );
     }
 
     public function ajax_tenant_test_smtp_connection() {
@@ -303,3 +332,6 @@ class MT_Email {
         }
     }
 }
+
+// Guarantee the class is instantiated globally so the AJAX hooks always fire
+new MT_Email();
