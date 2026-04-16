@@ -196,6 +196,18 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
     </div>
 </div>
 
+<div class="bg-white border border-gray-200 rounded-xl p-6 mt-8 shadow-sm max-w-4xl mx-auto">
+    <h3 class="font-bold text-gray-900 mb-2"><i class="fa-solid fa-paper-plane text-indigo-500 mr-2"></i> Send Live Test Email</h3>
+    <p class="text-sm text-gray-500 mb-4">Send a test email to your personal inbox to verify that your routing engine is correctly dispatching emails.</p>
+    
+    <div class="flex gap-3">
+        <input type="email" id="test_email_address" placeholder="your.personal@gmail.com" class="p-3 border border-gray-300 rounded-lg flex-1 outline-none focus:border-indigo-500 font-bold text-gray-800">
+        <button onclick="fireTestEmail()" id="btn_fire_test" class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-bold shadow-md hover:bg-indigo-700 transition flex items-center gap-2">
+            Send Test <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
+</div>
+
 <div id="smtp_guide_modal" class="fixed inset-0 bg-gray-900/60 z-[300] hidden flex items-center justify-center backdrop-blur-sm transition-opacity opacity-0">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform scale-95 transition-all flex flex-col max-h-[90vh]" id="smtp_guide_content">
         <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
@@ -373,12 +385,50 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
         btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
         btn.disabled = true;
 
-        // In Phase 3, this will serialize the data and post to mt_save_brand_config to actually save the JSON.
-        // For now, we simulate the save and show the beautiful success toast.
+        // Simulate save for now
         setTimeout(() => {
             showToast("Flight Routes updated successfully in The Nest!", "success");
             btn.innerHTML = ogText;
             btn.disabled = false;
         }, 800);
+    }
+
+    // --- Live Fire Test Logic ---
+    function fireTestEmail() {
+        const email = document.getElementById('test_email_address').value.trim();
+        if(!email) return alert("Please enter an email address.");
+        
+        const btn = document.getElementById('btn_fire_test');
+        const ogText = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Routing...';
+        btn.disabled = true;
+
+        const fd = new FormData();
+        fd.append('action', 'mt_send_test_email');
+        fd.append('security', mt_nonce);
+        fd.append('to_email', email);
+        fd.append('subject', 'MailToucan Routing is LIVE! 🚀');
+        
+        const htmlPayload = {
+            html: '<div style="font-family:sans-serif; text-align:center; padding: 40px; background:#f3f4f6; border-radius:10px;"><h2 style="color:#111827;">MailToucan Infrastructure Test</h2><p style="color:#4b5563; font-size:16px;">This email was successfully routed through <b>[Brand_Name]</b> via your routing settings!</p><p style="color:#9ca3af; font-size:12px; margin-top:20px;">Sent on [Visit_Date]</p></div>'
+        };
+        fd.append('payload', JSON.stringify(htmlPayload));
+
+        fetch(mt_ajax_url, { method: 'POST', body: fd })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                showToast(data.data, 'success');
+            } else {
+                showToast(data.data, 'error');
+            }
+            btn.innerHTML = ogText;
+            btn.disabled = false;
+        })
+        .catch(err => {
+            showToast("System Error: Could not dispatch email.", 'error');
+            btn.innerHTML = ogText;
+            btn.disabled = false;
+        });
     }
 </script>
