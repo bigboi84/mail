@@ -106,8 +106,8 @@ $domains = $wpdb->get_results( $wpdb->prepare("SELECT * FROM $table_domains WHER
                                 </td>
                                 <td class="py-2">
                                     <div class="flex items-center gap-2">
-                                        <div class="font-mono text-indigo-600 bg-indigo-50 p-2 rounded text-xs select-all flex-1">v=spf1 include:spf.mailtoucan.pro ~all</div>
-                                        <button onclick="copyToClipboard(this, 'v=spf1 include:spf.mailtoucan.pro ~all')" class="text-gray-400 hover:text-indigo-600 transition p-2" title="Copy"><i class="fa-regular fa-copy"></i></button>
+                                        <div class="font-mono text-indigo-600 bg-indigo-50 p-2 rounded text-xs select-all flex-1">v=spf1 include:spf.fly.mailtoucan.com ~all</div>
+                                        <button onclick="copyToClipboard(this, 'v=spf1 include:spf.fly.mailtoucan.com ~all')" class="text-gray-400 hover:text-indigo-600 transition p-2" title="Copy"><i class="fa-regular fa-copy"></i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -231,8 +231,8 @@ $domains = $wpdb->get_results( $wpdb->prepare("SELECT * FROM $table_domains WHER
                 </td>
                 <td class="py-3">
                     <div class="flex items-center gap-2">
-                        <div class="font-mono text-indigo-600 bg-indigo-50 p-2 rounded text-xs select-all flex-1">${token}.dkim.mailtoucan.pro</div>
-                        <button onclick="copyToClipboard(this, '${token}.dkim.mailtoucan.pro')" class="text-gray-400 hover:text-indigo-600 transition p-2" title="Copy"><i class="fa-regular fa-copy"></i></button>
+                        <div class="font-mono text-indigo-600 bg-indigo-50 p-2 rounded text-xs select-all flex-1">${token}.dkim.fly.mailtoucan.com</div>
+                        <button onclick="copyToClipboard(this, '${token}.dkim.fly.mailtoucan.com')" class="text-gray-400 hover:text-indigo-600 transition p-2" title="Copy"><i class="fa-regular fa-copy"></i></button>
                     </div>
                 </td>
             </tr>`;
