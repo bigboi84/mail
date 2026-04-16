@@ -13,6 +13,7 @@ $delivery = isset($brand_config['delivery']) ? $brand_config['delivery'] : [
     'smtp_pass' => ''
 ];
 
+// SAAS LOGIC: Dynamically generate their System Email
 $raw_slug = sanitize_title($brand->brand_name);
 $clean_slug = str_replace('-', '', $raw_slug);
 if (empty($clean_slug)) $clean_slug = 'hello';
@@ -177,28 +178,37 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
 </div>
 
 <div class="bg-white border border-gray-200 rounded-xl p-8 mt-8 shadow-sm max-w-4xl mx-auto">
-    <h3 class="font-bold text-gray-900 mb-2 text-xl"><i class="fa-solid fa-paper-plane text-indigo-500 mr-2"></i> Send Live Test Emails</h3>
-    <p class="text-sm text-gray-500 mb-6">Verify that your chosen flight routes are actively working by firing an email to your personal inbox.</p>
+    <h3 class="font-bold text-gray-900 mb-2 text-xl"><i class="fa-solid fa-satellite-dish text-indigo-500 mr-2"></i> Master Infrastructure Diagnostic</h3>
+    <p class="text-sm text-gray-500 mb-6">Run a full system check on both your WiFi and Bulk routing engines simultaneously.</p>
     
-    <div class="mb-6">
-        <label class="block text-[10px] uppercase font-bold tracking-widest text-gray-500 mb-2">Target Inbox</label>
-        <input type="email" id="test_email_address" placeholder="your.personal@gmail.com" class="w-full p-3 border border-gray-300 rounded-lg outline-none focus:border-indigo-500 font-bold text-gray-800">
+    <div class="flex gap-4 items-end mb-6">
+        <div class="flex-1">
+            <label class="block text-[10px] uppercase font-bold tracking-widest text-gray-500 mb-2">Target Inbox</label>
+            <input type="email" id="test_email_address" placeholder="your.personal@gmail.com" class="w-full p-3 border border-gray-300 rounded-lg outline-none focus:border-indigo-500 font-bold text-gray-800">
+        </div>
+        <button onclick="runMasterDiagnostic()" id="btn_master_diag" class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-bold shadow hover:bg-indigo-700 transition flex items-center justify-center gap-2 h-[46px]">
+            <i class="fa-solid fa-radar"></i> RUN DIAGNOSTIC
+        </button>
     </div>
 
-    <div class="grid grid-cols-2 gap-6">
-        <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 flex flex-col">
-            <button onclick="fireTestEmail('splash')" id="btn_test_splash" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold shadow hover:bg-blue-700 transition flex items-center justify-center gap-2">
-                <i class="fa-solid fa-bolt"></i> Test WiFi Route
-            </button>
-            <div id="result_splash" class="mt-3 text-xs font-bold hidden p-2 rounded leading-relaxed text-left flex-1 break-words"></div>
+    <div id="diagnostic_readout" class="hidden border border-gray-200 rounded-xl overflow-hidden shadow-inner">
+        <div class="p-4 border-b border-gray-200 bg-gray-50 flex items-start gap-3">
+            <div id="icon_res_splash" class="mt-0.5"></div>
+            <div class="flex-1">
+                <h4 class="font-bold text-gray-900 text-sm">WiFi Transactional Engine</h4>
+                <p id="text_res_splash" class="text-xs font-mono mt-1"></p>
+            </div>
         </div>
-        <div class="bg-purple-50 p-4 rounded-xl border border-purple-100 flex flex-col">
-            <button onclick="fireTestEmail('bulk')" id="btn_test_bulk" class="w-full bg-purple-600 text-white py-3 rounded-lg font-bold shadow hover:bg-purple-700 transition flex items-center justify-center gap-2">
-                <i class="fa-solid fa-users"></i> Test Bulk Route
-            </button>
-            <div id="result_bulk" class="mt-3 text-xs font-bold hidden p-2 rounded leading-relaxed text-left flex-1 break-words"></div>
+        <div class="p-4 bg-gray-50 flex items-start gap-3">
+            <div id="icon_res_bulk" class="mt-0.5"></div>
+            <div class="flex-1">
+                <h4 class="font-bold text-gray-900 text-sm">Bulk Broadcast Engine</h4>
+                <p id="text_res_bulk" class="text-xs font-mono mt-1"></p>
+            </div>
         </div>
     </div>
+    
+    <div id="crash_console" class="hidden mt-4 bg-gray-900 rounded-xl p-4 text-[11px] font-mono text-red-400 overflow-x-auto shadow-inner border border-gray-700"></div>
 </div>
 
 <div id="smtp_guide_modal" class="fixed inset-0 bg-gray-900/60 z-[300] hidden flex items-center justify-center backdrop-blur-sm transition-opacity opacity-0">
@@ -234,10 +244,6 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
         const icon = type === 'error' ? 'fa-triangle-exclamation' : 'fa-check-circle';
         
         let displayMessage = message || "Unknown Error Occurred";
-        if (type === 'error' && !displayMessage.includes('Jungle Tangle')) {
-            displayMessage = "Jungle Tangle! " + displayMessage;
-        }
-
         toast.className = `flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] text-white text-sm font-bold transform transition-all duration-300 translate-y-10 opacity-0 ${bgColor} mb-3 pointer-events-auto`;
         toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i> ${displayMessage}`;
         container.appendChild(toast);
@@ -314,55 +320,77 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
         });
     }
 
-    // --- RAW DEBUG TESTER ---
-    function fireTestEmail(engine) {
+    // --- MASTER DIAGNOSTIC TRIGGER ---
+    function runMasterDiagnostic() {
         const email = document.getElementById('test_email_address').value.trim();
         if(!email) return showToast("Please enter a target email address.", "error");
         
-        const btn = document.getElementById('btn_test_' + engine);
-        const resBox = document.getElementById('result_' + engine);
+        const btn = document.getElementById('btn_master_diag');
+        const readout = document.getElementById('diagnostic_readout');
+        const crashBox = document.getElementById('crash_console');
         const ogText = btn.innerHTML;
         
-        btn.innerHTML = '<i class="fa-solid fa-bug fa-spin"></i> Diagnosing...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Scanning Routes...';
         btn.disabled = true;
+        
+        readout.classList.add('hidden');
+        crashBox.classList.add('hidden');
+        document.getElementById('icon_res_splash').innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-gray-400"></i>';
+        document.getElementById('text_res_splash').innerHTML = 'Testing...';
+        document.getElementById('text_res_splash').className = 'text-xs font-mono mt-1 text-gray-500';
+        document.getElementById('icon_res_bulk').innerHTML = '<i class="fa-solid fa-circle-notch fa-spin text-gray-400"></i>';
+        document.getElementById('text_res_bulk').innerHTML = 'Testing...';
+        document.getElementById('text_res_bulk').className = 'text-xs font-mono mt-1 text-gray-500';
+        readout.classList.remove('hidden');
 
         const fd = new FormData();
-        fd.append('action', 'mt_fire_diagnostic_test'); // USING THE NEW BYPASS HOOK!
+        fd.append('action', 'mt_run_master_diagnostic');
         fd.append('security', mt_nonce);
         fd.append('to_email', email);
-        fd.append('engine', engine);
-        fd.append('subject', 'MailToucan Diagnostic 🚀');
-        fd.append('payload', JSON.stringify({html: '<p>Diagnostic Engine Test</p>'}));
 
         fetch(mt_ajax_url, { method: 'POST', body: fd })
         .then(async res => {
             const rawText = await res.text(); 
-            resBox.classList.remove('hidden');
-
             try {
                 const data = JSON.parse(rawText);
-                if(data.success) {
-                    resBox.innerHTML = '<i class="fa-solid fa-check-circle mr-1"></i> ' + data.data;
-                    resBox.className = 'mt-3 text-xs font-bold p-2 rounded leading-relaxed text-left bg-green-50 text-green-600 break-words';
+                if(data.success && data.data) {
+                    if(data.data.splash.success) {
+                        document.getElementById('icon_res_splash').innerHTML = '<i class="fa-solid fa-circle-check text-green-500 text-lg"></i>';
+                        document.getElementById('text_res_splash').innerHTML = data.data.splash.msg;
+                        document.getElementById('text_res_splash').className = 'text-xs font-mono mt-1 text-green-600 font-bold';
+                    } else {
+                        document.getElementById('icon_res_splash').innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-500 text-lg"></i>';
+                        document.getElementById('text_res_splash').innerHTML = data.data.splash.msg;
+                        document.getElementById('text_res_splash').className = 'text-xs font-mono mt-1 text-red-600 font-bold break-words';
+                    }
+                    if(data.data.bulk.success) {
+                        document.getElementById('icon_res_bulk').innerHTML = '<i class="fa-solid fa-circle-check text-green-500 text-lg"></i>';
+                        document.getElementById('text_res_bulk').innerHTML = data.data.bulk.msg;
+                        document.getElementById('text_res_bulk').className = 'text-xs font-mono mt-1 text-green-600 font-bold';
+                    } else {
+                        document.getElementById('icon_res_bulk').innerHTML = '<i class="fa-solid fa-triangle-exclamation text-red-500 text-lg"></i>';
+                        document.getElementById('text_res_bulk').innerHTML = data.data.bulk.msg;
+                        document.getElementById('text_res_bulk').className = 'text-xs font-mono mt-1 text-red-600 font-bold break-words';
+                    }
                 } else {
-                    resBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> ' + (data.data || "Unknown Logic Error");
-                    resBox.className = 'mt-3 text-xs font-bold p-2 rounded leading-relaxed text-left bg-red-50 text-red-600 break-words';
+                    throw new Error(data.data || "Unknown Error");
                 }
             } catch(e) {
-                resBox.className = 'mt-3 text-xs font-bold p-3 rounded leading-relaxed text-left bg-gray-900 text-red-400 font-mono overflow-hidden w-full';
+                readout.classList.add('hidden');
+                crashBox.classList.remove('hidden');
                 if (rawText.trim() === '0' || rawText.trim() === '') {
-                    resBox.innerHTML = `<span class="text-white block mb-1">CRITICAL FAULT:</span> Server returned empty response. The hook is still missing or intercepted.`;
+                    crashBox.innerHTML = `[CRITICAL FAULT] Server returned empty response. The wp_ajax_mt_run_master_diagnostic hook is missing.`;
                 } else {
-                    resBox.innerHTML = `<span class="text-white block mb-1">PHP CRASH LOG:</span><textarea readonly class="w-full h-32 mt-1 bg-black text-green-400 p-2 text-[10px] rounded border border-gray-700 custom-scrollbar">${rawText}</textarea>`;
+                    crashBox.innerHTML = `[PHP CRASH LOG]<br><br>${rawText}`;
                 }
             }
             btn.innerHTML = ogText; 
             btn.disabled = false;
         })
         .catch(err => {
-            resBox.classList.remove('hidden');
-            resBox.className = 'mt-3 text-xs font-bold p-2 rounded text-left bg-red-50 text-red-600';
-            resBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Network Failure.';
+            readout.classList.add('hidden');
+            crashBox.classList.remove('hidden');
+            crashBox.innerHTML = '[NETWORK ERROR] Failed to connect to the server.';
             btn.innerHTML = ogText; 
             btn.disabled = false;
         });
