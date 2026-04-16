@@ -182,6 +182,29 @@ if (!empty($uamip)) {
         .radio-wrap { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; background: #f9fafb; cursor: pointer; margin-bottom: 0.5rem;}
         .radio-wrap span { font-size: 0.875rem; font-weight: 600; color: #374151; }
         .apple-note { font-size: 0.8rem; color: #6b7280; margin-top: 1.5rem; line-height: 1.5; background: #f9fafb; padding: 1rem; border-radius: 0.5rem; border: 1px solid #f3f4f6; text-align: left;}
+
+        /* --- Gamification Physics & Promo Effects --- */
+        .mystery-box { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.15)); }
+        .mystery-box:hover { transform: scale(1.05); }
+        .shake-animation { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; transform: translate3d(0, 0, 0); }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0) rotate(-2deg); }
+            20%, 80% { transform: translate3d(4px, 0, 0) rotate(2deg); }
+            30%, 50%, 70% { transform: translate3d(-8px, 0, 0) rotate(-4deg); }
+            40%, 60% { transform: translate3d(8px, 0, 0) rotate(4deg); }
+        }
+        .open-animation { animation: popOpen 0.5s forwards; }
+        @keyframes popOpen {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(0); opacity: 0; display: none; }
+        }
+        .prize-reveal { opacity: 0; transform: translateY(20px) scale(0.8); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; align-items: center; justify-content: center; position: absolute; inset: 0; background: white; border-radius: 12px; border: 2px dashed #e5e7eb; z-index: -1; }
+        .prize-reveal.active { opacity: 1; transform: translateY(0) scale(1); z-index: 10; }
+        
+        .ad-float { animation: floatAd 4s ease-in-out infinite; }
+        @keyframes floatAd { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        .ad-glow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 0 15px rgba(79, 70, 229, 0.3); border: 2px solid rgba(79, 70, 229, 0.15); }
     </style>
 </head>
 <body>
@@ -301,7 +324,11 @@ if (!empty($uamip)) {
                         </div>
                     <?php elseif($c_type === 'promo'): ?>
                         <div style="text-align: center;">
-                            <?php if(!empty($c_conf['img'])): ?><img src="<?php echo esc_attr($c_conf['img']); ?>" style="width: 100%; border-radius: 0.75rem; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);"><?php endif; ?>
+                            <?php if(!empty($c_conf['img'])): ?>
+                            <div class="ad-float ad-glow" style="border-radius: 0.75rem; margin-bottom: 1.5rem; overflow: hidden;">
+                                <img src="<?php echo esc_attr($c_conf['img']); ?>" style="width: 100%; display: block;">
+                            </div>
+                            <?php endif; ?>
                             <h2 style="font-size: 1.5rem; font-weight: bold; line-height: 1.3;"><?php echo esc_html($c_conf['text']); ?></h2>
                         </div>
                     <?php elseif($c_type === 'versus'): ?>
@@ -323,6 +350,20 @@ if (!empty($uamip)) {
                         <div style="text-align: center; padding: 1rem 0;">
                             <h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1.5rem; line-height: 1.3;"><?php echo esc_html($c_conf['text']); ?></h2>
                             <input type="date" id="camp_data_bday" class="custom-input" style="font-size: 1.25rem;">
+                        </div>
+                    <?php elseif($c_type === 'mystery_box'): ?>
+                        <div style="text-align: center; padding: 1rem 0;">
+                            <h2 style="font-size: 1.25rem; font-weight: bold; margin-bottom: 1.5rem; line-height: 1.3; color: #111827;">
+                                <?php echo esc_html($c_conf['text'] ?? 'Tap the box to reveal your prize!'); ?>
+                            </h2>
+                            <div style="position: relative; width: 140px; height: 140px; margin: 0 auto 1.5rem auto;" class="ad-float">
+                                <img src="https://cdn-icons-png.flaticon.com/512/5138/5138131.png" id="live_mystery_box" class="mystery-box w-full h-full" style="width:100%; height:100%;" onclick="playMysteryBox(this, '<?php echo esc_js($c_conf['prize'] ?? 'Mystery Prize!'); ?>')">
+                                <div id="live_prize_display" class="prize-reveal">
+                                    <i class="fa-solid fa-gift fa-2x" style="color: #4f46e5; margin-bottom: 8px;"></i>
+                                    <span id="live_prize_text" style="font-weight: bold; font-size: 1.1rem; color: #111827; line-height: 1.2; padding: 0 10px;"></span>
+                                </div>
+                            </div>
+                            <input type="hidden" id="camp_data_prize" value="">
                         </div>
                     <?php endif; ?>
                 </div>
@@ -511,6 +552,22 @@ if (!empty($uamip)) {
             });
         });
 
+        function playMysteryBox(imgEl, prizeText) {
+            if(document.getElementById('camp_data_prize').value !== '') return; 
+            
+            imgEl.classList.add('shake-animation');
+            setTimeout(() => {
+                imgEl.classList.remove('shake-animation');
+                imgEl.classList.add('open-animation');
+                setTimeout(() => {
+                    const pDisplay = document.getElementById('live_prize_display');
+                    document.getElementById('live_prize_text').innerText = prizeText;
+                    document.getElementById('camp_data_prize').value = prizeText;
+                    pDisplay.classList.add('active');
+                }, 400);
+            }, 500);
+        }
+
         function submitCampaign() {
             const btn = document.getElementById('btn_2');
             if(campType === 'survey') {
@@ -534,6 +591,10 @@ if (!empty($uamip)) {
                 const b = document.getElementById('camp_data_bday').value;
                 if(!b) { alert("Please enter your birthday."); return; }
                 leadData.survey_data.birthday = b;
+            } else if (campType === 'mystery_box') {
+                const p = document.getElementById('camp_data_prize').value;
+                if(!p) { alert("Please tap the Mystery Box to claim your prize first!"); return; }
+                leadData.survey_data.prize_won = p;
             }
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...';
             btn.disabled = true;
@@ -546,7 +607,11 @@ if (!empty($uamip)) {
             fd.append('security', mt_splash_nonce);
             fd.append('payload', JSON.stringify(leadData));
 
-            const fallbackTimeout = setTimeout(() => { transitionToStep(3); }, 3000);
+            // Increased timeout to 10s to allow for real DNS validation checks
+            const fallbackTimeout = setTimeout(() => { 
+                alert("Connection is taking too long. Please ensure your email is correct and try again.");
+                resetButtons();
+            }, 10000);
 
             fetch(mt_ajax_url, { method: 'POST', body: fd })
             .then(res => res.json())
@@ -555,15 +620,31 @@ if (!empty($uamip)) {
                 if(data.success) {
                     transitionToStep(3);
                 } else {
-                    alert("Backend Error: " + data.data);
-                    transitionToStep(3);
+                    // FAKE EMAIL DETECTED! Stop them and reset the UI.
+                    alert(data.data); 
+                    resetButtons();
                 }
             })
             .catch((e) => {
                 console.error(e);
                 clearTimeout(fallbackTimeout);
-                transitionToStep(3);
+                alert("Network error communicating with the authentication server. Please try again.");
+                resetButtons();
             });
+        }
+
+        // Helper function to reset the buttons if the email is fake
+        function resetButtons() {
+            const btn1 = document.getElementById('btn_1');
+            if(btn1) {
+                btn1.innerHTML = '<span>Connect to WiFi</span>';
+                btn1.disabled = false;
+            }
+            const btn2 = document.getElementById('btn_2');
+            if(btn2) {
+                btn2.innerHTML = '<span>Next Step</span>';
+                btn2.disabled = false;
+            }
         }
     </script>
 </body>
