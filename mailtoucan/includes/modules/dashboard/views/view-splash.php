@@ -48,6 +48,11 @@ function render_swatches($target_id, $primary, $sec, $ext) {
     .custom-scrollbar::-webkit-scrollbar { width: 6px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+
+    /* Premium Ad & Gamification Effects */
+    .ad-float { animation: floatAd 4s ease-in-out infinite; }
+    @keyframes floatAd { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+    .ad-glow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 0 15px rgba(79, 70, 229, 0.3); border: 2px solid rgba(79, 70, 229, 0.15); }
 </style>
 
 <div id="save_modal_overlay" class="fixed inset-0 bg-gray-900/80 z-[100] hidden flex items-center justify-center backdrop-blur-sm transition-opacity duration-300 opacity-0">
@@ -532,7 +537,7 @@ function render_swatches($target_id, $primary, $sec, $ext) {
                             </div>
 
                             <div id="prev_camp_promo" class="w-full hidden">
-                                <div class="bg-gray-100 w-full rounded-lg overflow-hidden flex items-center justify-center text-gray-300 font-bold min-h-[120px] mb-4">
+                                <div class="bg-gray-100 w-full rounded-xl overflow-hidden flex items-center justify-center text-gray-300 font-bold min-h-[120px] mb-4 ad-float ad-glow">
                                     <img id="prev_camp_img_promo" src="" class="w-full h-full object-cover hidden">
                                 </div>
                                 <h2 id="prev_camp_promo_title" class="text-lg font-bold text-gray-900 whitespace-pre-wrap leading-tight mb-4"></h2>
@@ -556,6 +561,13 @@ function render_swatches($target_id, $primary, $sec, $ext) {
                             <div id="prev_camp_birthday" class="w-full hidden mb-4">
                                 <h2 id="prev_camp_bday_text" class="text-lg font-bold text-gray-900 whitespace-pre-wrap leading-tight mb-4"></h2>
                                 <input type="date" class="w-full px-4 py-3 border rounded-lg text-center text-gray-600 font-bold" disabled>
+                            </div>
+
+                            <div id="prev_camp_mystery_box" class="w-full hidden mb-4">
+                                <h2 id="prev_camp_mb_title" class="text-lg font-bold text-gray-900 whitespace-pre-wrap leading-tight mb-4"></h2>
+                                <div class="relative w-32 h-32 mx-auto flex items-center justify-center ad-float">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/5138/5138131.png" class="w-full h-full drop-shadow-xl">
+                                </div>
                             </div>
 
                             <button id="prev_btn_2" class="w-full text-white font-bold py-3.5 rounded-xl shadow-md hidden transition-colors"></button>
@@ -1024,7 +1036,7 @@ function render_swatches($target_id, $primary, $sec, $ext) {
         btn2.innerText = document.getElementById('input_btn_text_2').value;
         btn2.style.backgroundColor = document.getElementById('input_btn_color_2').value;
         btn2.style.marginTop = document.getElementById('input_btn_mt_2').value + 'px';
-        ['survey', 'promo', 'versus', 'birthday'].forEach(t => document.getElementById('prev_camp_'+t).classList.add('hidden'));
+        ['survey', 'promo', 'versus', 'birthday', 'mystery_box'].forEach(t => document.getElementById('prev_camp_'+t).classList.add('hidden'));
 
         if (campSelect.value) {
             emptyState.classList.add('hidden');
@@ -1065,6 +1077,8 @@ function render_swatches($target_id, $primary, $sec, $ext) {
                 if(campConfig.img_b) { document.getElementById('prev_camp_img_vsb').src = campConfig.img_b; document.getElementById('prev_camp_img_vsb').classList.remove('hidden'); } else document.getElementById('prev_camp_img_vsb').classList.add('hidden');
             } else if (type === 'birthday') {
                 document.getElementById('prev_camp_bday_text').innerText = campConfig.text || '';
+            } else if (type === 'mystery_box') {
+                document.getElementById('prev_camp_mb_title').innerText = campConfig.text || 'Tap to unlock your prize!';
             }
         } else {
             emptyState.classList.remove('hidden');
