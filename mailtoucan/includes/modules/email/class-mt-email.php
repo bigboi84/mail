@@ -1,10 +1,18 @@
 <?php
 /**
  * MailToucan Universal Dispatch Engine
- * Handles Mail.baby, API routing (SendGrid, Mailgun), Custom SMTP, and Shortcode parsing.
+ * Handles Mail.baby, API routing (SendGrid, Mailgun), Custom SMTP, and the Global SuperAdmin Load Balancer.
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
+
+// Load WordPress's native isolated PHPMailer classes to bypass wp_mail() when needed
+require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php';
+require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php';
+require_once ABSPATH . WPINC . '/PHPMailer/Exception.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class MT_Email {
 
@@ -14,6 +22,9 @@ class MT_Email {
         
         // AJAX Endpoints for UI Testing
         add_action( 'wp_ajax_mt_send_test_email', array( $this, 'ajax_send_test_email' ) );
+        
+        // SECURE ADMIN SMTP TESTER
+        add_action( 'wp_ajax_mt_admin_test_smtp_connection', array( $this, 'ajax_admin_test_smtp_connection' ) );
     }
 
     /**
@@ -82,7 +93,7 @@ class MT_Email {
 
     /**
      * CORE: The Bulk Broadcast Switchboard
-     * Routes the email to the correct infrastructure
+     * Routes the email to the correct infrastructure safely
      */
     public function route_bulk_email( $to_email, $subject, $html_body, $brand_id ) {
         $route = $this->get_routing_config( $brand_id );
@@ -93,10 +104,22 @@ class MT_Email {
         $from_name = $route['brand_name'];
         $from_email = $route['from_email'];
 
-        // --- MAIL.BABY & CUSTOM SMTP ROUTE ---
-        // We rely on wp_mail(), which will be intercepted by our configure_custom_smtp() method below.
-        if ( $route['bulk_method'] === 'domain' || in_array($provider, ['mailbaby', 'custom']) ) {
-            return $this->send_via_wp_mail( $to_email, $subject, $html_body, $from_name, $from_email );
+        // --- TENANT OVERRIDE: CUSTOM SMTP ---
+        // Bypasses WP Mail to prevent Post SMTP from catching it, uses Tenant's entered credentials.
+        if ( $provider === 'custom' && !empty($route['smtp_host']) ) {
+            return $this->execute_isolated_phpmailer(
+                $route['smtp_host'], 
+                $route['smtp_port'], 
+                $route['smtp_user'], 
+                $route['smtp_pass'], 
+                $to_email, $subject, $html_body, $from_name, $from_email
+            );
+        }
+
+        // --- NEW: THE GLOBAL SUPERADMIN LOAD BALANCER ---
+        // If the tenant relies on the system default, we route them through the hidden SuperAdmin pool
+        if ( $route['bulk_method'] === 'domain' || in_array($provider, ['mailbaby', 'system']) ) {
+            return $this->send_via_global_pool( $to_email, $subject, $html_body, $from_name, $from_email );
         }
 
         // --- SENDGRID API ROUTE ---
@@ -136,6 +159,84 @@ class MT_Email {
         }
 
         return false; 
+    }
+
+    /**
+     * The SuperAdmin Weighted Load Balancer (e.g. 40% / 30% / 30%)
+     */
+    private function send_via_global_pool( $to, $subject, $html, $from_name, $from_email ) {
+        $saved_smtps = get_option('mt_marketing_smtps', '[]');
+        $smtp_pool = json_decode($saved_smtps, true) ?: [];
+        
+        // Only use relays that are active AND have a weight assigned
+        $active_pool = array_filter($smtp_pool, function($smtp) {
+            return !empty($smtp['active']) && intval($smtp['weight']) > 0;
+        });
+
+        // FALLBACK: If SuperAdmin hasn't setup marketing relays yet, fail safely.
+        if (empty($active_pool)) {
+            error_log("MailToucan Warning: No active Global Marketing SMTPs with weight found. Using wp_mail fallback.");
+            return $this->send_via_wp_mail( $to, $subject, $html, $from_name, $from_email );
+        }
+
+        // WEIGHTED SELECTION ALGORITHM
+        $rand = mt_rand(1, 100);
+        $cumulative_weight = 0;
+        $selected_smtp = null;
+
+        foreach ($active_pool as $smtp) {
+            $cumulative_weight += intval($smtp['weight']);
+            if ($rand <= $cumulative_weight) {
+                $selected_smtp = $smtp;
+                break;
+            }
+        }
+
+        // Failsafe in case math is off or total weight < 100
+        if (!$selected_smtp) $selected_smtp = reset($active_pool);
+        
+        // Prioritize the tenant's brand name/email, fallback to relay default
+        $final_from_email = !empty($from_email) ? $from_email : $selected_smtp['from_email'];
+        $final_from_name = !empty($from_name) ? $from_name : $selected_smtp['from_name'];
+
+        return $this->execute_isolated_phpmailer(
+            $selected_smtp['host'], 
+            $selected_smtp['port'], 
+            $selected_smtp['user'], 
+            $selected_smtp['pass'], 
+            $to, $subject, $html, $final_from_name, $final_from_email
+        );
+    }
+
+    /**
+     * Isolated SMTP Engine - Bypasses WP Mail & Post SMTP completely
+     */
+    private function execute_isolated_phpmailer( $host, $port, $user, $pass, $to, $subject, $html, $from_name, $from_email ) {
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();
+            $mail->Host       = $host;
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $user;
+            $mail->Password   = $pass;
+            $mail->SMTPSecure = ($port == 465) ? PHPMailer::ENCRYPTION_SMTPS : PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = intval($port);
+
+            $mail->setFrom($from_email, $from_name);
+            $mail->addAddress($to);
+            $mail->addCustomHeader('X-MailToucan-Campaign', 'True');
+
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+            $mail->Body    = $html;
+            $mail->AltBody = wp_strip_all_tags($html);
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            error_log("MailToucan Direct SMTP Bypass Failed: {$mail->ErrorInfo}");
+            return false;
+        }
     }
 
     /**
@@ -239,6 +340,44 @@ class MT_Email {
             wp_send_json_success( 'Test email flew successfully through your selected gateway!' );
         } else {
             wp_send_json_error( 'Failed to dispatch test email. Check your Delivery Routing API keys or Mail.baby credentials.' );
+        }
+    }
+
+    /**
+     * AJAX Handler: Test SMTP Connection from Admin Panel
+     */
+    public function ajax_admin_test_smtp_connection() {
+        // Verify Admin Nonce
+        if ( ! check_ajax_referer( 'mt_admin_smtp_test', 'security', false ) ) {
+            wp_send_json_error( 'Admin Security Token Expired. Please refresh the page.' );
+        }
+        if ( ! current_user_can( 'manage_options' ) ) wp_send_json_error( 'Permission Denied.' );
+
+        $host = sanitize_text_field($_POST['host']);
+        $port = intval($_POST['port']);
+        $user = sanitize_text_field($_POST['user']);
+        $pass = sanitize_text_field($_POST['pass']);
+
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();
+            $mail->Host       = $host;
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $user;
+            $mail->Password   = $pass;
+            $mail->SMTPSecure = ($port == 465) ? PHPMailer::ENCRYPTION_SMTPS : PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port       = $port;
+            $mail->Timeout    = 10;
+
+            // Use the native smtpConnect method to verify credentials without sending an email
+            if ( $mail->smtpConnect() ) {
+                $mail->smtpClose();
+                wp_send_json_success('Connection successful');
+            } else {
+                wp_send_json_error('Authentication failed. Check your credentials.');
+            }
+        } catch (Exception $e) {
+            wp_send_json_error('Connection Error: ' . $mail->ErrorInfo);
         }
     }
 }
