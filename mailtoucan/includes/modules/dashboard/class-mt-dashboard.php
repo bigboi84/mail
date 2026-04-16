@@ -584,8 +584,19 @@ class MT_Dashboard {
         $email = sanitize_email($payload['email']);
         
         if (!is_email($email)) {
-            wp_send_json_error('Invalid email format.');
+            wp_send_json_error('Invalid email format. Please check for typos.');
         }
+
+        // ==========================================
+        // NEW: LIVE DNS & MX RECORD SCRUBBING
+        // ==========================================
+        $domain = substr(strrchr($email, "@"), 1);
+        
+        // Check if the domain has a valid Mail Exchange (MX) record on the internet
+        if (!checkdnsrr($domain, 'MX')) {
+            wp_send_json_error("The domain (@{$domain}) cannot receive mail. Please provide a real email address.");
+        }
+        // ==========================================
 
         $brand_id = intval($payload['brand_id']); 
         $store_id = intval($payload['store_id']); 
