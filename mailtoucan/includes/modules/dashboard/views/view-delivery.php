@@ -58,7 +58,7 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
         </div>
         <div class="p-8 space-y-4 flex-1 bg-white">
             <label class="block relative">
-                <input type="radio" name="splash_method" value="system" class="routing-radio" <?php echo $delivery['splash_method'] == 'system' ? 'checked' : ''; ?>>
+                <input type="radio" name="splash_method" value="system" class="routing-radio mt-watch" <?php echo $delivery['splash_method'] == 'system' ? 'checked' : ''; ?>>
                 <div class="routing-card bg-white rounded-xl p-5 flex items-start gap-4">
                     <div class="radio-circle w-5 h-5 rounded-full border-2 border-gray-300 shrink-0 mt-0.5"></div>
                     <div>
@@ -68,7 +68,7 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
                 </div>
             </label>
             <label class="block relative">
-                <input type="radio" name="splash_method" value="google" class="routing-radio" <?php echo $delivery['splash_method'] == 'google' ? 'checked' : ''; ?>>
+                <input type="radio" name="splash_method" value="google" class="routing-radio mt-watch" <?php echo $delivery['splash_method'] == 'google' ? 'checked' : ''; ?>>
                 <div class="routing-card bg-white rounded-xl p-5 flex items-start gap-4">
                     <div class="radio-circle w-5 h-5 rounded-full border-2 border-gray-300 shrink-0 mt-0.5"></div>
                     <div class="w-full">
@@ -77,12 +77,18 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
                             <span class="text-[9px] bg-yellow-100 text-yellow-700 px-2 py-1 rounded border border-yellow-200 font-black uppercase tracking-widest">Low Volume</span>
                         </div>
                         <p class="text-xs text-gray-500 mb-3">Send directly from your connected Gmail account.</p>
-                        <button class="text-xs bg-gray-900 text-white px-4 py-2 rounded-lg font-bold hover:bg-black transition shadow-sm"><i class="fa-brands fa-google mr-1.5"></i> Connect Account</button>
+                        
+                        <?php if (!empty($delivery['google_email'])): ?>
+                            <div class="mt-1 text-xs font-bold text-green-600 bg-green-50 px-3 py-1.5 rounded inline-flex items-center gap-2 border border-green-100"><i class="fa-solid fa-check-circle"></i> <?php echo esc_html($delivery['google_email']); ?></div>
+                            <button type="button" onclick="connectGoogleAccount()" class="text-[11px] text-gray-500 hover:text-gray-900 font-bold ml-2 underline">Reconnect</button>
+                        <?php else: ?>
+                            <button type="button" onclick="connectGoogleAccount()" class="text-xs bg-gray-900 text-white px-4 py-2 rounded-lg font-bold hover:bg-black transition shadow-sm"><i class="fa-brands fa-google mr-1.5"></i> Connect Account</button>
+                        <?php endif; ?>
                     </div>
                 </div>
             </label>
             <label class="block relative">
-                <input type="radio" name="splash_method" value="domain" class="routing-radio" <?php echo $delivery['splash_method'] == 'domain' ? 'checked' : ''; ?>>
+                <input type="radio" name="splash_method" value="domain" class="routing-radio mt-watch" <?php echo $delivery['splash_method'] == 'domain' ? 'checked' : ''; ?>>
                 <div class="routing-card bg-white rounded-xl p-5 flex items-start gap-4">
                     <div class="radio-circle w-5 h-5 rounded-full border-2 border-gray-300 shrink-0 mt-0.5"></div>
                     <div>
@@ -108,7 +114,7 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
                 <p class="text-[11px] text-red-700 font-medium leading-relaxed">To protect global sender reputation, <strong>System</strong> and <strong>Gmail</strong> routing are strictly disabled for massive flock deployments.</p>
             </div>
             <label class="block relative">
-                <input type="radio" name="bulk_method" value="domain" class="routing-radio" onchange="document.getElementById('external_api_box').classList.add('hidden')" <?php echo $delivery['bulk_method'] == 'domain' ? 'checked' : ''; ?>>
+                <input type="radio" name="bulk_method" value="domain" class="routing-radio mt-watch" onchange="document.getElementById('external_api_box').classList.add('hidden')" <?php echo $delivery['bulk_method'] == 'domain' ? 'checked' : ''; ?>>
                 <div class="routing-card bg-white rounded-xl p-5 flex items-start gap-4">
                     <div class="radio-circle w-5 h-5 rounded-full border-2 border-gray-300 shrink-0 mt-0.5"></div>
                     <div>
@@ -118,7 +124,7 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
                 </div>
             </label>
             <label class="block relative">
-                <input type="radio" name="bulk_method" value="api" class="routing-radio" onchange="document.getElementById('external_api_box').classList.remove('hidden')" <?php echo $delivery['bulk_method'] == 'api' ? 'checked' : ''; ?>>
+                <input type="radio" name="bulk_method" value="api" class="routing-radio mt-watch" onchange="document.getElementById('external_api_box').classList.remove('hidden')" <?php echo $delivery['bulk_method'] == 'api' ? 'checked' : ''; ?>>
                 <div class="routing-card bg-white rounded-xl p-5 flex items-start gap-4">
                     <div class="radio-circle w-5 h-5 rounded-full border-2 border-gray-300 shrink-0 mt-0.5"></div>
                     <div class="w-full">
@@ -134,7 +140,7 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
                     <button type="button" onclick="openSmtpGuide()" class="text-[11px] font-black text-indigo-600 hover:text-indigo-800 transition"><i class="fa-solid fa-circle-info mr-1"></i>Setup Guide</button>
                 </div>
                 
-                <select id="smtp_provider" onchange="toggleSmtpFields()" class="w-full p-3 border border-gray-300 rounded-lg text-sm mb-5 outline-none font-bold text-gray-700 bg-white focus:border-indigo-500 transition shadow-sm">
+                <select id="smtp_provider" onchange="toggleSmtpFields()" class="mt-watch w-full p-3 border border-gray-300 rounded-lg text-sm mb-5 outline-none font-bold text-gray-700 bg-white focus:border-indigo-500 transition shadow-sm">
                     <option value="sendgrid" <?php echo $delivery['smtp_provider'] == 'sendgrid' ? 'selected' : ''; ?>>SendGrid API</option>
                     <option value="mailgun" <?php echo $delivery['smtp_provider'] == 'mailgun' ? 'selected' : ''; ?>>Mailgun API</option>
                     <option value="postmark" <?php echo $delivery['smtp_provider'] == 'postmark' ? 'selected' : ''; ?>>Postmark API</option>
@@ -145,27 +151,27 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
 
                 <div id="api_key_box" class="<?php echo $delivery['smtp_provider'] !== 'custom' ? '' : 'hidden'; ?>">
                     <label class="block text-[10px] uppercase font-bold tracking-widest text-gray-500 mb-2" id="lbl_api_key">Provider API Key</label>
-                    <input type="password" id="smtp_key" value="<?php echo esc_attr($delivery['smtp_key']); ?>" class="w-full p-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition shadow-sm" placeholder="Enter your secret API key">
+                    <input type="password" id="smtp_key" value="<?php echo esc_attr($delivery['smtp_key']); ?>" class="mt-watch w-full p-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition shadow-sm" placeholder="Enter your secret API key">
                 </div>
 
                 <div id="full_smtp_box" class="space-y-4 <?php echo $delivery['smtp_provider'] === 'custom' ? '' : 'hidden'; ?>">
                     <div class="grid grid-cols-3 gap-4">
                         <div class="col-span-2">
                             <label class="block text-[10px] uppercase font-bold tracking-widest text-gray-500 mb-2">SMTP Host</label>
-                            <input type="text" id="smtp_host" value="<?php echo esc_attr($delivery['smtp_host']); ?>" class="w-full p-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 transition shadow-sm" placeholder="e.g. smtp.mail.com">
+                            <input type="text" id="smtp_host" value="<?php echo esc_attr($delivery['smtp_host']); ?>" class="mt-watch w-full p-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 transition shadow-sm" placeholder="e.g. smtp.mail.com">
                         </div>
                         <div>
                             <label class="block text-[10px] uppercase font-bold tracking-widest text-gray-500 mb-2">Port</label>
-                            <input type="text" id="smtp_port" value="<?php echo esc_attr($delivery['smtp_port']); ?>" class="w-full p-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 transition shadow-sm" placeholder="587">
+                            <input type="text" id="smtp_port" value="<?php echo esc_attr($delivery['smtp_port']); ?>" class="mt-watch w-full p-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 transition shadow-sm" placeholder="587">
                         </div>
                     </div>
                     <div>
                         <label class="block text-[10px] uppercase font-bold tracking-widest text-gray-500 mb-2">SMTP Username</label>
-                        <input type="text" id="smtp_user" value="<?php echo esc_attr($delivery['smtp_user']); ?>" class="w-full p-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 transition shadow-sm" placeholder="Username or Email">
+                        <input type="text" id="smtp_user" value="<?php echo esc_attr($delivery['smtp_user']); ?>" class="mt-watch w-full p-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 transition shadow-sm" placeholder="Username or Email">
                     </div>
                     <div>
                         <label class="block text-[10px] uppercase font-bold tracking-widest text-gray-500 mb-2">SMTP Password</label>
-                        <input type="password" id="smtp_pass" value="<?php echo esc_attr($delivery['smtp_pass']); ?>" class="w-full p-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 transition shadow-sm" placeholder="Password">
+                        <input type="password" id="smtp_pass" value="<?php echo esc_attr($delivery['smtp_pass']); ?>" class="mt-watch w-full p-3 border border-gray-300 rounded-lg text-sm font-medium text-gray-800 placeholder-gray-400 outline-none focus:border-indigo-500 transition shadow-sm" placeholder="Password">
                     </div>
                 </div>
 
@@ -186,7 +192,7 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
     
     <div class="mb-6">
         <label class="block text-[10px] uppercase font-bold tracking-widest text-gray-500 mb-2">Target Inbox</label>
-        <input type="email" id="test_email_address_single" placeholder="your.personal@gmail.com" class="w-full p-3 border border-gray-300 rounded-lg outline-none focus:border-indigo-500 font-bold text-gray-800">
+        <input type="email" id="test_email_address_single" placeholder="your.personal@gmail.com" class="mt-watch w-full p-3 border border-gray-300 rounded-lg outline-none focus:border-indigo-500 font-bold text-gray-800">
     </div>
 
     <div class="grid grid-cols-2 gap-6">
@@ -212,7 +218,7 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
     <div class="flex gap-4 items-end mb-6">
         <div class="flex-1">
             <label class="block text-[10px] uppercase font-bold tracking-widest text-gray-500 mb-2">Target Inbox</label>
-            <input type="email" id="test_email_address" placeholder="your.personal@gmail.com" class="w-full p-3 border border-gray-300 rounded-lg outline-none focus:border-indigo-500 font-bold text-gray-800">
+            <input type="email" id="test_email_address" placeholder="your.personal@gmail.com" class="mt-watch w-full p-3 border border-gray-300 rounded-lg outline-none focus:border-indigo-500 font-bold text-gray-800">
         </div>
         <button onclick="runMasterDiagnostic()" id="btn_master_diag" class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-bold shadow hover:bg-indigo-700 transition flex items-center justify-center gap-2 h-[46px]">
             <i class="fa-solid fa-radar"></i> RUN DIAGNOSTIC
@@ -264,6 +270,21 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
 
 <script>
     let brandConfig = <?php echo wp_json_encode($brand_config); ?>;
+    let hasUnsavedChanges = false;
+
+    // Tracker for unsaved changes
+    document.querySelectorAll('.mt-watch').forEach(el => {
+        el.addEventListener('change', () => { hasUnsavedChanges = true; });
+        el.addEventListener('input', () => { hasUnsavedChanges = true; });
+    });
+
+    function checkUnsavedAlert() {
+        if (hasUnsavedChanges) {
+            alert("⚠️ IMPORTANT: You have unsaved changes!\n\nPlease click the 'Save Routes' button at the top right before running diagnostics to ensure you are testing the correct settings.");
+            return true;
+        }
+        return false;
+    }
 
     function showToast(message, type = 'success') {
         const container = document.getElementById('mt_toast_container');
@@ -311,6 +332,26 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
         m.classList.add('opacity-0'); c.classList.add('scale-95'); setTimeout(() => { m.classList.add('hidden'); }, 300);
     }
 
+    function connectGoogleAccount() {
+        showToast("Contacting Google Auth Server...", "success");
+        const fd = new FormData();
+        fd.append('action', 'mt_get_google_auth_url');
+        fd.append('brand_id', '<?php echo esc_js($brand->id); ?>');
+        
+        fetch(mt_ajax_url, { method: 'POST', body: fd })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success && data.data.url) {
+                window.location.href = data.data.url;
+            } else {
+                showToast("System Error: Failed to generate Google Login link.", "error");
+            }
+        })
+        .catch(err => {
+            showToast("Network Error: Could not reach Google.", "error");
+        });
+    }
+
     function saveDeliverySettings() {
         const btn = document.getElementById('btn_save_delivery');
         const ogText = btn.innerHTML;
@@ -325,7 +366,9 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
             smtp_host: document.getElementById('smtp_host').value,
             smtp_port: document.getElementById('smtp_port').value,
             smtp_user: document.getElementById('smtp_user').value,
-            smtp_pass: document.getElementById('smtp_pass').value
+            smtp_pass: document.getElementById('smtp_pass').value,
+            google_refresh_token: brandConfig.delivery.google_refresh_token || '',
+            google_email: brandConfig.delivery.google_email || ''
         };
 
         const fd = new FormData();
@@ -338,8 +381,12 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
         fetch(mt_ajax_url, { method: 'POST', body: fd })
         .then(res => res.json())
         .then(data => {
-            if(data.success) showToast("Flight Routes updated successfully in The Nest!", "success");
-            else showToast(data.data || "Failed to save. Please try again.", "error");
+            if(data.success) {
+                showToast("Flight Routes updated successfully in The Nest!", "success");
+                hasUnsavedChanges = false; // Reset tracker!
+            } else {
+                showToast("Failed to save. Please try again.", "error");
+            }
             btn.innerHTML = ogText; btn.disabled = false;
         })
         .catch(err => {
@@ -350,6 +397,8 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
 
     // --- INDIVIDUAL DIAGNOSTIC TESTER ---
     function fireTestEmail(engine) {
+        if (checkUnsavedAlert()) return; // Block test if unsaved
+
         const email = document.getElementById('test_email_address_single').value.trim();
         if(!email) return showToast("Please enter a target email address.", "error");
         
@@ -405,6 +454,8 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
 
     // --- MASTER DIAGNOSTIC TRIGGER ---
     function runMasterDiagnostic() {
+        if (checkUnsavedAlert()) return; // Block test if unsaved
+
         const email = document.getElementById('test_email_address').value.trim();
         if(!email) return showToast("Please enter a target email address.", "error");
         
@@ -413,7 +464,7 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
         const crashBox = document.getElementById('crash_console');
         const ogText = btn.innerHTML;
         
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Scanning Routes...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Scanning...';
         btn.disabled = true;
         
         readout.classList.add('hidden');
