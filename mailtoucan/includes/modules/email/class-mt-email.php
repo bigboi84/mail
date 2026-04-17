@@ -18,8 +18,11 @@ class MT_Email {
     public function __construct() {
         add_action( 'phpmailer_init', array( $this, 'configure_custom_smtp' ), 999 );
         
-        // Master Diagnostic Hooks - Constructor guarantees they register immediately during AJAX
+        // Diagnostic Hooks
         add_action( 'wp_ajax_mt_run_master_diagnostic', array( $this, 'ajax_run_master_diagnostic' ) );
+        add_action( 'wp_ajax_mt_fire_diagnostic_test', array( $this, 'ajax_send_diagnostic_email' ) );
+        
+        // SMTP Tester Hooks
         add_action( 'wp_ajax_mt_test_smtp_connection', array( $this, 'ajax_tenant_test_smtp_connection' ) );
         add_action( 'wp_ajax_mt_admin_test_smtp_connection', array( $this, 'ajax_admin_test_smtp_connection' ) );
     }
@@ -36,15 +39,15 @@ class MT_Email {
         $config = json_decode( $brand->brand_config, true ) ?: [];
         $delivery = isset($config['delivery']) ? $config['delivery'] : [];
 
-        // Dynamically fetch the current site domain
-        $site_domain = str_replace('www.', '', parse_url(site_url(), PHP_URL_HOST));
+        // HARDCODED MASTER SAAS DOMAIN
+        $master_saas_domain = 'fly.mailtoucan.com';
 
         $raw_slug = sanitize_title($brand->brand_name);
         $clean_slug = str_replace('-', '', $raw_slug); 
         if (empty($clean_slug)) $clean_slug = 'hello';
         
-        // Dynamically builds: brand@fly.yourdomain.com
-        $system_email = $clean_slug . '@fly.' . $site_domain;
+        // Dynamically builds: brand@fly.mailtoucan.com
+        $system_email = $clean_slug . '@' . $master_saas_domain;
 
         $configured_domain_email = !empty($delivery['from_email']) ? $delivery['from_email'] : $system_email;
 
@@ -234,15 +237,55 @@ class MT_Email {
     }
 
     /**
-     * UNIFIED MASTER DIAGNOSTIC ENGINE
+     * INDIVIDUAL DIAGNOSTIC ENGINE (Fires from the two separate buttons)
+     */
+    public function ajax_send_diagnostic_email() {
+        if (ob_get_length()) ob_clean();
+        if ( ! check_ajax_referer( 'mt_app_nonce', 'security', false ) ) wp_send_json_error( 'Security Token Expired.' );
+
+        $brand_id = isset($_POST['brand_id']) ? intval($_POST['brand_id']) : get_user_meta( get_current_user_id(), 'mt_brand_id', true );
+        if ( ! $brand_id ) wp_send_json_error( 'System Error: Brand ID missing. Could not identify tenant.' );
+        
+        $to_email = sanitize_email( $_POST['to_email'] );
+        $engine   = isset($_POST['engine']) ? sanitize_text_field($_POST['engine']) : 'bulk';
+        $subject  = sanitize_text_field( $_POST['subject'] );
+        
+        $raw_payload = isset($_POST['payload']) ? wp_unslash($_POST['payload']) : '';
+        if ( $raw_payload && !str_starts_with($raw_payload, '{') ) $raw_payload = urldecode(base64_decode($raw_payload));
+        
+        $parsed_data = json_decode($raw_payload, true);
+        $html_body = isset($parsed_data['html']) ? $parsed_data['html'] : '<p>Test Email Body</p>';
+
+        global $wpdb;
+        $brand_name = $wpdb->get_var($wpdb->prepare("SELECT brand_name FROM {$wpdb->prefix}mt_brands WHERE id = %d", $brand_id));
+        
+        $mock_lead = [ 'guest_name' => 'Diagnostic Test', 'email' => $to_email, 'phone' => '555-000-0000', 'birthday' => '1990-01-01' ];
+        $route = $this->get_routing_config( $brand_id );
+        $final_html = $this->parse_tags( $html_body, $mock_lead, $brand_name, 'HQ' );
+
+        try {
+            $result = $this->route_email( $to_email, $subject, $final_html, $brand_id, $engine );
+            
+            if ( $result === true ) {
+                $used_email = ($engine === 'splash' && $route['splash_method'] === 'system') ? $route['system_email'] : $route['from_email'];
+                wp_send_json_success( 'Fired successfully from: ' . $used_email );
+            } else {
+                wp_send_json_error( is_string($result) ? $result : 'Unknown failure during dispatch.' );
+            }
+        } catch (Exception $e) {
+            wp_send_json_error('Fatal Error: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * UNIFIED MASTER DIAGNOSTIC ENGINE (Fires from the main button)
      */
     public function ajax_run_master_diagnostic() {
         if (ob_get_length()) ob_clean();
         if ( ! check_ajax_referer( 'mt_app_nonce', 'security', false ) ) wp_send_json_error( 'Security Token Expired.' );
 
-        $user_id = get_current_user_id();
-        $brand_id = get_user_meta( $user_id, 'mt_brand_id', true );
-        if ( ! $brand_id ) wp_send_json_error( 'System Error: Brand ID missing.' );
+        $brand_id = isset($_POST['brand_id']) ? intval($_POST['brand_id']) : get_user_meta( get_current_user_id(), 'mt_brand_id', true );
+        if ( ! $brand_id ) wp_send_json_error( 'System Error: Brand ID missing. Could not identify tenant.' );
         
         $to_email = sanitize_email( $_POST['to_email'] );
         
