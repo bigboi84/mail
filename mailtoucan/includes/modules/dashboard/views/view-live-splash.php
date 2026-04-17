@@ -445,6 +445,25 @@ if (!empty($uamip)) {
             email: '', name: '', mac: rawMac, survey_data: {}
         };
 
+        // --- NEW: THE GOOGLE RETURN INTERCEPTOR ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('social_auth') === '1') {
+                leadData.email = urlParams.get('social_email');
+                leadData.name = urlParams.get('social_name');
+                
+                document.getElementById('step_1').innerHTML = '<div style="text-align:center; padding: 40px;"><i class="fa-solid fa-circle-notch fa-spin fa-3x" style="color:#4f46e5; margin-bottom: 20px;"></i><h3 style="font-weight:bold; color: #111827; margin-top: 15px;">Google Authenticated!</h3><p style="color: #6b7280;">Setting up your connection...</p></div>';
+                
+                setTimeout(() => {
+                    if (flowType === 3 && hasCampaign) {
+                        transitionToStep(2);
+                    } else {
+                        saveLeadToServerAndFinish();
+                    }
+                }, 1000);
+            }
+        });
+
         function hexToRgba(hex, opacity) {
             if(!hex) return 'transparent';
             let r = parseInt(hex.slice(1, 3), 16), g = parseInt(hex.slice(3, 5), 16), b = parseInt(hex.slice(5, 7), 16);
@@ -530,8 +549,37 @@ if (!empty($uamip)) {
             }
         }
 
+        // --- NEW: THE SOCIAL LOGIN TRIGGER ---
         function triggerSocialAuth(provider) {
-            alert("Social Login Engine: Routing to " + provider + " OAuth...");
+            if (provider === 'google') {
+                const btn = document.querySelector('.btn-google');
+                const ogHTML = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Redirecting...';
+                
+                const currentCleanUrl = window.location.href.split('&social_auth')[0].split('?social_auth')[0];
+                const stateObj = { current_url: currentCleanUrl };
+                
+                const fd = new FormData();
+                fd.append('action', 'mt_get_splash_google_url');
+                fd.append('state', JSON.stringify(stateObj));
+                
+                fetch(mt_ajax_url, { method: 'POST', body: fd })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = data.data.url;
+                    } else {
+                        alert("Could not connect to authentication server.");
+                        btn.innerHTML = ogHTML;
+                    }
+                })
+                .catch(() => {
+                    alert("Network Error.");
+                    btn.innerHTML = ogHTML;
+                });
+            } else {
+                alert("This social provider is not configured yet.");
+            }
         }
 
         document.querySelectorAll('#star_rating_block i').forEach(s => {
@@ -607,7 +655,6 @@ if (!empty($uamip)) {
             fd.append('security', mt_splash_nonce);
             fd.append('payload', JSON.stringify(leadData));
 
-            // Increased timeout to 10s to allow for real DNS validation checks
             const fallbackTimeout = setTimeout(() => { 
                 alert("Connection is taking too long. Please ensure your email is correct and try again.");
                 resetButtons();
@@ -620,7 +667,6 @@ if (!empty($uamip)) {
                 if(data.success) {
                     transitionToStep(3);
                 } else {
-                    // FAKE EMAIL DETECTED! Stop them and reset the UI.
                     alert(data.data); 
                     resetButtons();
                 }
@@ -633,7 +679,6 @@ if (!empty($uamip)) {
             });
         }
 
-        // Helper function to reset the buttons if the email is fake
         function resetButtons() {
             const btn1 = document.getElementById('btn_1');
             if(btn1) {
