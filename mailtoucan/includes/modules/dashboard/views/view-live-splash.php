@@ -49,12 +49,11 @@ if ($campaign_id > 0) {
         $c_conf = json_decode($camp->config_json, true);
         $is_active = true;
         
-        // --- NEW CAMPAIGN SCHEDULE CHECK ENGINE ---
         if (!empty($c_conf['schedule']['start']) && strtotime($c_conf['schedule']['start']) > time()) {
-            $is_active = false; // Campaign hasn't started yet
+            $is_active = false; 
         }
         if (!empty($c_conf['schedule']['end']) && strtotime($c_conf['schedule']['end']) < time()) {
-            $is_active = false; // Campaign has expired
+            $is_active = false; 
         }
 
         if ($is_active) {
@@ -92,14 +91,30 @@ $known_email = '';
 $known_name = '';
 $time_remaining_html = '';
 
-// BLOCK THE GHOST PROFILE: Only check the DB if the router actually sent a real MAC address
+// BLOCK THE GHOST PROFILE: Advanced Memory Engine
 if (!empty($raw_mac) && strlen($clean_mac) >= 10) {
+    
+    // THE FIX 1: Ignore deleted/unsubscribed users
     $existing_lead = $wpdb->get_row($wpdb->prepare(
-        "SELECT guest_name, email FROM {$wpdb->prefix}mt_guest_leads WHERE guest_mac = %s ORDER BY id DESC LIMIT 1", 
+        "SELECT guest_name, email, last_visit FROM {$wpdb->prefix}mt_guest_leads 
+         WHERE guest_mac = %s 
+         AND status != 'deleted' 
+         AND status != 'unsubscribed' 
+         ORDER BY id DESC LIMIT 1", 
         $raw_mac
     ));
 
-    if ($existing_lead && is_email($existing_lead->email) && strpos($existing_lead->email, '@local.wifi') === false) {
+    // THE FIX 2: 30-Day Memory Decay
+    $is_recent = true;
+    if ($existing_lead && !empty($existing_lead->last_visit)) {
+        $days_since_visit = (time() - strtotime($existing_lead->last_visit)) / (60 * 60 * 24);
+        if ($days_since_visit > 30) {
+            $is_recent = false; // Force re-login if it's been more than a month
+        }
+    }
+
+    // Only Welcome Back if they exist, are not deleted, and visited recently
+    if ($existing_lead && $is_recent && is_email($existing_lead->email) && strpos($existing_lead->email, '@local.wifi') === false) {
         $welcome_back = true;
         $known_email = $existing_lead->email;
         $known_name = $existing_lead->guest_name;
@@ -128,7 +143,7 @@ $show_name = isset($s1['fields']['show_name']) ? (bool)$s1['fields']['show_name'
 $req_name = isset($s1['fields']['req_name']) ? (bool)$s1['fields']['req_name'] : false;
 $show_email = isset($s1['fields']['show_email']) ? (bool)$s1['fields']['show_email'] : true;
 $has_fields = ($show_name || $show_email);
-$has_socials = (!empty($s1['google_auth']) || !empty($s1['fb_auth']) || !empty($s1['apple_auth']));
+$has_socials = (!empty($s1['fb_auth']) || !empty($s1['apple_auth'])); // Removed Google
 $tos_url = !empty($config['tos_url']) ? esc_url($config['tos_url']) : '#'; 
 
 $final_action_url = $redirect_url;
@@ -166,7 +181,6 @@ if (!empty($uamip)) {
         .main-btn:active { transform: scale(0.98); }
         .main-btn:disabled { opacity: 0.7; cursor: not-allowed; }
         .social-btn { width: 100%; font-weight: 700; padding: 0.875rem; border-radius: 0.75rem; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 0.5rem; font-size: 0.95rem; transition: transform 0.1s; text-decoration: none; margin-bottom: 0.75rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
-        .btn-google { background-color: #fff; border: 1px solid #d1d5db; color: #374151; }
         .btn-fb { background-color: #1877f2; border: none; color: #fff; }
         .btn-apple { background-color: #000; border: none; color: #fff; }
         .terms-block { text-align: left; margin-top: 0.5rem; margin-bottom: 1.5rem; display: flex; align-items: flex-start; gap: 0.5rem; background: #f9fafb; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #f3f4f6; }
@@ -183,7 +197,6 @@ if (!empty($uamip)) {
         .radio-wrap span { font-size: 0.875rem; font-weight: 600; color: #374151; }
         .apple-note { font-size: 0.8rem; color: #6b7280; margin-top: 1.5rem; line-height: 1.5; background: #f9fafb; padding: 1rem; border-radius: 0.5rem; border: 1px solid #f3f4f6; text-align: left;}
 
-        /* --- Gamification Physics & Promo Effects --- */
         .mystery-box { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.15)); }
         .mystery-box:hover { transform: scale(1.05); }
         .shake-animation { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; transform: translate3d(0, 0, 0); }
@@ -272,7 +285,7 @@ if (!empty($uamip)) {
                         <?php if($has_socials): ?>
                             <div style="<?php echo $has_fields ? 'margin-top: 1.5rem; border-top: 1px solid #e5e7eb; padding-top: 1.5rem;' : ''; ?>">
                                 <?php if(!$has_fields): ?><p style="font-size: 0.75rem; color: #6b7280; margin-bottom: 1rem;">By connecting, you agree to our <a href="<?php echo esc_attr($tos_url); ?>" class="terms-link" target="_blank">Terms & Conditions</a>.</p><?php endif; ?>
-                                <?php if(!empty($s1['google_auth'])): ?><button type="button" class="social-btn btn-google" onclick="triggerSocialAuth('google')"><img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="18" alt="Google"> Continue with Google</button><?php endif; ?>
+                                
                                 <?php if(!empty($s1['fb_auth'])): ?><button type="button" class="social-btn btn-fb" onclick="triggerSocialAuth('facebook')"><i class="fa-brands fa-facebook-f"></i> Continue with Facebook</button><?php endif; ?>
                                 <?php if(!empty($s1['apple_auth'])): ?><button type="button" class="social-btn btn-apple" onclick="triggerSocialAuth('apple')"><i class="fa-brands fa-apple" style="font-size: 1.1rem;"></i> Continue with Apple</button><?php endif; ?>
                             </div>
@@ -445,14 +458,13 @@ if (!empty($uamip)) {
             email: '', name: '', mac: rawMac, survey_data: {}
         };
 
-        // --- NEW: THE GOOGLE RETURN INTERCEPTOR ---
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('social_auth') === '1') {
                 leadData.email = urlParams.get('social_email');
                 leadData.name = urlParams.get('social_name');
                 
-                document.getElementById('step_1').innerHTML = '<div style="text-align:center; padding: 40px;"><i class="fa-solid fa-circle-notch fa-spin fa-3x" style="color:#4f46e5; margin-bottom: 20px;"></i><h3 style="font-weight:bold; color: #111827; margin-top: 15px;">Google Authenticated!</h3><p style="color: #6b7280;">Setting up your connection...</p></div>';
+                document.getElementById('step_1').innerHTML = '<div style="text-align:center; padding: 40px;"><i class="fa-solid fa-circle-notch fa-spin fa-3x" style="color:#4f46e5; margin-bottom: 20px;"></i><h3 style="font-weight:bold; color: #111827; margin-top: 15px;">Authenticated!</h3><p style="color: #6b7280;">Setting up your connection...</p></div>';
                 
                 setTimeout(() => {
                     if (flowType === 3 && hasCampaign) {
@@ -549,34 +561,9 @@ if (!empty($uamip)) {
             }
         }
 
-        // --- NEW: THE SOCIAL LOGIN TRIGGER ---
         function triggerSocialAuth(provider) {
             if (provider === 'google') {
-                const btn = document.querySelector('.btn-google');
-                const ogHTML = btn.innerHTML;
-                btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Redirecting...';
-                
-                const currentCleanUrl = window.location.href.split('&social_auth')[0].split('?social_auth')[0];
-                const stateObj = { current_url: currentCleanUrl };
-                
-                const fd = new FormData();
-                fd.append('action', 'mt_get_splash_google_url');
-                fd.append('state', JSON.stringify(stateObj));
-                
-                fetch(mt_ajax_url, { method: 'POST', body: fd })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.href = data.data.url;
-                    } else {
-                        alert("Could not connect to authentication server.");
-                        btn.innerHTML = ogHTML;
-                    }
-                })
-                .catch(() => {
-                    alert("Network Error.");
-                    btn.innerHTML = ogHTML;
-                });
+                alert("Google login is currently disabled for maintenance.");
             } else {
                 alert("This social provider is not configured yet.");
             }
