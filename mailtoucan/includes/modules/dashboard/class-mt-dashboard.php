@@ -52,7 +52,6 @@ class MT_Dashboard {
     private function maybe_create_saas_tables() {
         global $wpdb;
         $charset_collate = $wpdb->get_charset_collate();
-
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
         $table_leads = $wpdb->prefix . 'mt_guest_leads';
@@ -169,13 +168,36 @@ class MT_Dashboard {
         return $brand_id;
     }
 
+    // ==========================================
+    // NEW: RADIUS KILLSWITCH HELPER
+    // ==========================================
+    private function clear_radius_for_mac( $raw_mac ) {
+        $clean = strtoupper( preg_replace('/[^a-fA-F0-9]/', '', $raw_mac) );
+        if ( strlen($clean) !== 12 ) return;
+
+        $mac_colon = implode(':', str_split($clean, 2));  // AA:BB:CC:DD:EE:FF
+        $mac_dash  = implode('-', str_split($clean, 2));  // AA-BB-CC-DD-EE-FF
+
+        delete_transient( 'mt_wifi_session_' . md5($mac_colon) );
+
+        try {
+            $pdo = new PDO('mysql:host=107.173.49.14;dbname=radius;port=3306;charset=utf8mb4', 'mt_radius', 'JLAmX7sPoWffb7N3GVcp');
+            $pdo->prepare('DELETE FROM radcheck WHERE username = ?')->execute([$mac_colon]);
+            $pdo->prepare('DELETE FROM radreply WHERE username = ?')->execute([$mac_colon]);
+            $pdo->prepare('DELETE FROM radcheck WHERE username = ?')->execute([$mac_dash]);
+            $pdo->prepare('DELETE FROM radreply WHERE username = ?')->execute([$mac_dash]);
+        } catch ( PDOException $e ) {
+            error_log('MT RADIUS clear failed: ' . $e->getMessage());
+        }
+    }
+    // ==========================================
+
     // --- DOMAIN & EMAIL AJAX ENGINE ---
     public function ajax_add_domain() {
         $brand_id = $this->verify_ajax_request();
         $domain = sanitize_text_field(strtolower($_POST['domain']));
         $domain = str_replace(array('http://', 'https://', 'www.'), '', $domain);
         $domain = trim($domain, '/');
-
         if ( ! preg_match('/^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6}$/i', $domain) ) {
             wp_send_json_error('Invalid domain format.');
         }
@@ -190,14 +212,12 @@ class MT_Dashboard {
         $dkim2 = substr(md5(uniqid(rand(), true)), 0, 32);
         $dkim3 = substr(md5(uniqid(rand(), true)), 0, 32);
         $dkim_tokens = wp_json_encode([$dkim1, $dkim2, $dkim3]);
-
         $result = $wpdb->insert( $wpdb->prefix . 'mt_email_domains', array(
             'brand_id' => $brand_id, 
             'domain_name' => $domain, 
             'status' => 'pending', 
             'dkim_tokens' => $dkim_tokens
         ) );
-
         if($result) {
             wp_send_json_success('Domain added successfully.');
         } else {
@@ -217,7 +237,6 @@ class MT_Dashboard {
         global $wpdb;
         $domain_id = intval($_POST['domain_id']);
         $domain = $wpdb->get_var($wpdb->prepare("SELECT domain_name FROM {$wpdb->prefix}mt_email_domains WHERE id = %d AND brand_id = %d", $domain_id, $brand_id));
-        
         if (!$domain) {
             wp_send_json_error('Domain not found.');
         }
@@ -236,7 +255,6 @@ class MT_Dashboard {
         
         $logs = [];
         $logs[] = "[SYSTEM] Initiating secure connection test for: " . strtoupper($provider);
-        
         if ($provider === 'custom') {
             $host = sanitize_text_field($_POST['host']);
             $logs[] = "[NETWORK] Resolving host: " . ($host ? $host : 'MISSING_HOST') . "...";
@@ -271,7 +289,6 @@ class MT_Dashboard {
         $subject = sanitize_text_field($_POST['email_subject']);
         $assigned_to = sanitize_text_field($_POST['assigned_to']);
         $body = wp_kses_post(wp_unslash($_POST['email_body']));
-
         if ($template_id === 0) {
             $wpdb->insert( $wpdb->prefix . 'mt_email_templates', array(
                 'brand_id' => $brand_id, 
@@ -349,10 +366,8 @@ class MT_Dashboard {
         $brand_name = sanitize_text_field($_POST['brand_name']);
         $new_config = json_decode(wp_unslash($_POST['config']), true); 
         $primary_color = sanitize_hex_color($_POST['primary_color']);
-        
         $existing_brand = $wpdb->get_row($wpdb->prepare("SELECT brand_config FROM {$wpdb->prefix}mt_brands WHERE id = %d", $brand_id));
         $existing_config = json_decode($existing_brand->brand_config, true) ?: [];
-        
         if (isset($existing_config['vault'])) { 
             $new_config['vault'] = $existing_config['vault'];
         }
@@ -374,7 +389,6 @@ class MT_Dashboard {
         
         $config_arr = json_decode($config_json, true);
         $hardware_macs = [];
-        
         if(isset($config_arr['hardware']) && is_array($config_arr['hardware'])) {
             foreach($config_arr['hardware'] as $hw) {
                 if(is_array($hw) && isset($hw['mac'])) {
@@ -385,7 +399,6 @@ class MT_Dashboard {
             }
         }
         $router_identity = implode(',', $hardware_macs);
-        
         if ($store_id === 0) {
             $wpdb->insert( $wpdb->prefix . 'mt_stores', array( 
                 'brand_id' => $brand_id, 
@@ -415,7 +428,6 @@ class MT_Dashboard {
     public function ajax_upload_vault_media() {
         $brand_id = $this->verify_ajax_request();
         global $wpdb;
-        
         if ( empty( $_FILES['file'] ) ) {
             wp_send_json_error('No file uploaded.');
         }
@@ -425,7 +437,6 @@ class MT_Dashboard {
         }
         
         $movefile = wp_handle_upload( $_FILES['file'], array( 'test_form' => false ) );
-        
         if ( $movefile && ! isset( $movefile['error'] ) ) {
             $brand = $wpdb->get_row( $wpdb->prepare("SELECT brand_config FROM {$wpdb->prefix}mt_brands WHERE id = %d", $brand_id) );
             $config = json_decode($brand->brand_config, true) ?: [];
@@ -441,7 +452,6 @@ class MT_Dashboard {
                 'type' => sanitize_text_field($_POST['media_type'])
             );
             $config['vault'][] = $media_item;
-            
             $wpdb->update( $wpdb->prefix . 'mt_brands', array('brand_config' => wp_json_encode($config)), array('id' => $brand_id) );
             wp_send_json_success($media_item);
         } else { 
@@ -475,12 +485,10 @@ class MT_Dashboard {
     public function ajax_save_campaign() {
         $brand_id = $this->verify_ajax_request();
         global $wpdb;
-        
         $camp_id = intval($_POST['campaign_id']);
         $name = sanitize_text_field($_POST['campaign_name']);
         $type = sanitize_text_field($_POST['campaign_type']);
         $config_json = wp_unslash($_POST['config']);
-        
         if ($camp_id === 0) {
             $wpdb->insert( $wpdb->prefix . 'mt_campaigns', array(
                 'brand_id' => $brand_id, 
@@ -517,7 +525,18 @@ class MT_Dashboard {
             wp_send_json_error('Admin only.');
         }
         global $wpdb;
-        $wpdb->delete( $wpdb->prefix . 'mt_guest_leads', array('id' => intval($_POST['lead_id']), 'brand_id' => $brand_id) );
+        $lead_id = intval($_POST['lead_id']);
+
+        // RADIUS Killswitch
+        $lead = $wpdb->get_row( $wpdb->prepare(
+            "SELECT guest_mac FROM {$wpdb->prefix}mt_guest_leads WHERE id = %d AND brand_id = %d",
+            $lead_id, $brand_id
+        ) );
+        if ( $lead && ! empty( $lead->guest_mac ) ) {
+            $this->clear_radius_for_mac( $lead->guest_mac );
+        }
+
+        $wpdb->delete( $wpdb->prefix . 'mt_guest_leads', array('id' => $lead_id, 'brand_id' => $brand_id) );
         wp_send_json_success('Deleted.');
     }
 
@@ -525,9 +544,20 @@ class MT_Dashboard {
     public function ajax_trash_guest_lead() {
         $brand_id = $this->verify_ajax_request();
         global $wpdb;
+        $lead_id = intval($_POST['lead_id']);
+
+        // RADIUS Killswitch
+        $lead = $wpdb->get_row( $wpdb->prepare(
+            "SELECT guest_mac FROM {$wpdb->prefix}mt_guest_leads WHERE id = %d AND brand_id = %d",
+            $lead_id, $brand_id
+        ) );
+        if ( $lead && ! empty( $lead->guest_mac ) ) {
+            $this->clear_radius_for_mac( $lead->guest_mac );
+        }
+
         $wpdb->update( $wpdb->prefix . 'mt_guest_leads', 
             array('status' => 'trashed', 'deleted_at' => current_time('mysql')), 
-            array('id' => intval($_POST['lead_id']), 'brand_id' => $brand_id) 
+            array('id' => $lead_id, 'brand_id' => $brand_id) 
         );
         wp_send_json_success('Moved to Trash.');
     }
@@ -547,8 +577,24 @@ class MT_Dashboard {
         global $wpdb;
         $ids = json_decode(wp_unslash($_POST['lead_ids']), true);
         if(!empty($ids) && is_array($ids)) {
-            $ids_str = implode(',', array_map('intval', $ids));
-            $wpdb->query("UPDATE {$wpdb->prefix}mt_guest_leads SET status = 'trashed', deleted_at = '" . current_time('mysql') . "' WHERE id IN ($ids_str) AND brand_id = $brand_id");
+            $ids = array_map('intval', $ids);
+            $ids_str = implode(',', $ids);
+
+            // RADIUS Killswitch
+            $leads = $wpdb->get_results( "SELECT guest_mac FROM {$wpdb->prefix}mt_guest_leads WHERE id IN ($ids_str) AND brand_id = $brand_id" );
+            foreach ( $leads as $l ) {
+                if ( ! empty( $l->guest_mac ) ) {
+                    $this->clear_radius_for_mac( $l->guest_mac );
+                }
+            }
+
+            // Secure Database Update
+            $wpdb->query( $wpdb->prepare(
+                "UPDATE {$wpdb->prefix}mt_guest_leads
+                 SET status = 'trashed', deleted_at = %s
+                 WHERE id IN ($ids_str) AND brand_id = %d",
+                current_time('mysql'), intval($brand_id)
+            ) );
         }
         wp_send_json_success('Guests moved to trash.');
     }
@@ -556,6 +602,18 @@ class MT_Dashboard {
     public function ajax_empty_guest_trash() {
         $brand_id = $this->verify_ajax_request();
         global $wpdb;
+
+        // RADIUS Killswitch
+        $leads = $wpdb->get_results( $wpdb->prepare( 
+            "SELECT guest_mac FROM {$wpdb->prefix}mt_guest_leads WHERE status = 'trashed' AND brand_id = %d", 
+            $brand_id 
+        ) );
+        foreach ( $leads as $l ) {
+            if ( ! empty( $l->guest_mac ) ) {
+                $this->clear_radius_for_mac( $l->guest_mac );
+            }
+        }
+
         $wpdb->delete( $wpdb->prefix . 'mt_guest_leads', array('status' => 'trashed', 'brand_id' => $brand_id) );
         wp_send_json_success('Trash Emptied Permanently.');
     }
@@ -564,7 +622,18 @@ class MT_Dashboard {
         $brand_id = $this->verify_ajax_request();
         if ( ! current_user_can('manage_options') ) wp_send_json_error('Admin only.');
         global $wpdb;
-        $wpdb->delete( $wpdb->prefix . 'mt_guest_leads', array('id' => intval($_POST['lead_id']), 'brand_id' => $brand_id) );
+        $lead_id = intval($_POST['lead_id']);
+
+        // RADIUS Killswitch
+        $lead = $wpdb->get_row( $wpdb->prepare(
+            "SELECT guest_mac FROM {$wpdb->prefix}mt_guest_leads WHERE id = %d AND brand_id = %d",
+            $lead_id, $brand_id
+        ) );
+        if ( $lead && ! empty( $lead->guest_mac ) ) {
+            $this->clear_radius_for_mac( $lead->guest_mac );
+        }
+
+        $wpdb->delete( $wpdb->prefix . 'mt_guest_leads', array('id' => $lead_id, 'brand_id' => $brand_id) );
         wp_send_json_success('Deleted Permanently.');
     }
 
@@ -582,7 +651,6 @@ class MT_Dashboard {
         }
 
         $email = sanitize_email($payload['email']);
-        
         if (!is_email($email)) {
             wp_send_json_error('Invalid email format. Please check for typos.');
         }
@@ -591,26 +659,23 @@ class MT_Dashboard {
         // NEW: LIVE DNS & MX RECORD SCRUBBING
         // ==========================================
         $domain = substr(strrchr($email, "@"), 1);
-        
         // Check if the domain has a valid Mail Exchange (MX) record on the internet
         if (!checkdnsrr($domain, 'MX')) {
             wp_send_json_error("The domain (@{$domain}) cannot receive mail. Please provide a real email address.");
         }
         // ==========================================
 
-        $brand_id = intval($payload['brand_id']); 
+        $brand_id = intval($payload['brand_id']);
         $store_id = intval($payload['store_id']); 
         $campaign_id = intval($payload['campaign_id']);
         $name = sanitize_text_field($payload['name']); 
         $mac = sanitize_text_field($payload['mac'] ?? 'UNKNOWN');
         $survey_data = wp_json_encode($payload['survey_data'] ?? []);
-        
         $campaign_tag = '';
         if ($campaign_id > 0) {
             $camp = $wpdb->get_row($wpdb->prepare("SELECT campaign_name FROM {$wpdb->prefix}mt_campaigns WHERE id = %d", $campaign_id));
             if($camp) {
                 $campaign_tag = $camp->campaign_name;
-                
                 if(!empty($payload['survey_data'])) {
                     $wpdb->insert( $wpdb->prefix . 'mt_campaign_responses', array(
                         'campaign_id' => $campaign_id,
@@ -629,7 +694,6 @@ class MT_Dashboard {
 
         // SMART LEAD UPDATING
         $existing_lead_id = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$wpdb->prefix}mt_guest_leads WHERE brand_id = %d AND guest_mac = %s", $brand_id, $mac));
-
         if ($existing_lead_id) {
             $wpdb->update( $wpdb->prefix . 'mt_guest_leads', array(
                 'email' => $email,
@@ -640,7 +704,6 @@ class MT_Dashboard {
                 'consent_ip' => $ip,
                 'consent_log' => $consent_log
             ), array('id' => $existing_lead_id) );
-            
             $final_lead_id = $existing_lead_id;
         } else {
             $unsub_token = bin2hex(random_bytes(16));
@@ -672,8 +735,21 @@ class MT_Dashboard {
             set_transient('mt_wifi_session_' . md5($mac_colon_format), time() + 3600, 3600);
         }
 
+        // ==========================================
+        // NEW: AUTHORIZE RADIUS ON DASHBOARD CAPTURE
+        // ==========================================
+        if ( ! empty($mac) && $mac !== 'UNKNOWN' && class_exists('MT_Wifi_Controller') ) {
+            $wifi = new MT_Wifi_Controller();
+            $radius_result = $wifi->authorize_guest_mac( $final_lead_id, $brand_id );
+            if ( $radius_result !== true ) {
+                wp_send_json_error( $radius_result );
+                return;
+            }
+        }
+        // ==========================================
+
         do_action('mt_lead_captured', $final_lead_id, $brand_id);
-        wp_send_json_success('Lead Processed & Timer Started');
+        wp_send_json_success('Lead Processed & Authorized');
     }
 
     // --- RENDER ENGINE ---
@@ -700,7 +776,6 @@ class MT_Dashboard {
             global $wpdb;
             $view = isset($_GET['view']) ? sanitize_text_field($_GET['view']) : 'overview';
             $brand_id = $this->get_tenant_brand_id();
-            
             if ( ! $brand_id ) { 
                 wp_die('No Tenant Environment Assigned.');
             }
@@ -709,16 +784,13 @@ class MT_Dashboard {
             $current_user = wp_get_current_user();
             $logout_url = wp_logout_url( home_url('/app/') );
             $avatar_url = get_avatar_url($current_user->ID, ['size' => 60]);
-            
             $mt_palette = get_option( 'mt_brand_palette', [
                 'accent' => '#FCC753', 
                 'dark' => '#1A232E'
             ] );
-
             $core_views = ['brand', 'locations', 'domains'];
             $wifi_views = ['wifi_insights', 'crm', 'splash'];
-            $email_views = ['email_insights', 'studio', 'campaigns', 'workflows', 'delivery']; 
-            
+            $email_views = ['email_insights', 'studio', 'campaigns', 'workflows', 'delivery'];
             $is_core = in_array($view, $core_views);
             $is_wifi = in_array($view, $wifi_views);
             $is_email = in_array($view, $email_views);
@@ -753,7 +825,8 @@ class MT_Dashboard {
                     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
                     .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #374151; border-radius: 10px; }
                 </style>
-                <script>const mt_ajax_url = "<?php echo admin_url('admin-ajax.php'); ?>"; const mt_nonce = "<?php echo wp_create_nonce('mt_app_nonce'); ?>";</script>
+                <script>const mt_ajax_url = "<?php echo admin_url('admin-ajax.php'); ?>";
+                const mt_nonce = "<?php echo wp_create_nonce('mt_app_nonce'); ?>";</script>
             </head>
             <body class="flex">
                 <aside class="sidebar shadow-xl">
@@ -765,7 +838,6 @@ class MT_Dashboard {
                     </div>
                     
                     <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
-            
                         <a href="?view=overview" class="nav-link mx-2 <?php echo $view === 'overview' ? 'active' : ''; ?>"><i class="fa-solid fa-chart-pie mr-2 w-5 text-center"></i> Account Status</a>
                         
                         <button class="nav-group-btn <?php echo $is_core ? 'active' : ''; ?>" onclick="toggleNav('core')">
@@ -834,7 +906,6 @@ class MT_Dashboard {
                     function toggleNav(group) {
                         const items = document.getElementById('nav_' + group);
                         const icon = document.getElementById('icon_' + group);
-                        
                         if (items.classList.contains('open')) {
                             items.classList.remove('open');
                             icon.classList.remove('fa-chevron-up');
