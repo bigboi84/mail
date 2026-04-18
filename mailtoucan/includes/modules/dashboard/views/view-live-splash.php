@@ -94,26 +94,24 @@ $time_remaining_html = '';
 // BLOCK THE GHOST PROFILE: Advanced Memory Engine
 if (!empty($raw_mac) && strlen($clean_mac) >= 10) {
     
-    // THE FIX 1: Ignore deleted/unsubscribed users
+    // ISSUE 1 FIX: Strictly ignore trashed, deleted, and unsubscribed leads
     $existing_lead = $wpdb->get_row($wpdb->prepare(
         "SELECT guest_name, email, last_visit FROM {$wpdb->prefix}mt_guest_leads 
          WHERE guest_mac = %s 
-         AND status != 'deleted' 
-         AND status != 'unsubscribed' 
+         AND deleted_at IS NULL 
+         AND status NOT IN ('trashed', 'deleted', 'unsubscribed') 
          ORDER BY id DESC LIMIT 1", 
         $raw_mac
     ));
 
-    // THE FIX 2: 30-Day Memory Decay
     $is_recent = true;
     if ($existing_lead && !empty($existing_lead->last_visit)) {
         $days_since_visit = (time() - strtotime($existing_lead->last_visit)) / (60 * 60 * 24);
         if ($days_since_visit > 30) {
-            $is_recent = false; // Force re-login if it's been more than a month
+            $is_recent = false; 
         }
     }
 
-    // Only Welcome Back if they exist, are not deleted, and visited recently
     if ($existing_lead && $is_recent && is_email($existing_lead->email) && strpos($existing_lead->email, '@local.wifi') === false) {
         $welcome_back = true;
         $known_email = $existing_lead->email;
@@ -143,7 +141,7 @@ $show_name = isset($s1['fields']['show_name']) ? (bool)$s1['fields']['show_name'
 $req_name = isset($s1['fields']['req_name']) ? (bool)$s1['fields']['req_name'] : false;
 $show_email = isset($s1['fields']['show_email']) ? (bool)$s1['fields']['show_email'] : true;
 $has_fields = ($show_name || $show_email);
-$has_socials = (!empty($s1['fb_auth']) || !empty($s1['apple_auth'])); // Removed Google
+$has_socials = (!empty($s1['fb_auth']) || !empty($s1['apple_auth'])); // Google Removed
 $tos_url = !empty($config['tos_url']) ? esc_url($config['tos_url']) : '#'; 
 
 $final_action_url = $redirect_url;
