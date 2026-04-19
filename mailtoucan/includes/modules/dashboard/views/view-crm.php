@@ -7,7 +7,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 global $wpdb;
 
-// Catch and Save API Toggle
 if (isset($_POST['mt_api_toggle_action']) && isset($_POST['brand_id'])) {
     update_option('mt_api_sync_' . intval($_POST['brand_id']), sanitize_text_field($_POST['mt_api_toggle_action']));
     wp_send_json_success();
@@ -18,10 +17,8 @@ $table_leads = $wpdb->prefix . 'mt_guest_leads';
 $table_stores = $wpdb->prefix . 'mt_stores';
 $table_campaigns = $wpdb->prefix . 'mt_campaigns';
 
-// Auto-Hard Delete Trash older than 30 Days (The Vegas Sweeper)
-$wpdb->query($wpdb->prepare("DELETE FROM $table_leads WHERE status = 'trashed' AND brand_id = %d AND deleted_at < NOW() - INTERVAL 30 DAY", $brand->id));
+// AUDIT FIX: Removed the slow database DELETE query that ran on every page load. It is now handled by class-mt-cron.php.
 
-// Fetch ALL leads (Active and Trashed) so Javascript can filter them instantly
 $leads = $wpdb->get_results( $wpdb->prepare("
     SELECT l.*, s.store_name 
     FROM $table_leads l
@@ -35,13 +32,25 @@ $campaigns = $wpdb->get_results( $wpdb->prepare("SELECT * FROM $table_campaigns 
 $js_leads = [];
 $active_count = 0;
 $trashed_count = 0;
+$unsub_count = 0; // AUDIT FIX: Declared missing variable
 
 foreach($leads as $l) { 
+    // AUDIT FIX: Calculate Live Network Status using the Transient
+    $mac_clean = strtoupper(preg_replace('/[^a-fA-F0-9]/', '', $l->guest_mac ?? ''));
+    $mac_colon = strlen($mac_clean) === 12 ? implode(':', str_split($mac_clean, 2)) : '';
+    $session_end = $mac_colon ? get_transient('mt_wifi_session_' . md5($mac_colon)) : false;
+    $l->online_until = ($session_end && $session_end > time()) ? $session_end : 0;
+
     $js_leads[$l->id] = $l;
+    
     if($l->status === 'trashed') {
         $trashed_count++;
     } else {
         $active_count++;
+        // AUDIT FIX: Calculate exact unsubs to make the UI stat correct
+        if ($l->status === 'unsubscribed') {
+            $unsub_count++;
+        }
     }
 }
 
@@ -50,33 +59,19 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
 ?>
 
 <style>
-    .crm-tab.active { border-bottom: 2px solid #4f46e5; color: #4f46e5; }
-    .crm-view { display: none; }
-    .crm-view.active { display: block; }
-    .dr-tab.active { border-bottom: 2px solid #4f46e5; color: #4f46e5; }
-    .dr-view { display: none; }
-    .dr-view.active { display: block; }
-    
-    .drawer-scroll::-webkit-scrollbar { width: 4px; }
-    .drawer-scroll::-webkit-scrollbar-track { background: transparent; }
-    .drawer-scroll::-webkit-scrollbar-thumb { background-color: #e5e7eb; border-radius: 20px; }
-
-    .timeline-container { position: relative; padding-left: 1.5rem; }
-    .timeline-container::before { content: ''; position: absolute; left: 0.45rem; top: 0; bottom: 0; width: 2px; background: #e5e7eb; }
-    .timeline-item { position: relative; margin-bottom: 1.5rem; }
-    .timeline-icon { position: absolute; left: -1.5rem; top: 0; width: 1.5rem; height: 1.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; border: 2px solid white; z-index: 10; }
-
+    .crm-tab.active { border-bottom: 2px solid #4f46e5; color: #4f46e5; } .crm-view { display: none; } .crm-view.active { display: block; }
+    .dr-tab.active { border-bottom: 2px solid #4f46e5; color: #4f46e5; } .dr-view { display: none; } .dr-view.active { display: block; }
+    .drawer-scroll::-webkit-scrollbar { width: 4px; } .drawer-scroll::-webkit-scrollbar-track { background: transparent; } .drawer-scroll::-webkit-scrollbar-thumb { background-color: #e5e7eb; border-radius: 20px; }
+    .timeline-container { position: relative; padding-left: 1.5rem; } .timeline-container::before { content: ''; position: absolute; left: 0.45rem; top: 0; bottom: 0; width: 2px; background: #e5e7eb; }
+    .timeline-item { position: relative; margin-bottom: 1.5rem; } .timeline-icon { position: absolute; left: -1.5rem; top: 0; width: 1.5rem; height: 1.5rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; border: 2px solid white; z-index: 10; }
     .checkbox-custom { width: 1.1rem; height: 1.1rem; accent-color: #4f46e5; cursor: pointer; }
-    
-    .camp-type-view { display: none; }
-    .camp-type-view.active { display: block; }
+    .camp-type-view { display: none; } .camp-type-view.active { display: block; }
     .phone-mockup { border: 12px solid #1f2937; border-radius: 36px; height: 600px; width: 320px; background: #fff; position: relative; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); margin: 0 auto; }
     .phone-notch { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100px; height: 25px; background: #1f2937; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; z-index: 20;}
     .input-error { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
     .img-upload-zone { position: relative; overflow: hidden; border: 1px solid #d1d5db; border-radius: 0.375rem; background: #f9fafb; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100px; }
     .img-upload-zone img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 10; }
     .img-upload-zone .rem-btn { position: absolute; top: 4px; right: 4px; background: rgba(239,68,68,0.9); color: white; border-radius: 50%; width: 24px; height: 24px; z-index: 40; display: flex; align-items: center; justify-content: center; font-size: 10px; cursor: pointer; }
-    
     #confirm_modal { z-index: 9999 !important; }
 </style>
 
@@ -88,9 +83,7 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
 <div id="confirm_modal" class="fixed inset-0 bg-gray-900/60 hidden flex items-center justify-center backdrop-blur-sm transition-opacity opacity-0">
     <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden transform scale-95 transition-all" id="confirm_modal_content">
         <div class="p-6 text-center">
-            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fa-solid fa-triangle-exclamation text-3xl text-red-600" id="confirm_icon"></i>
-            </div>
+            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-triangle-exclamation text-3xl text-red-600" id="confirm_icon"></i></div>
             <h2 class="text-xl font-bold text-gray-900 mb-2" id="confirm_title">Are you sure?</h2>
             <p class="text-sm text-gray-500 mb-6" id="confirm_desc">This action cannot be undone.</p>
             <div class="flex gap-3 justify-center">
@@ -119,7 +112,6 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
                 </button>
             <?php endif; ?>
         </div>
-
         <button onclick="exportLeadsCSV()" class="bg-white border border-gray-300 px-4 py-2 rounded-lg font-bold text-sm text-gray-600 hover:bg-gray-50 transition shadow-sm"><i class="fa-solid fa-file-csv text-green-600 mr-2"></i> Export CSV</button>
     </div>
 </header>
@@ -176,17 +168,14 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
                     <th class="p-4">Profile Data</th>
                 </tr>
             </thead>
-            <tbody id="directory_tbody" class="divide-y divide-gray-100">
-                </tbody>
+            <tbody id="directory_tbody" class="divide-y divide-gray-100"></tbody>
         </table>
 
         <div class="p-4 border-t border-gray-200 bg-gray-50 flex justify-between items-center text-sm">
             <div class="text-gray-500 font-bold" id="dir_showing_text">Showing 0 records</div>
             <div class="flex items-center gap-4">
                 <select id="dir_per_page" onchange="resetPaginationAndRender()" class="border rounded px-2 py-1 bg-white outline-none">
-                    <option value="30">30 per page</option>
-                    <option value="50">50 per page</option>
-                    <option value="100">100 per page</option>
+                    <option value="30">30 per page</option><option value="50">50 per page</option><option value="100">100 per page</option>
                 </select>
                 <div class="flex gap-1">
                     <button onclick="changePage(-1)" class="px-3 py-1 border bg-white rounded hover:bg-gray-100 font-bold text-gray-600">&larr; Prev</button>
@@ -207,30 +196,19 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
             </div>
             <button onclick="promptEmptyTrash()" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow transition"><i class="fa-solid fa-fire mr-2"></i> Empty Trash Now</button>
         </div>
-        
         <table class="w-full text-left border-collapse">
-            <thead class="bg-white border-b text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-                <tr>
-                    <th class="p-4 pl-6">Guest Identity</th>
-                    <th class="p-4">Date Deleted</th>
-                    <th class="p-4">Actions</th>
-                </tr>
-            </thead>
-            <tbody id="trash_tbody" class="divide-y divide-gray-100">
-                </tbody>
+            <thead class="bg-white border-b text-[11px] font-bold text-gray-400 uppercase tracking-wider"><tr><th class="p-4 pl-6">Guest Identity</th><th class="p-4">Date Deleted</th><th class="p-4">Actions</th></tr></thead>
+            <tbody id="trash_tbody" class="divide-y divide-gray-100"></tbody>
         </table>
     </div>
 </div>
 
 <div id="guest_drawer_overlay" class="fixed inset-0 bg-gray-900/40 z-[100] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm" onclick="closeGuestDrawer()"></div>
 <div id="guest_drawer" class="fixed top-0 right-0 h-full w-full max-w-lg bg-white shadow-2xl z-[101] transform translate-x-full transition-transform duration-300 flex flex-col border-l border-gray-200">
-    
     <div class="p-6 border-b border-gray-200 bg-white flex justify-between items-start relative overflow-hidden">
         <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-50 rounded-bl-full -z-10"></div>
         <div class="flex gap-4 items-center z-10">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-2xl font-bold shadow-lg">
-                <i class="fa-solid fa-user-astronaut"></i>
-            </div>
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-2xl font-bold shadow-lg"><i class="fa-solid fa-user-astronaut"></i></div>
             <div>
                 <h2 id="dr_name" class="text-2xl font-black text-gray-900 leading-tight">Guest Name</h2>
                 <p id="dr_email" class="text-sm text-gray-500 font-medium flex items-center gap-1"><i class="fa-solid fa-envelope"></i> <span>email@example.com</span></p>
@@ -243,7 +221,7 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
     <div class="bg-gray-900 text-white p-4 flex justify-between items-center shadow-inner">
         <div>
             <p class="text-[10px] text-gray-400 font-bold uppercase mb-0.5"><i class="fa-solid fa-wifi text-green-400"></i> Live Network Status</p>
-            <p class="text-sm font-bold">Currently Offline</p>
+            <p id="dr_network_status" class="text-sm font-bold">Currently Offline</p>
         </div>
         <button id="btn_radius_extend" onclick="triggerRadiusExtend()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold py-1.5 px-3 rounded shadow transition">
             + Add 1 Hour
@@ -257,7 +235,6 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
     </div>
 
     <div class="flex-1 overflow-y-auto drawer-scroll p-6 bg-white">
-        
         <div id="dr_view_overview" class="dr-view active space-y-6">
             <div class="bg-gray-50 border p-4 rounded-xl border-dashed">
                 <h3 class="text-xs font-bold text-gray-500 uppercase mb-3"><i class="fa-solid fa-link"></i> Linked Identities</h3>
@@ -265,14 +242,11 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
                     <span class="text-xs font-mono text-gray-600 font-bold" id="dr_mac">AA:BB:CC:DD:EE:FF</span>
                     <span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded font-bold uppercase">Primary Device</span>
                 </div>
-                <p class="text-[10px] text-gray-400 italic text-center mt-2">No other devices found for this user.</p>
             </div>
-
             <div class="grid grid-cols-2 gap-4">
                 <div class="bg-gray-50 border p-3 rounded-lg"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">First Seen</p><div id="dr_first_date" class="text-sm font-bold text-gray-800"></div></div>
                 <div class="bg-gray-50 border p-3 rounded-lg"><p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Last Location</p><div id="dr_location" class="text-sm font-bold text-gray-800"></div></div>
             </div>
-
             <div id="dr_data_section">
                 <h3 class="font-bold text-gray-900 border-b pb-2 mb-4 flex justify-between items-center"><span><i class="fa-solid fa-database text-indigo-500 mr-2"></i> Marketing Data</span></h3>
                 <div id="dr_data_cards" class="space-y-3"></div>
@@ -299,13 +273,12 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
                     <button id="btn_woo_sync" onclick="triggerWooSync()" class="bg-white text-purple-700 px-4 py-2 rounded-lg font-bold text-xs shadow hover:bg-gray-50 transition flex items-center gap-2"><i class="fa-solid fa-rotate"></i> Force Sync</button>
                 </div>
             </div>
-
             <div>
                 <h3 class="font-bold text-gray-900 border-b pb-2 mb-4 text-sm">Reward Adjustments</h3>
                 <div class="flex gap-2">
-                    <input type="number" id="woo_pts_input" placeholder="Points" class="w-1/3 px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-purple-200">
-                    <select class="w-1/3 px-3 py-2 border rounded-lg text-sm outline-none bg-gray-50"><option>Add</option><option>Deduct</option></select>
-                    <button onclick="showToast('Manual API adjustment will be enabled in Phase 3', 'info')" class="w-1/3 bg-gray-800 text-white font-bold text-sm rounded-lg hover:bg-gray-900 transition">Update</button>
+                    <input type="number" id="woo_pts_input" placeholder="Points" class="w-1/3 px-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-purple-200" disabled>
+                    <select class="w-1/3 px-3 py-2 border rounded-lg text-sm outline-none bg-gray-50" disabled><option>Add</option><option>Deduct</option></select>
+                    <button class="w-1/3 bg-gray-800 text-gray-500 font-bold text-sm rounded-lg cursor-not-allowed">Phase 3</button>
                 </div>
             </div>
         </div>
@@ -346,11 +319,23 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
                     if($camp->campaign_type == 'birthday') { $type_label = 'Birthday Collector'; $icon = 'fa-cake-candles text-pink-500'; }
                     if($camp->campaign_type == 'wheel') { $type_label = 'Spin the Wheel'; $icon = 'fa-compact-disc text-yellow-500'; }
                     if($camp->campaign_type == 'box') { $type_label = 'Mystery Box'; $icon = 'fa-box-open text-green-500'; }
+
+                    // AUDIT FIX: Process campaign status directly in the card loop
+                    $now = current_time('timestamp');
+                    $camp_status = 'live';
+                    $c_conf = json_decode($camp->config_json, true) ?: [];
+                    if (!empty($c_conf['schedule']['start']) && strtotime($c_conf['schedule']['start']) > $now) $camp_status = 'scheduled';
+                    if (!empty($c_conf['schedule']['end'])   && strtotime($c_conf['schedule']['end'])   < $now) $camp_status = 'ended';
+                    $status_badge = [
+                        'live'      => ['bg' => 'bg-green-100',  'text' => 'text-green-700',  'label' => 'Live'],
+                        'scheduled' => ['bg' => 'bg-blue-100',   'text' => 'text-blue-700',   'label' => 'Scheduled'],
+                        'ended'     => ['bg' => 'bg-gray-100',   'text' => 'text-gray-500',   'label' => 'Ended'],
+                    ][$camp_status];
                 ?>
                 <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition">
                     <div class="flex justify-between items-start mb-4">
                         <div class="bg-gray-50 p-2 rounded-lg border"><i class="fa-solid <?php echo $icon; ?> text-xl"></i></div>
-                        <span class="text-[10px] uppercase font-bold text-gray-400"><?php echo date('M d, Y', strtotime($camp->created_at)); ?></span>
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded <?php echo $status_badge['bg']; ?> <?php echo $status_badge['text']; ?>"><?php echo $status_badge['label']; ?></span>
                     </div>
                     <h3 class="font-bold text-lg text-gray-900 truncate"><?php echo esc_html($camp->campaign_name); ?></h3>
                     <p class="text-xs font-bold text-gray-500 uppercase mb-4"><?php echo $type_label; ?></p>
@@ -393,30 +378,19 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
                     <div class="mb-6 bg-gray-50 border border-gray-200 rounded-lg p-4">
                         <h3 class="text-sm font-bold text-gray-800 mb-3"><i class="fa-regular fa-calendar-clock text-indigo-500 mr-2"></i> Campaign Schedule</h3>
                         <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Start Date & Time</label>
-                                <input type="datetime-local" id="camp_start_date" class="w-full p-2 border border-gray-300 rounded text-sm outline-none bg-white">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">End Date & Time (Auto-Disable)</label>
-                                <input type="datetime-local" id="camp_end_date" class="w-full p-2 border border-gray-300 rounded text-sm outline-none bg-white">
-                            </div>
+                            <div><label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Start Date & Time</label><input type="datetime-local" id="camp_start_date" class="w-full p-2 border border-gray-300 rounded text-sm outline-none bg-white"></div>
+                            <div><label class="block text-[10px] font-bold text-gray-500 uppercase mb-1">End Date & Time</label><input type="datetime-local" id="camp_end_date" class="w-full p-2 border border-gray-300 rounded text-sm outline-none bg-white"></div>
                         </div>
-                        <p class="text-[10px] text-gray-400 mt-2 italic">Leave blank to run the campaign immediately and indefinitely.</p>
                     </div>
 
                     <div class="mb-6">
                         <label class="block text-sm font-bold text-gray-700 mb-2">Campaign Type</label>
                         <select id="camp_type" class="w-full p-2.5 border border-gray-300 rounded-lg outline-none bg-white font-bold text-indigo-700" onchange="switchCampTypeView()">
                             <optgroup label="Data Collection">
-                                <option value="survey">📝 Advanced Survey / Form</option>
-                                <option value="versus">⚔️ Pick A Side (Versus)</option>
-                                <option value="birthday">🎂 Birthday Collector</option>
+                                <option value="survey">📝 Advanced Survey / Form</option><option value="versus">⚔️ Pick A Side (Versus)</option><option value="birthday">🎂 Birthday Collector</option>
                             </optgroup>
                             <optgroup label="Gamification & Offers">
-                                <option value="promo">🖼️ Image Promo / Coupon</option>
-                                <option value="wheel">🎡 Spin the Wheel</option>
-                                <option value="box">🎁 Mystery Box</option>
+                                <option value="promo">🖼️ Image Promo / Coupon</option><option value="wheel">🎡 Spin the Wheel</option><option value="box">🎁 Mystery Box</option>
                             </optgroup>
                         </select>
                     </div>
@@ -442,12 +416,7 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
                             <label class="block text-sm font-bold text-gray-700 mb-2">Headline <span class="text-red-500">*</span></label>
                             <textarea id="camp_promo_text" rows="2" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm outline-none resize-none required-field" placeholder="Show this screen for 10% off!" oninput="updateLivePreview()"></textarea>
                             <label class="block text-sm font-bold text-gray-700 mt-4 mb-2">Upload Promo Image</label>
-                            <div class="img-upload-zone h-40 max-w-sm" id="zone_promo">
-                                <span class="text-xs text-gray-500 font-bold" id="lbl_promo"><i class="fa-solid fa-cloud-arrow-up mr-1"></i> Upload Image</span>
-                                <img id="img_promo" src="" class="hidden">
-                                <button class="rem-btn hidden" id="rem_promo" onclick="removeCampImage(event, 'promo')"><i class="fa-solid fa-xmark"></i></button>
-                                <input type="file" id="input_promo_img" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30">
-                            </div>
+                            <div class="img-upload-zone h-40 max-w-sm" id="zone_promo"><span class="text-xs text-gray-500 font-bold" id="lbl_promo"><i class="fa-solid fa-cloud-arrow-up mr-1"></i> Upload Image</span><img id="img_promo" src="" class="hidden"><button class="rem-btn hidden" id="rem_promo" onclick="removeCampImage(event, 'promo')"><i class="fa-solid fa-xmark"></i></button><input type="file" id="input_promo_img" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-30"></div>
                         </div>
 
                         <div id="ctype_versus" class="camp-type-view space-y-4">
@@ -606,7 +575,7 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
         if(tab === 'directory' || tab === 'trash') resetPaginationAndRender();
     }
 
-    // --- PAGINATION & RENDERING ENGINE ---
+    // AUDIT FIX: Improved search to include MAC addresses
     function resetPaginationAndRender() {
         currentPage = 1;
         const mc = document.getElementById('master_checkbox');
@@ -614,12 +583,16 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
         
         const searchInput = document.getElementById('crm_search');
         const searchStr = searchInput ? searchInput.value.toLowerCase() : '';
+        const rawSearch = searchStr.replace(/[^a-f0-9]/gi,'');
         
         filteredActiveRows = [];
         filteredTrashRows = [];
 
         Object.values(mt_leads_data).forEach(lead => {
-            const match = lead.email.toLowerCase().includes(searchStr) || (lead.guest_name && lead.guest_name.toLowerCase().includes(searchStr));
+            const macSearch = (lead.guest_mac || '').toLowerCase().replace(/[^a-f0-9]/gi,'');
+            const match = lead.email.toLowerCase().includes(searchStr) 
+                       || (lead.guest_name && lead.guest_name.toLowerCase().includes(searchStr))
+                       || (rawSearch.length >= 4 && macSearch.includes(rawSearch));
             if(match) {
                 if(lead.status === 'trashed') filteredTrashRows.push(lead);
                 else filteredActiveRows.push(lead);
@@ -665,6 +638,14 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
 
         pageData.forEach(lead => {
             const displayDate = new Date(lead.last_visit || lead.created_at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            
+            // AUDIT FIX: Generate real Network Status HTML using transient data
+            const isOnline = lead.online_until && lead.online_until > Math.floor(Date.now()/1000);
+            const minsLeft = isOnline ? Math.ceil((lead.online_until - Date.now()/1000) / 60) : 0;
+            const statusHtml = isOnline
+                ? `<span class="text-[10px] font-bold text-green-600 bg-green-100 px-2 py-1 rounded">ONLINE ~${minsLeft}m</span>`
+                : `<span class="text-[10px] font-bold text-gray-400 uppercase">Offline</span>`;
+
             tbody.innerHTML += `
                 <tr class="hover:bg-indigo-50 transition group">
                     <td class="p-4 text-center"><input type="checkbox" class="checkbox-custom row-checkbox" value="${lead.id}"></td>
@@ -676,7 +657,7 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
                         <div class="text-sm font-semibold text-gray-700">${lead.store_name || 'Global Portal'}</div>
                         <div class="text-[10px] text-indigo-500 font-bold">Last Seen: ${displayDate}</div>
                     </td>
-                    <td class="p-4"><span class="text-xs font-bold text-gray-600">Offline</span></td>
+                    <td class="p-4 cursor-pointer" onclick="openGuestDrawer(${lead.id})">${statusHtml}</td>
                     <td class="p-4"><button onclick="openGuestDrawer(${lead.id})" class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold py-1.5 px-3 rounded border">View Card &rarr;</button></td>
                 </tr>
             `;
@@ -709,7 +690,6 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
         });
     }
 
-    // --- BULK ACTION LOGIC ---
     function toggleAllCheckboxes(masterCheckbox) {
         document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = masterCheckbox.checked);
     }
@@ -743,7 +723,6 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
         openConfirmModal();
     }
 
-    // --- INDIVIDUAL TRASH LOGIC ---
     function promptTrashGuest() {
         const id = document.getElementById('dr_lead_id').value;
         closeGuestDrawer();
@@ -819,12 +798,8 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
         openConfirmModal();
     }
 
-    // --- CSV EXPORT ---
     function exportLeadsCSV() {
-        if(filteredActiveRows.length === 0) {
-            showToast("No active leads available to export.", "error");
-            return;
-        }
+        if(filteredActiveRows.length === 0) { showToast("No active leads available to export.", "error"); return; }
         let csvContent = "data:text/csv;charset=utf-8,ID,Email,Name,MAC Address,Location,Campaign Tag,Status,First Seen,Last Seen\n";
         filteredActiveRows.forEach(function(lead) {
             let row = [ lead.id, lead.email, `"${lead.guest_name || ''}"`, lead.guest_mac, `"${lead.store_name || 'Global'}"`, lead.campaign_tag || '', lead.status, lead.created_at, lead.last_visit || lead.created_at ];
@@ -834,18 +809,14 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
         var link = document.createElement("a");
         link.setAttribute("href", encodedUri);
         link.setAttribute("download", "roost_active_guests_" + new Date().toISOString().slice(0,10) + ".csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
         showToast("Guest list exported successfully!", "success");
     }
 
-    // --- DRAWER & TABS ---
     function switchDrawerTab(tab, el) {
         document.querySelectorAll('.dr-tab').forEach(b => {
             b.classList.remove('active', 'border-indigo-600', 'text-indigo-600', 'border-purple-600', 'text-purple-600');
-            if(b.innerText.includes('Rewards')) b.classList.add('text-purple-600');
-            else b.classList.add('text-gray-500');
+            if(b.innerText.includes('Rewards')) b.classList.add('text-purple-600'); else b.classList.add('text-gray-500');
         });
         el.classList.remove('text-gray-500', 'text-purple-600');
         if(tab === 'rewards') el.classList.add('active', 'border-purple-600', 'text-purple-600');
@@ -869,6 +840,16 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
         if(lead.status === 'active') { badge.className = "mt-2 inline-block px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-green-100 text-green-700"; badge.innerText = "Subscribed"; } 
         else { badge.className = "mt-2 inline-block px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider bg-red-100 text-red-700"; badge.innerText = "Unsubscribed"; }
         
+        // AUDIT FIX: Update drawer network status using Live Transient calculation
+        const isOnline = lead.online_until && lead.online_until > Math.floor(Date.now()/1000);
+        const minsLeft = isOnline ? Math.ceil((lead.online_until - Date.now()/1000) / 60) : 0;
+        const statusEl = document.getElementById('dr_network_status');
+        if(isOnline) {
+            statusEl.innerHTML = `<span class="text-green-400">Online (~${minsLeft} mins left)</span>`;
+        } else {
+            statusEl.innerHTML = `<span class="text-gray-400">Currently Offline</span>`;
+        }
+
         document.getElementById('dr_first_date').innerText = new Date(lead.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
         document.getElementById('dr_mac').innerText = lead.guest_mac || 'N/A';
         document.getElementById('dr_location').innerText = lead.store_name || 'Global Portal';
@@ -941,7 +922,6 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
         setTimeout(() => { document.getElementById('guest_drawer_overlay').classList.add('hidden'); }, 300);
     }
 
-    // --- API SIMULATION ---
     function toggleExternalAPI() {
         const btn = document.getElementById('btn_api_toggle');
         const icon = document.getElementById('icon_api_toggle');
@@ -953,72 +933,65 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
             txt.innerText = "Syncing...";
             icon.className = "fa-solid fa-circle-notch fa-spin text-indigo-500 mr-1";
             
-            const fd = new FormData();
-            fd.append('mt_api_toggle_action', 'yes');
-            fd.append('brand_id', <?php echo $brand->id; ?>);
+            const fd = new FormData(); fd.append('mt_api_toggle_action', 'yes'); fd.append('brand_id', <?php echo $brand->id; ?>);
             fetch(window.location.href, { method: 'POST', body: fd }).then(() => {
-                externalApiActive = true;
-                txt.innerText = "Connected & Synced";
-                icon.className = "fa-solid fa-check-circle text-green-500 mr-1";
-                btn.classList.replace('text-gray-600', 'text-green-700');
-                btn.classList.replace('border-gray-300', 'border-green-300');
-                btn.classList.add('bg-green-50');
-                rewardsTab.classList.remove('hidden');
-                rewardsView.classList.remove('hidden');
-                showToast("External API successfully connected and saved.", "success");
+                externalApiActive = true; txt.innerText = "Connected & Synced"; icon.className = "fa-solid fa-check-circle text-green-500 mr-1";
+                btn.classList.replace('text-gray-600', 'text-green-700'); btn.classList.replace('border-gray-300', 'border-green-300'); btn.classList.add('bg-green-50');
+                rewardsTab.classList.remove('hidden'); rewardsView.classList.remove('hidden'); showToast("External API successfully connected and saved.", "success");
             });
         } else {
             if(confirm("Are you sure you want to remove this API connection? Rewards data will be hidden.")) {
-                const fd = new FormData();
-                fd.append('mt_api_toggle_action', 'no');
-                fd.append('brand_id', <?php echo $brand->id; ?>);
+                const fd = new FormData(); fd.append('mt_api_toggle_action', 'no'); fd.append('brand_id', <?php echo $brand->id; ?>);
                 fetch(window.location.href, { method: 'POST', body: fd }).then(() => {
-                    externalApiActive = false;
-                    txt.innerText = "Connect to Sync";
-                    icon.className = "fa-solid fa-plug text-gray-400 mr-1";
-                    btn.classList.replace('text-green-700', 'text-gray-600');
-                    btn.classList.replace('border-green-300', 'border-gray-300');
-                    btn.classList.remove('bg-green-50');
-                    rewardsTab.classList.add('hidden');
-                    if(rewardsTab.classList.contains('active')) document.querySelector('.dr-tab').click(); 
-                    rewardsView.classList.add('hidden');
-                    showToast("API data connection removed and saved.", "info");
+                    externalApiActive = false; txt.innerText = "Connect to Sync"; icon.className = "fa-solid fa-plug text-gray-400 mr-1";
+                    btn.classList.replace('text-green-700', 'text-gray-600'); btn.classList.replace('border-green-300', 'border-gray-300'); btn.classList.remove('bg-green-50');
+                    rewardsTab.classList.add('hidden'); if(rewardsTab.classList.contains('active')) document.querySelector('.dr-tab').click(); 
+                    rewardsView.classList.add('hidden'); showToast("API data connection removed and saved.", "info");
                 });
             }
         }
     }
 
+    // AUDIT FIX: Made the RADIUS 'Add 1 Hour' button execute real server logic 
     function triggerRadiusExtend() {
+        const id = document.getElementById('dr_lead_id').value;
         const btn = document.getElementById('btn_radius_extend');
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Extending...';
         btn.classList.add('opacity-80', 'cursor-not-allowed');
-        setTimeout(() => {
-            btn.innerHTML = '<i class="fa-solid fa-check"></i> Added 1 Hour';
-            btn.classList.replace('bg-indigo-600', 'bg-green-600');
-            btn.classList.remove('hover:bg-indigo-500');
-            showToast("Successfully injected +60 minutes to active RADIUS session.", "success");
-            setTimeout(() => {
-                btn.innerHTML = '+ Add 1 Hour';
-                btn.classList.replace('bg-green-600', 'bg-indigo-600');
-                btn.classList.add('hover:bg-indigo-500');
-                btn.classList.remove('opacity-80', 'cursor-not-allowed');
-            }, 3000);
-        }, 800);
+
+        const fd = new FormData();
+        fd.append('action', 'mt_extend_radius_session');
+        fd.append('security', mt_nonce);
+        fd.append('lead_id', id);
+
+        fetch(mt_ajax_url, { method: 'POST', body: fd })
+          .then(r => r.json())
+          .then(d => {
+              if (d.success) { 
+                  btn.innerHTML = '<i class="fa-solid fa-check"></i> Added 1 Hour';
+                  btn.classList.replace('bg-indigo-600', 'bg-green-600');
+                  btn.classList.remove('hover:bg-indigo-500');
+                  showToast('Session extended by +60 minutes in RADIUS.', 'success');
+              } else { 
+                  showToast('Failed to extend session.', 'error'); 
+                  btn.innerHTML = '+ Add 1 Hour'; 
+              }
+              setTimeout(() => {
+                  btn.innerHTML = '+ Add 1 Hour';
+                  btn.classList.replace('bg-green-600', 'bg-indigo-600');
+                  btn.classList.add('hover:bg-indigo-500');
+                  btn.classList.remove('opacity-80', 'cursor-not-allowed');
+              }, 3000);
+          });
     }
 
+    // AUDIT FIX: Adjusted the Force Sync API button to not display fake data
     function triggerWooSync() {
-        const btn = document.getElementById('btn_woo_sync');
-        const origText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-rotate fa-spin"></i> Syncing...';
-        setTimeout(() => {
-            document.getElementById('woo_pts_balance').innerText = Math.floor(Math.random() * 800) + 100;
-            document.getElementById('woo_last_sync').innerText = "Just Now";
-            btn.innerHTML = '<i class="fa-solid fa-check text-green-600"></i> Synced';
-            setTimeout(() => { btn.innerHTML = origText; }, 2000);
-        }, 1200);
+        document.getElementById('woo_pts_balance').innerText = 'API Not Configured';
+        document.getElementById('woo_last_sync').innerText = 'Phase 3 Feature';
+        showToast('Rewards API integration launches in Phase 3.', 'info');
     }
 
-    // --- CAMPAIGN EDITOR LOGIC ---
     function switchCampTypeView() {
         let type = document.getElementById('camp_type').value;
         document.querySelectorAll('.camp-type-view').forEach(v => v.classList.remove('active'));
@@ -1031,8 +1004,7 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
     function toggleQOpts(qNum) {
         let type = document.getElementById(`camp_q${qNum}_type`).value;
         let optInput = document.getElementById(`camp_q${qNum}_opts`);
-        if(type === 'radio' || type === 'checkbox') { optInput.classList.remove('hidden'); } 
-        else { optInput.classList.add('hidden'); }
+        if(type === 'radio' || type === 'checkbox') { optInput.classList.remove('hidden'); } else { optInput.classList.add('hidden'); }
         updateLivePreview();
     }
 
@@ -1040,10 +1012,7 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
 
     async function uploadToVault(file) {
         const formData = new FormData();
-        formData.append('action', 'mt_upload_vault_media');
-        formData.append('security', mt_nonce);
-        formData.append('media_type', 'wifi');
-        formData.append('file', file);
+        formData.append('action', 'mt_upload_vault_media'); formData.append('security', mt_nonce); formData.append('media_type', 'wifi'); formData.append('file', file);
         const res = await fetch(mt_ajax_url, { method: 'POST', body: formData });
         const data = await res.json();
         if(data.success) return data.data.url;
@@ -1058,14 +1027,9 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
                     document.getElementById(`zone_${key}`).style.opacity = '0.5';
                     try {
                         const url = await uploadToVault(e.target.files[0]);
-                        campImages[key] = url;
-                        document.getElementById(`img_${key}`).src = url;
-                        document.getElementById(`img_${key}`).classList.remove('hidden');
-                        document.getElementById(`rem_${key}`).classList.remove('hidden');
-                        updateLivePreview(); 
+                        campImages[key] = url; document.getElementById(`img_${key}`).src = url; document.getElementById(`img_${key}`).classList.remove('hidden'); document.getElementById(`rem_${key}`).classList.remove('hidden'); updateLivePreview(); 
                     } catch(err) { showToast("Image Upload Failed", "error"); }
-                    document.getElementById(`zone_${key}`).style.opacity = '1';
-                    e.target.value = '';
+                    document.getElementById(`zone_${key}`).style.opacity = '1'; e.target.value = '';
                 }
             });
         }
@@ -1073,11 +1037,7 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
 
     function removeCampImage(event, key) {
         event.preventDefault(); event.stopPropagation();
-        campImages[key] = '';
-        document.getElementById(`img_${key}`).src = '';
-        document.getElementById(`img_${key}`).classList.add('hidden');
-        document.getElementById(`rem_${key}`).classList.add('hidden');
-        updateLivePreview();
+        campImages[key] = ''; document.getElementById(`img_${key}`).src = ''; document.getElementById(`img_${key}`).classList.add('hidden'); document.getElementById(`rem_${key}`).classList.add('hidden'); updateLivePreview();
     }
 
     function updateLivePreview() {
@@ -1087,12 +1047,9 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
 
         if(type === 'survey') {
             document.getElementById('prev_stars').classList.toggle('hidden', !document.getElementById('camp_stars').checked);
-            const container = document.getElementById('prev_survey_container');
-            container.innerHTML = ''; 
+            const container = document.getElementById('prev_survey_container'); container.innerHTML = ''; 
             for(let i=1; i<=4; i++) {
-                let text = document.getElementById(`camp_q${i}_text`).value;
-                let qType = document.getElementById(`camp_q${i}_type`).value;
-                let opts = document.getElementById(`camp_q${i}_opts`).value.split(',').map(s=>s.trim()).filter(s=>s);
+                let text = document.getElementById(`camp_q${i}_text`).value; let qType = document.getElementById(`camp_q${i}_type`).value; let opts = document.getElementById(`camp_q${i}_opts`).value.split(',').map(s=>s.trim()).filter(s=>s);
                 if(text) {
                     let html = `<label class="block text-[10px] font-bold text-gray-500 mb-1">${text}</label>`;
                     if(qType === 'text') { html += `<input type="text" class="w-full px-3 py-1.5 border border-gray-200 rounded-lg text-sm bg-gray-50" disabled>`; } 
@@ -1127,208 +1084,95 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
     }
 
     function openCampaignEditor(id) {
-        document.getElementById('camp_list_state').classList.add('hidden');
-        document.getElementById('camp_edit_state').classList.remove('hidden');
-        document.getElementById('camp_error_banner').classList.add('hidden');
-        document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
-        document.getElementById('current_camp_id').value = id;
+        document.getElementById('camp_list_state').classList.add('hidden'); document.getElementById('camp_edit_state').classList.remove('hidden'); document.getElementById('camp_error_banner').classList.add('hidden'); document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error')); document.getElementById('current_camp_id').value = id;
 
         if (id === 0) {
-            document.getElementById('camp_editor_title').innerText = 'Create New Campaign';
-            document.getElementById('camp_name').value = '';
-            document.getElementById('camp_type').value = 'survey';
-            campImages = { promo: '', vsa: '', vsb: '' };
-            
-            document.getElementById('camp_start_date').value = '';
-            document.getElementById('camp_end_date').value = '';
-            document.querySelectorAll('#camp_edit_state input[type="text"]').forEach(i => i.value = '');
-            document.querySelectorAll('#camp_edit_state input[type="number"]').forEach(i => i.value = 0);
-            document.querySelectorAll('#camp_edit_state input[type="date"]').forEach(i => i.value = '');
-            
+            document.getElementById('camp_editor_title').innerText = 'Create New Campaign'; document.getElementById('camp_name').value = ''; document.getElementById('camp_type').value = 'survey'; campImages = { promo: '', vsa: '', vsb: '' };
+            document.getElementById('camp_start_date').value = ''; document.getElementById('camp_end_date').value = '';
+            document.querySelectorAll('#camp_edit_state input[type="text"]').forEach(i => i.value = ''); document.querySelectorAll('#camp_edit_state input[type="number"]').forEach(i => i.value = 0); document.querySelectorAll('#camp_edit_state input[type="date"]').forEach(i => i.value = '');
             document.getElementById('camp_promo_text').value = '';
             for(let i=1; i<=4; i++) { document.getElementById(`camp_q${i}_type`).value = 'text'; toggleQOpts(i); }
             ['promo','vsa','vsb'].forEach(k => { document.getElementById(`img_${k}`).classList.add('hidden'); document.getElementById(`rem_${k}`).classList.add('hidden'); });
             switchCampTypeView();
         } else {
-            const btn = event.currentTarget;
-            document.getElementById('camp_editor_title').innerText = 'Editing Campaign';
-            document.getElementById('camp_name').value = btn.getAttribute('data-name');
-            const type = btn.getAttribute('data-type');
-            document.getElementById('camp_type').value = type;
-
-            let config = {};
-            try { config = JSON.parse(btn.getAttribute('data-config')); } catch(e) {}
-
-            document.getElementById('camp_start_date').value = config.schedule?.start || '';
-            document.getElementById('camp_end_date').value = config.schedule?.end || '';
+            const btn = event.currentTarget; document.getElementById('camp_editor_title').innerText = 'Editing Campaign'; document.getElementById('camp_name').value = btn.getAttribute('data-name'); const type = btn.getAttribute('data-type'); document.getElementById('camp_type').value = type;
+            let config = {}; try { config = JSON.parse(btn.getAttribute('data-config')); } catch(e) {}
+            document.getElementById('camp_start_date').value = config.schedule?.start || ''; document.getElementById('camp_end_date').value = config.schedule?.end || '';
 
             if(type === 'survey') {
                 document.getElementById('camp_stars').checked = config.stars ?? true;
-                if(config.questions && Array.isArray(config.questions)) {
-                    for(let i=0; i<4; i++) {
-                        let qNum = i+1;
-                        if(config.questions[i]) {
-                            document.getElementById(`camp_q${qNum}_text`).value = config.questions[i].text || '';
-                            document.getElementById(`camp_q${qNum}_type`).value = config.questions[i].type || 'text';
-                            document.getElementById(`camp_q${qNum}_opts`).value = config.questions[i].options || '';
-                        }
-                        toggleQOpts(qNum);
-                    }
-                }
+                if(config.questions && Array.isArray(config.questions)) { for(let i=0; i<4; i++) { let qNum = i+1; if(config.questions[i]) { document.getElementById(`camp_q${qNum}_text`).value = config.questions[i].text || ''; document.getElementById(`camp_q${qNum}_type`).value = config.questions[i].type || 'text'; document.getElementById(`camp_q${qNum}_opts`).value = config.questions[i].options || ''; } toggleQOpts(qNum); } }
             } else if(type === 'promo') {
-                document.getElementById('camp_promo_text').value = config.text || '';
-                if(config.img) { campImages.promo = config.img; document.getElementById('img_promo').src = config.img; document.getElementById('img_promo').classList.remove('hidden'); document.getElementById('rem_promo').classList.remove('hidden'); }
+                document.getElementById('camp_promo_text').value = config.text || ''; if(config.img) { campImages.promo = config.img; document.getElementById('img_promo').src = config.img; document.getElementById('img_promo').classList.remove('hidden'); document.getElementById('rem_promo').classList.remove('hidden'); }
             } else if(type === 'versus') {
-                document.getElementById('camp_vs_title').value = config.title || '';
-                document.getElementById('camp_vs_mid').value = config.mid || 'VS';
-                document.getElementById('camp_vs_a').value = config.a || '';
-                document.getElementById('camp_vs_b').value = config.b || '';
+                document.getElementById('camp_vs_title').value = config.title || ''; document.getElementById('camp_vs_mid').value = config.mid || 'VS'; document.getElementById('camp_vs_a').value = config.a || ''; document.getElementById('camp_vs_b').value = config.b || '';
                 if(config.img_a) { campImages.vsa = config.img_a; document.getElementById('img_vsa').src = config.img_a; document.getElementById('img_vsa').classList.remove('hidden'); document.getElementById('rem_vsa').classList.remove('hidden'); }
                 if(config.img_b) { campImages.vsb = config.img_b; document.getElementById('img_vsb').src = config.img_b; document.getElementById('img_vsb').classList.remove('hidden'); document.getElementById('rem_vsb').classList.remove('hidden'); }
-            } else if(type === 'birthday') {
-                document.getElementById('camp_bday_text').value = config.text || '';
+            } else if(type === 'birthday') { document.getElementById('camp_bday_text').value = config.text || '';
             } else if(type === 'wheel') {
                 document.getElementById('camp_wheel_title').value = config.title || '';
-                for(let i=1; i<=6; i++) {
-                    if(config.prizes && config.prizes[i-1]) { 
-                        document.getElementById(`wheel_p${i}_name`).value = config.prizes[i-1].name || ''; 
-                        document.getElementById(`wheel_p${i}_limit`).value = config.prizes[i-1].limit || 0; 
-                        document.getElementById(`wheel_p${i}_unlock`).value = config.prizes[i-1].unlock || ''; 
-                    }
-                }
+                for(let i=1; i<=6; i++) { if(config.prizes && config.prizes[i-1]) { document.getElementById(`wheel_p${i}_name`).value = config.prizes[i-1].name || ''; document.getElementById(`wheel_p${i}_limit`).value = config.prizes[i-1].limit || 0; document.getElementById(`wheel_p${i}_unlock`).value = config.prizes[i-1].unlock || ''; } }
             } else if(type === 'box') {
                 document.getElementById('camp_box_title').value = config.title || '';
-                for(let i=1; i<=4; i++) {
-                    if(config.prizes && config.prizes[i-1]) { 
-                        document.getElementById(`box_p${i}_name`).value = config.prizes[i-1].name || ''; 
-                        document.getElementById(`box_p${i}_limit`).value = config.prizes[i-1].limit || 0; 
-                        document.getElementById(`box_p${i}_unlock`).value = config.prizes[i-1].unlock || ''; 
-                    }
-                }
+                for(let i=1; i<=4; i++) { if(config.prizes && config.prizes[i-1]) { document.getElementById(`box_p${i}_name`).value = config.prizes[i-1].name || ''; document.getElementById(`box_p${i}_limit`).value = config.prizes[i-1].limit || 0; document.getElementById(`box_p${i}_unlock`).value = config.prizes[i-1].unlock || ''; } }
             }
             switchCampTypeView();
         }
     }
 
-    function closeCampaignEditor() {
-        document.getElementById('camp_edit_state').classList.add('hidden');
-        document.getElementById('camp_list_state').classList.remove('hidden');
-    }
+    function closeCampaignEditor() { document.getElementById('camp_edit_state').classList.add('hidden'); document.getElementById('camp_list_state').classList.remove('hidden'); }
 
     function saveCampaign() {
-        document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
-        document.getElementById('camp_error_banner').classList.add('hidden');
-        
-        let hasError = false;
-        const name = document.getElementById('camp_name');
-        if(!name.value.trim()) { name.classList.add('input-error'); hasError = true; }
-
-        const type = document.getElementById('camp_type').value;
-        let config = {};
-
-        config.schedule = { 
-            start: document.getElementById('camp_start_date').value, 
-            end: document.getElementById('camp_end_date').value 
-        };
+        document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error')); document.getElementById('camp_error_banner').classList.add('hidden');
+        let hasError = false; const name = document.getElementById('camp_name'); if(!name.value.trim()) { name.classList.add('input-error'); hasError = true; }
+        const type = document.getElementById('camp_type').value; let config = {};
+        config.schedule = { start: document.getElementById('camp_start_date').value, end: document.getElementById('camp_end_date').value };
 
         if(type === 'survey') {
-            const q1 = document.getElementById('camp_q1_text');
-            if(!q1.value.trim()) { q1.classList.add('input-error'); hasError = true; }
-            let questions = [];
-            for(let i=1; i<=4; i++) { questions.push({ text: document.getElementById(`camp_q${i}_text`).value, type: document.getElementById(`camp_q${i}_type`).value, options: document.getElementById(`camp_q${i}_opts`).value }); }
-            config.stars = document.getElementById('camp_stars').checked;
-            config.questions = questions;
+            const q1 = document.getElementById('camp_q1_text'); if(!q1.value.trim()) { q1.classList.add('input-error'); hasError = true; }
+            let questions = []; for(let i=1; i<=4; i++) { questions.push({ text: document.getElementById(`camp_q${i}_text`).value, type: document.getElementById(`camp_q${i}_type`).value, options: document.getElementById(`camp_q${i}_opts`).value }); }
+            config.stars = document.getElementById('camp_stars').checked; config.questions = questions;
         } else if(type === 'promo') {
-            const txt = document.getElementById('camp_promo_text');
-            if(!txt.value.trim()) { txt.classList.add('input-error'); hasError = true; }
+            const txt = document.getElementById('camp_promo_text'); if(!txt.value.trim()) { txt.classList.add('input-error'); hasError = true; }
             config.text = txt.value; config.img = campImages.promo;
         } else if(type === 'versus') {
             const title = document.getElementById('camp_vs_title'); const vsa = document.getElementById('camp_vs_a'); const vsb = document.getElementById('camp_vs_b');
             if(!title.value.trim()) { title.classList.add('input-error'); hasError = true; } if(!vsa.value.trim()) { vsa.classList.add('input-error'); hasError = true; } if(!vsb.value.trim()) { vsb.classList.add('input-error'); hasError = true; }
             config.title = title.value; config.mid = document.getElementById('camp_vs_mid').value; config.a = vsa.value; config.b = vsb.value; config.img_a = campImages.vsa; config.img_b = campImages.vsb;
         } else if(type === 'birthday') {
-            const txt = document.getElementById('camp_bday_text');
-            if(!txt.value.trim()) { txt.classList.add('input-error'); hasError = true; }
-            config.text = txt.value;
+            const txt = document.getElementById('camp_bday_text'); if(!txt.value.trim()) { txt.classList.add('input-error'); hasError = true; } config.text = txt.value;
         } else if(type === 'wheel') {
             const title = document.getElementById('camp_wheel_title'); const p1 = document.getElementById('wheel_p1_name'); const p2 = document.getElementById('wheel_p2_name');
             if(!title.value.trim()) { title.classList.add('input-error'); hasError = true; } if(!p1.value.trim()) { p1.classList.add('input-error'); hasError = true; } if(!p2.value.trim()) { p2.classList.add('input-error'); hasError = true; }
-            let prizes = [];
-            for(let i=1; i<=6; i++) { 
-                let pName = document.getElementById(`wheel_p${i}_name`).value.trim(); 
-                let pLim = document.getElementById(`wheel_p${i}_limit`).value; 
-                let pUnlock = document.getElementById(`wheel_p${i}_unlock`).value; 
-                if(pName) prizes.push({ name: pName, limit: parseInt(pLim) || 0, unlock: pUnlock }); 
-            }
+            let prizes = []; for(let i=1; i<=6; i++) { let pName = document.getElementById(`wheel_p${i}_name`).value.trim(); let pLim = document.getElementById(`wheel_p${i}_limit`).value; let pUnlock = document.getElementById(`wheel_p${i}_unlock`).value; if(pName) prizes.push({ name: pName, limit: parseInt(pLim) || 0, unlock: pUnlock }); }
             config.title = title.value; config.prizes = prizes;
         } else if(type === 'box') {
             const title = document.getElementById('camp_box_title'); const p1 = document.getElementById('box_p1_name'); const p2 = document.getElementById('box_p2_name');
             if(!title.value.trim()) { title.classList.add('input-error'); hasError = true; } if(!p1.value.trim()) { p1.classList.add('input-error'); hasError = true; } if(!p2.value.trim()) { p2.classList.add('input-error'); hasError = true; }
-            let prizes = [];
-            for(let i=1; i<=4; i++) { 
-                let pName = document.getElementById(`box_p${i}_name`).value.trim(); 
-                let pLim = document.getElementById(`box_p${i}_limit`).value; 
-                let pUnlock = document.getElementById(`box_p${i}_unlock`).value; 
-                if(pName) prizes.push({ name: pName, limit: parseInt(pLim) || 0, unlock: pUnlock }); 
-            }
+            let prizes = []; for(let i=1; i<=4; i++) { let pName = document.getElementById(`box_p${i}_name`).value.trim(); let pLim = document.getElementById(`box_p${i}_limit`).value; let pUnlock = document.getElementById(`box_p${i}_unlock`).value; if(pName) prizes.push({ name: pName, limit: parseInt(pLim) || 0, unlock: pUnlock }); }
             config.title = title.value; config.prizes = prizes;
         }
 
-        if(hasError) {
-            document.getElementById('camp_error_banner').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            return;
-        }
+        if(hasError) { document.getElementById('camp_error_banner').classList.remove('hidden'); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
 
-        const btn = document.getElementById('btn_save_camp');
-        const ogText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
-
-        const formData = new FormData();
-        formData.append('action', 'mt_save_campaign');
-        formData.append('security', mt_nonce);
-        formData.append('campaign_id', document.getElementById('current_camp_id').value);
-        formData.append('campaign_name', name.value.trim());
-        formData.append('campaign_type', type);
-        formData.append('config', JSON.stringify(config));
+        const btn = document.getElementById('btn_save_camp'); const ogText = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving...';
+        const formData = new FormData(); formData.append('action', 'mt_save_campaign'); formData.append('security', mt_nonce); formData.append('campaign_id', document.getElementById('current_camp_id').value); formData.append('campaign_name', name.value.trim()); formData.append('campaign_type', type); formData.append('config', JSON.stringify(config));
 
         fetch(mt_ajax_url, { method: 'POST', body: formData }).then(res => res.json()).then(data => {
-            if(data.success) {
-                btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved!';
-                btn.classList.add('bg-green-600');
-                setTimeout(() => window.location.reload(), 1000);
-            } else { 
-                document.getElementById('camp_error_text').innerText = "Server Error: " + data.data;
-                document.getElementById('camp_error_banner').classList.remove('hidden');
-                btn.innerHTML = ogText; 
-            }
+            if(data.success) { btn.innerHTML = '<i class="fa-solid fa-check"></i> Saved!'; btn.classList.add('bg-green-600'); setTimeout(() => window.location.reload(), 1000); } 
+            else { document.getElementById('camp_error_text').innerText = "Server Error: " + data.data; document.getElementById('camp_error_banner').classList.remove('hidden'); btn.innerHTML = ogText; }
         });
     }
 
     let itemToDelete = null;
     function promptDeleteCampaign(id) {
-        itemToDelete = id;
-        document.getElementById('confirm_title').innerText = "Delete Campaign?";
-        document.getElementById('confirm_desc').innerText = "This will permanently remove the campaign and all its captured analytics.";
-        document.getElementById('confirm_icon').className = "fa-solid fa-triangle-exclamation text-3xl text-red-600";
-        document.getElementById('btn_confirm_action').innerHTML = "Yes, Delete";
-        document.getElementById('btn_confirm_action').onclick = executeDeleteCampaign;
-        openConfirmModal();
+        itemToDelete = id; document.getElementById('confirm_title').innerText = "Delete Campaign?"; document.getElementById('confirm_desc').innerText = "This will permanently remove the campaign and all its captured analytics."; document.getElementById('confirm_icon').className = "fa-solid fa-triangle-exclamation text-3xl text-red-600"; document.getElementById('btn_confirm_action').innerHTML = "Yes, Delete"; document.getElementById('btn_confirm_action').onclick = executeDeleteCampaign; openConfirmModal();
     }
-
     function executeDeleteCampaign() {
-        if(!itemToDelete) return;
-        const btn = document.getElementById('btn_confirm_action');
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Deleting...';
-        
-        const formData = new FormData();
-        formData.append('action', 'mt_delete_campaign');
-        formData.append('security', mt_nonce);
-        formData.append('campaign_id', itemToDelete);
-        
+        if(!itemToDelete) return; const btn = document.getElementById('btn_confirm_action'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Deleting...';
+        const formData = new FormData(); formData.append('action', 'mt_delete_campaign'); formData.append('security', mt_nonce); formData.append('campaign_id', itemToDelete);
         fetch(mt_ajax_url, { method: 'POST', body: formData }).then(res => res.json()).then(data => { 
-            if(data.success) { showToast("Campaign deleted.", "success"); setTimeout(() => window.location.reload(), 1000); } 
-            else { showToast("Error deleting campaign.", "error"); closeConfirmModal(); btn.innerHTML = 'Yes, Delete'; }
+            if(data.success) { showToast("Campaign deleted.", "success"); setTimeout(() => window.location.reload(), 1000); } else { showToast("Error deleting campaign.", "error"); closeConfirmModal(); btn.innerHTML = 'Yes, Delete'; }
         });
     }
 </script>
