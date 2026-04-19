@@ -5,7 +5,7 @@ global $wpdb;
 $table_templates = $wpdb->prefix . 'mt_email_templates';
 $table_campaigns = $wpdb->prefix . 'mt_campaigns';
 $table_leads     = $wpdb->prefix . 'mt_guest_leads';
-$table_stores    = $wpdb->prefix . 'mt_stores'; // Added to fetch locations
+$table_stores    = $wpdb->prefix . 'mt_stores';
 
 // Fetch user's saved templates for Step 3
 $active_templates = $wpdb->get_results( $wpdb->prepare("SELECT * FROM $table_templates WHERE brand_id = %d AND status = 'active' ORDER BY created_at DESC", $brand->id) );
@@ -179,7 +179,7 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 space-y-6">
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Internal Campaign Name</label>
-                        <input type="text" id="camp_name" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl text-sm font-normal text-gray-800 placeholder-gray-400 focus:border-indigo-500 outline-none transition" placeholder="e.g. October 2026 Promo - VIP Segment (Not seen by customers)">
+                        <input type="text" id="camp_name" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl text-sm font-normal text-gray-800 placeholder-gray-400 focus:border-indigo-500 outline-none transition" placeholder="e.g. October Promo - VIP Segment">
                     </div>
                     <div class="border-t border-gray-100 pt-6">
                         <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Email Subject Line</label>
@@ -270,7 +270,7 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
                                     <option value="" disabled>No campaign tags found in CRM yet.</option>
                                 <?php endif; ?>
                             </select>
-                            <p class="text-xs text-gray-400 mt-2 italic">Only guests who entered through this specific vCard/Splash campaign will receive this email.</p>
+                            <p class="text-xs text-gray-400 mt-2 italic">Only guests who entered through this specific Splash campaign will receive this email.</p>
                         </div>
                     </div>
                 </div>
@@ -393,7 +393,7 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
     <div class="bg-white rounded-3xl p-10 text-center max-w-sm transform scale-95 transition-transform" id="success_box">
         <div class="w-24 h-24 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fa-solid fa-dove text-5xl"></i></div>
         <h2 class="text-3xl font-black text-gray-900 mb-2">Message Soaring!</h2>
-        <p class="text-gray-500 mb-8">Your message is soaring above the canopy! Check back later to see the flock's response.</p>
+        <p class="text-gray-500 mb-8">Your broadcast has been successfully queued for secure dispatch.</p>
         <button onclick="window.location.reload()" class="w-full bg-gray-900 text-white py-4 rounded-xl font-black hover:bg-black transition">Back to Dashboard</button>
     </div>
 </div>
@@ -415,20 +415,14 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
 <div id="mt_toast_container" class="fixed bottom-8 right-8 z-[400] flex flex-col items-end pointer-events-none"></div>
 
 <script>
-    // --- UI/UX: CUSTOM POPUPS & TOASTS ---
     function showToast(message, type = 'success') {
         const container = document.getElementById('mt_toast_container');
         const toast = document.createElement('div');
         const bgColor = type === 'error' ? 'bg-red-600' : 'bg-gray-900';
         const icon = type === 'error' ? 'fa-triangle-exclamation' : 'fa-check-circle';
         
-        let displayMessage = message;
-        if (type === 'error' && !message.includes('Jungle Tangle')) {
-            displayMessage = "Looks like a bit of a Jungle Tangle. - " + message;
-        }
-
         toast.className = `flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] text-white text-sm font-bold transform transition-all duration-300 translate-y-10 opacity-0 ${bgColor} mb-3 pointer-events-auto`;
-        toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i> ${displayMessage}`;
+        toast.innerHTML = `<i class="fa-solid ${icon} text-lg"></i> ${message}`;
         container.appendChild(toast);
         
         requestAnimationFrame(() => { toast.classList.remove('translate-y-10', 'opacity-0'); });
@@ -453,7 +447,6 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
     }
     function executeConfirm() { if(confirmCallback) confirmCallback(); closeConfirmModal(); }
 
-    // --- WIZARD LOGIC & EDIT DRAFT RESTORE ---
     let currentStep = 1;
     const totalSteps = 4;
 
@@ -471,25 +464,19 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
         }
     }
 
-    // THE EDIT DRAFT RESTORE ENGINE
     function editCampaign(id, btnElement) {
         const name = btnElement.getAttribute('data-name');
         let config = {};
         
         try {
-            // Parse the stored JSON config payload
             config = JSON.parse(btnElement.getAttribute('data-config') || '{}');
-        } catch(e) {
-            console.error("Failed to parse campaign config", e);
-        }
+        } catch(e) {}
 
-        // Repopulate Step 1
         document.getElementById('campaign_id').value = id;
         document.getElementById('camp_name').value = name;
         document.getElementById('camp_subject').value = config.subject || '';
         document.getElementById('camp_preview').value = config.preview || '';
         
-        // Repopulate Step 2: Audience Radio
         const audience = config.audience || 'all';
         const radio = document.querySelector(`input[name="audience"][value="${audience}"]`);
         if(radio) {
@@ -497,7 +484,6 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
             toggleCustomAudience();
         }
         
-        // Repopulate Filters
         if(config.audience_tag) {
             document.getElementById('camp_segment_tag').value = config.audience_tag;
         }
@@ -505,7 +491,6 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
             document.getElementById('camp_location_filter').value = config.location_id;
         }
         
-        // Repopulate Step 3: Template Selection
         document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
         document.getElementById('selected_template_id').value = '';
         if(config.template_id) {
@@ -513,12 +498,10 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
             if(tplCard) {
                 selectTemplate(tplCard, config.template_id);
             } else {
-                // If template card doesn't exist on screen but id is saved
                 document.getElementById('selected_template_id').value = config.template_id;
             }
         }
 
-        // Open the Wizard Interface
         document.getElementById('view_campaign_list').style.display = 'none';
         document.getElementById('view_campaign_wizard').classList.remove('hidden');
         document.getElementById('view_campaign_wizard').classList.add('flex');
@@ -527,9 +510,7 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
     }
 
     function startWizard(id) {
-        // This is a brand new campaign
         if(id === 0) {
-            // Clear out all fields from any previous session
             document.getElementById('campaign_id').value = 0;
             document.getElementById('camp_name').value = '';
             document.getElementById('camp_subject').value = '';
@@ -546,7 +527,7 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
             document.getElementById('view_campaign_wizard').classList.add('flex');
             
             goToStep(1);
-            silentDraftSave(); // Secure their work immediately
+            silentDraftSave(); 
         }
     }
 
@@ -631,7 +612,6 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
     }
 
     function goToStep(step) {
-        // Validation
         if (step > currentStep) {
             if (currentStep === 1) {
                 if(!document.getElementById('camp_name').value || !document.getElementById('camp_subject').value) {
@@ -654,14 +634,11 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
             }
         }
 
-        // Hide all steps
         document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
         
-        // Show target step
         currentStep = step;
         document.getElementById('step-' + currentStep).classList.add('active');
 
-        // Update Nav
         for(let i=1; i<=totalSteps; i++) {
             let indicator = document.getElementById('nav-step-' + i);
             if(i < currentStep) {
@@ -739,12 +716,11 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
     }
 
     function launchCampaign() {
-        mtConfirm("Ready for Takeoff?", "This will deploy your email blast to the selected audience immediately. Proceed?", function() {
+        mtConfirm("Ready for Takeoff?", "This will immediately drop your payload into the secure sending queue. Proceed?", function() {
             const btn = document.getElementById('btn_blast');
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Launching...';
             btn.disabled = true;
 
-            // Final Save as 'sent'
             const id = document.getElementById('campaign_id').value;
             const config = {
                 subject: document.getElementById('camp_subject').value,
@@ -760,7 +736,7 @@ $sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
             fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
             fd.append('campaign_id', id); 
             fd.append('campaign_name', document.getElementById('camp_name').value);
-            fd.append('campaign_type', 'sent'); // Flags it as dispatched
+            fd.append('campaign_type', 'sent'); // Automatically caught by MT_Email hook to generate the queue
             fd.append('config', JSON.stringify(config));
             
             const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
