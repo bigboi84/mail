@@ -7,12 +7,29 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class MT_Wifi_Controller {
 
+    private $google_client_id;
+    private $google_client_secret;
+    private $google_redirect_uri;
+
+    public function __construct() {
+        // AUDIT FIX: Removed hardcoded API secrets
+        $this->google_client_id = get_option('mt_google_client_id', '');
+        $this->google_client_secret = get_option('mt_google_client_secret', '');
+        $this->google_redirect_uri = admin_url('admin-ajax.php?action=mt_splash_google_callback');
+    }
+
     public function init() {
         add_action('wp_ajax_mt_capture_lead', array($this, 'capture_lead_ajax'));
         add_action('wp_ajax_nopriv_mt_capture_lead', array($this, 'capture_lead_ajax'));
         add_action('init', array($this, 'catch_email_verification'));
         add_action('init', array($this, 'process_wifi_login'));
         add_action('init', array($this, 'catch_router_redirect'));
+
+        // Social Login Hooks
+        add_action('wp_ajax_mt_get_splash_google_url', array($this, 'ajax_get_google_url'));
+        add_action('wp_ajax_nopriv_mt_get_splash_google_url', array($this, 'ajax_get_google_url'));
+        add_action('wp_ajax_mt_splash_google_callback', array($this, 'google_callback'));
+        add_action('wp_ajax_nopriv_mt_splash_google_callback', array($this, 'google_callback'));
     }
 
     public function capture_lead_ajax() {
@@ -49,6 +66,7 @@ class MT_Wifi_Controller {
             $wpdb->update($table_leads, [
                 'guest_name' => $name ?: $existing_lead->guest_name,
                 'guest_mac' => !empty($mac) ? $mac : $existing_lead->guest_mac, 
+                'status'     => 'active', 
                 'last_visit' => current_time('mysql')
             ], ['id' => $existing_lead->id]);
             $lead_id = $existing_lead->id;
@@ -77,7 +95,11 @@ class MT_Wifi_Controller {
 
         $table_wifi = $wpdb->prefix . 'mt_wifi_logs';
         if ($wpdb->get_var("SHOW TABLES LIKE '{$table_wifi}'") === $table_wifi) {
-            $wpdb->insert($table_wifi, ['mac_address' => $mac, 'store_id' => $store_id]);
+            $wpdb->insert($table_wifi, [
+                'mac_address' => $mac, 
+                'store_id' => $store_id,
+                'brand_id' => $brand_id
+            ]);
         }
 
         $radius_result = $this->authorize_guest_mac($lead_id, $brand_id);
@@ -89,7 +111,6 @@ class MT_Wifi_Controller {
 
         wp_send_json_success('Lead captured and authorized.');
     }
-
 
     public function catch_email_verification() {
         if (isset($_GET['mt_verify'])) {
@@ -136,11 +157,60 @@ class MT_Wifi_Controller {
         // Legacy block maintained
     }
 
+    public function ajax_get_google_url() {
+        if (empty($_POST['state'])) wp_send_json_error('No state data provided.');
+        
+        $state = base64_encode(wp_unslash($_POST['state']));
+        $scope = urlencode('email profile');
+        
+        $url = "https://accounts.google.com/o/oauth2/v2/auth?client_id={$this->google_client_id}&redirect_uri={$this->google_redirect_uri}&response_type=code&scope={$scope}&prompt=select_account&state={$state}";
+        wp_send_json_success(['url' => $url]);
+    }
+
+    public function google_callback() {
+        if (empty($_GET['code'])) wp_die('No code returned from Google.');
+        $code = sanitize_text_field($_GET['code']);
+        $state_raw = isset($_GET['state']) ? sanitize_text_field($_GET['state']) : '';
+        $state = json_decode(base64_decode($state_raw), true);
+
+        $response = wp_remote_post('https://oauth2.googleapis.com/token', [
+            'body' => [
+                'code' => $code,
+                'client_id' => $this->google_client_id,
+                'client_secret' => $this->google_client_secret,
+                'redirect_uri' => $this->google_redirect_uri,
+                'grant_type' => 'authorization_code'
+            ]
+        ]);
+
+        if (is_wp_error($response)) wp_die('Google Authentication Token Error');
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+        if (empty($body['access_token'])) wp_die('Failed to authenticate with Google. Ensure the app is correctly configured.');
+
+        $profile_res = wp_remote_get('https://www.googleapis.com/oauth2/v2/userinfo', [
+            'headers' => ['Authorization' => 'Bearer ' . $body['access_token']]
+        ]);
+        $profile = json_decode(wp_remote_retrieve_body($profile_res), true);
+        
+        $email = $profile['email'] ?? '';
+        $name = $profile['name'] ?? 'Guest';
+
+        if (!$email) wp_die('Could not retrieve email address from your Google account.');
+
+        $splash_url = $state['current_url'] ?? '';
+        if (!$splash_url) wp_die('Security Error: Lost original portal URL.');
+
+        $separator = (parse_url($splash_url, PHP_URL_QUERY) == NULL) ? '?' : '&';
+        $final_url = $splash_url . $separator . 'social_auth=1&social_email=' . urlencode($email) . '&social_name=' . urlencode($name);
+
+        wp_redirect($final_url);
+        exit;
+    }
+
     public function authorize_guest_mac( $lead_id, $brand_id, $force_full_auth = false ) {
         global $wpdb;
         
         $lead = $wpdb->get_row( $wpdb->prepare("SELECT * FROM {$wpdb->prefix}mt_guest_leads WHERE id = %d", $lead_id) );
-        
         if ( ! $lead ) {
             return 'Diagnostic: Lead ID ' . $lead_id . ' not found in DB.'; 
         }
@@ -154,7 +224,6 @@ class MT_Wifi_Controller {
         $mac_dash = implode('-', str_split($raw_mac, 2));  
 
         $store = $wpdb->get_row( $wpdb->prepare("SELECT local_offer_json, splash_config FROM {$wpdb->prefix}mt_stores WHERE id = %d", $lead->store_id) );
-        
         $splash_config = [];
         if ($store && !empty($store->splash_config)) {
             $splash_config = json_decode($store->splash_config, true) ?: [];
@@ -168,14 +237,12 @@ class MT_Wifi_Controller {
         $bandwidth_limit_mb = isset($config['bandwidth_limit_mb']) ? intval($config['bandwidth_limit_mb']) : 500;
 
         $session_time_seconds = 0;
-        $idle_timeout_seconds = 0; // New Idle Timeout Variable
+        $idle_timeout_seconds = 0; 
         $transient_key = 'mt_wifi_session_' . md5($mac_colon);
 
         if ($require_verification && !$previously_verified && !$force_full_auth && strpos($lead->email, '@local.wifi') === false) {
-            
-            // GRACE PERIOD MODE
             $session_time_seconds = 10 * 60; 
-            $idle_timeout_seconds = 3 * 60; // 3 minute idle disconnect during grace period
+            $idle_timeout_seconds = 3 * 60; 
             $bandwidth_limit_mb = 50; 
             
             $wpdb->update($wpdb->prefix . 'mt_guest_leads', ['status' => 'pending'], ['id' => $lead_id]);
@@ -188,12 +255,9 @@ class MT_Wifi_Controller {
             set_transient($transient_key, time() + $session_time_seconds, $session_time_seconds);
             
         } else {
-            // FULL ACCESS MODE
             if (!$previously_verified && strpos($lead->email, '@local.wifi') === false) {
                 $wpdb->update($wpdb->prefix . 'mt_guest_leads', ['status' => 'verified'], ['id' => $lead_id]);
             }
-
-            // MIDDLE GROUND: 15 Minute Idle Disconnect to force the Splash Screen / Ad impression
             $idle_timeout_seconds = 15 * 60; 
 
             $active_session_end = get_transient($transient_key);
@@ -208,36 +272,33 @@ class MT_Wifi_Controller {
             }
         }
 
+        // AUDIT FIX: Using Secure get_option() variables
+        $db_host = get_option('mt_radius_host', '107.173.49.14');
+        $db_user = get_option('mt_radius_user', 'mt_radius');
+        $db_pass = get_option('mt_radius_pass', '');
+
+        if (empty($db_pass)) return 'Missing RADIUS credentials in WP settings.';
+
         try {
-            $pdo = new PDO(
-                'mysql:host=107.173.49.14;dbname=radius;port=3306;charset=utf8mb4',
-                'mt_radius',
-                'JLAmX7sPoWffb7N3GVcp',
-                [
-                    PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_TIMEOUT    => 5,
-                ]
-            );
+            $pdo = new PDO("mysql:host={$db_host};dbname=radius;port=3306;charset=utf8mb4", $db_user, $db_pass, [
+                PDO::ATTR_ERRMODE    => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_TIMEOUT    => 5,
+            ]);
         } catch (PDOException $e) {
             return 'DATABASE CONNECTION FAILED: ' . $e->getMessage();
         }
 
         try {
             $pdo->beginTransaction();
-
-            // 1. MIKROTIK INJECTION (Colons format)
             $pdo->prepare('DELETE FROM radcheck WHERE username = ?')->execute([$mac_colon]);
             $pdo->prepare('DELETE FROM radreply WHERE username = ?')->execute([$mac_colon]);
-            
             $pdo->prepare("INSERT INTO radcheck (username, attribute, op, value) VALUES (?, 'Auth-Type', ':=', 'Accept')")->execute([$mac_colon]);
             $pdo->prepare("INSERT INTO radcheck (username, attribute, op, value) VALUES (?, 'Cleartext-Password', ':=', ?)")->execute([$mac_colon, $mac_colon]);
             $pdo->prepare("INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'Session-Timeout', '=', ?)")->execute([$mac_colon, $session_time_seconds]);
             $pdo->prepare("INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'Idle-Timeout', '=', ?)")->execute([$mac_colon, $idle_timeout_seconds]);
 
-            // 2. DATTO/OPENMESH INJECTION (Dashes format)
             $pdo->prepare('DELETE FROM radcheck WHERE username = ?')->execute([$mac_dash]);
             $pdo->prepare('DELETE FROM radreply WHERE username = ?')->execute([$mac_dash]);
-            
             $pdo->prepare("INSERT INTO radcheck (username, attribute, op, value) VALUES (?, 'Auth-Type', ':=', 'Accept')")->execute([$mac_dash]);
             $pdo->prepare("INSERT INTO radcheck (username, attribute, op, value) VALUES (?, 'Cleartext-Password', ':=', ?)")->execute([$mac_dash, $mac_dash]);
             $pdo->prepare("INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'Session-Timeout', '=', ?)")->execute([$mac_dash, $session_time_seconds]);
@@ -248,7 +309,6 @@ class MT_Wifi_Controller {
                 $pdo->prepare("INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'Mikrotik-Total-Limit', '=', ?)")->execute([$mac_colon, $bytes]);
                 $pdo->prepare("INSERT INTO radreply (username, attribute, op, value) VALUES (?, 'ChilliSpot-Max-Total-Octets', '=', ?)")->execute([$mac_dash, $bytes]);
             }
-
             $pdo->commit();
             return true;
 
@@ -258,6 +318,3 @@ class MT_Wifi_Controller {
         }
     }
 }
-
-$mt_wifi_hw = new MT_Wifi_Controller();
-$mt_wifi_hw->init();
