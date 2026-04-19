@@ -3,7 +3,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 global $wpdb;
 $table_templates = $wpdb->prefix . 'mt_email_templates';
-$table_campaigns = $wpdb->prefix . 'mt_campaigns'; // We store workflows here too, using campaign_type = 'workflow'
+$table_campaigns = $wpdb->prefix . 'mt_campaigns'; 
 $table_stores    = $wpdb->prefix . 'mt_stores';
 
 // Fetch user's saved templates for the payload step
@@ -87,7 +87,6 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
                         $is_draft = ($wf->campaign_type === 'workflow_draft');
                         $config = json_decode($wf->config_json, true) ?: [];
                         
-                        // Map Trigger to friendly name
                         $trigger_labels = [
                             'first_visit' => 'First Time Connect',
                             'birthday' => 'Guest Birthday',
@@ -101,7 +100,6 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
                         <td class="p-5 pl-6">
                             <p class="font-bold text-gray-900"><?php echo esc_html($wf->campaign_name); ?></p>
                             <?php if(!empty($config['location_id']) && $config['location_id'] !== 'all'): 
-                                // Lookup Location name
                                 $loc_name = 'Specific Location';
                                 foreach($locations as $l) { if($l->id == $config['location_id']) $loc_name = $l->store_name; }
                             ?>
@@ -390,7 +388,6 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
 <div id="mt_toast_container" class="fixed bottom-8 right-8 z-[400] flex flex-col items-end pointer-events-none"></div>
 
 <script>
-    // --- UI/UX TOASTS ---
     function showToast(message, type = 'success') {
         const container = document.getElementById('mt_toast_container');
         const toast = document.createElement('div');
@@ -425,7 +422,6 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
     }
     function executeConfirm() { if(confirmCallback) confirmCallback(); closeConfirmModal(); }
 
-    // --- WIZARD LOGIC ---
     let currentStep = 1;
     const totalSteps = 4;
 
@@ -434,7 +430,6 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
         let config = {};
         try { config = JSON.parse(btnElement.getAttribute('data-config') || '{}'); } catch(e) {}
 
-        // Repopulate Step 1
         document.getElementById('wf_id').value = id;
         document.getElementById('wf_name').value = name;
         
@@ -442,7 +437,6 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
         const radio = document.querySelector(`input[name="wf_trigger"][value="${trigger}"]`);
         if(radio) radio.checked = true;
 
-        // Repopulate Step 2
         document.getElementById('wf_delay_val').value = config.delay_val || 0;
         document.getElementById('wf_delay_unit').value = config.delay_unit || 'minutes';
         
@@ -450,7 +444,6 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
             document.getElementById('wf_location_filter').value = config.location_id;
         }
 
-        // Repopulate Step 3
         document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
         document.getElementById('selected_template_id').value = '';
         if(config.template_id) {
@@ -462,7 +455,6 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
             }
         }
 
-        // Open Wizard
         document.getElementById('view_workflow_list').style.display = 'none';
         document.getElementById('view_workflow_wizard').classList.remove('hidden');
         document.getElementById('view_workflow_wizard').classList.add('flex');
@@ -486,7 +478,7 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
             document.getElementById('view_workflow_wizard').classList.add('flex');
             
             goToStep(1);
-            silentDraftSave(); // Auto save new rule
+            silentDraftSave(); 
         }
     }
 
@@ -563,7 +555,6 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
     }
 
     function goToStep(step) {
-        // Validation
         if (step > currentStep) {
             if (currentStep === 1 && !document.getElementById('wf_name').value) {
                 showToast("Please give this automation a name.", "error");
@@ -575,14 +566,11 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
             }
         }
 
-        // Hide all
         document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
         
-        // Show target
         currentStep = step;
         document.getElementById('step-' + currentStep).classList.add('active');
 
-        // Update Nav
         for(let i=1; i<=totalSteps; i++) {
             let indicator = document.getElementById('nav-step-' + i);
             if(i < currentStep) {
@@ -600,7 +588,6 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
             }
         }
 
-        // Buttons
         const btnPrev = document.getElementById('btn-prev');
         const btnNext = document.getElementById('btn-next');
         const btnFinish = document.getElementById('btn-finish');
@@ -627,7 +614,6 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
     function prevStep() { if(currentStep > 1) goToStep(currentStep - 1); }
 
     function populateReviewScreen() {
-        // Trigger
         const triggerLabels = {
             'first_visit': 'First Time Connect',
             'birthday': 'Guest Birthday',
@@ -637,7 +623,6 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
         const trigger = document.querySelector('input[name="wf_trigger"]:checked')?.value || 'first_visit';
         document.getElementById('review_trigger').innerText = triggerLabels[trigger];
 
-        // Delay & Location
         const delayVal = document.getElementById('wf_delay_val').value;
         const delayUnit = document.getElementById('wf_delay_unit').options[document.getElementById('wf_delay_unit').selectedIndex].text;
         document.getElementById('review_delay').innerText = `Wait ${delayVal} ${delayUnit}`;
@@ -647,7 +632,6 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
         if (locSelect.value !== 'all') locFilterText = locSelect.options[locSelect.selectedIndex].text;
         document.getElementById('review_location').innerText = "Filtered to: " + locFilterText;
 
-        // Template
         let templateText = "Selected Template ID: " + document.getElementById('selected_template_id').value;
         const selectedTplCard = document.querySelector('.template-card.selected h3');
         if(selectedTplCard) templateText = selectedTplCard.innerText;
@@ -674,7 +658,7 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
             fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
             fd.append('campaign_id', id); 
             fd.append('campaign_name', document.getElementById('wf_name').value);
-            fd.append('campaign_type', 'workflow'); // Flags it as ACTIVE
+            fd.append('campaign_type', 'workflow'); 
             fd.append('config', JSON.stringify(config));
             
             const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
