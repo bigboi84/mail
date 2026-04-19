@@ -9,34 +9,39 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class MT_Workflows {
 
     public function init() {
-        // 1. Listen for Instant Triggers (WiFi Connects & vCard Scans)
         add_action( 'mt_lead_captured', array( $this, 'process_instant_triggers' ), 10, 2 );
 
-        // 2. Register the Daily Morning Scanner (runs once a day)
         if ( ! wp_next_scheduled( 'mt_daily_workflow_scanner_hook' ) ) {
-            // Schedule it to run daily at 8:00 AM local time
             $timestamp = strtotime('08:00:00');
-            if ($timestamp < time()) $timestamp += 86400; // If 8am passed, set for tomorrow
+            if ($timestamp < time()) $timestamp += 86400; 
             wp_schedule_event( $timestamp, 'daily', 'mt_daily_workflow_scanner_hook' );
         }
         add_action( 'mt_daily_workflow_scanner_hook', array( $this, 'run_daily_scanners' ) );
+
+        // Register the 5-minute queue worker
+        add_filter( 'cron_schedules', array( $this, 'add_cron_intervals' ) );
+        if ( ! wp_next_scheduled( 'mt_process_email_queue_hook' ) ) {
+            wp_schedule_event( time(), 'every_five_minutes', 'mt_process_email_queue_hook' );
+        }
+        add_action( 'mt_process_email_queue_hook', array( $this, 'process_queue' ) );
     }
 
-    /**
-     * Executes the moment a user logs into the WiFi or scans a vCard.
-     * @param int $lead_id The ID of the newly captured guest
-     * @param int $brand_id The Brand ID
-     */
+    public function add_cron_intervals( $schedules ) {
+        $schedules['every_five_minutes'] = array(
+            'interval' => 300,
+            'display'  => esc_html__( 'Every Five Minutes' ),
+        );
+        return $schedules;
+    }
+
     public function process_instant_triggers( $lead_id, $brand_id ) {
         global $wpdb;
         $campaigns_table = $wpdb->prefix . 'mt_campaigns';
         $leads_table = $wpdb->prefix . 'mt_guest_leads';
 
-        // Get the lead's details (Location and Tag)
         $lead = $wpdb->get_row( $wpdb->prepare("SELECT store_id, campaign_tag FROM $leads_table WHERE id = %d", $lead_id) );
         if ( ! $lead ) return;
 
-        // Fetch all ACTIVE workflows for this brand
         $workflows = $wpdb->get_results( $wpdb->prepare("SELECT id, config_json FROM $campaigns_table WHERE brand_id = %d AND campaign_type = 'workflow'", $brand_id) );
 
         foreach ( $workflows as $wf ) {
@@ -44,17 +49,14 @@ class MT_Workflows {
             $trigger = $config['trigger_type'] ?? '';
             $location_id = $config['location_id'] ?? 'all';
             
-            // Location Filter Check: Skip if this workflow is for a different store
             if ( $location_id !== 'all' && intval($location_id) !== intval($lead->store_id) ) continue;
 
             $should_queue = false;
 
-            // Scenario 1: First Time Connect
             if ( $trigger === 'first_visit' ) {
                 $should_queue = true;
             }
             
-            // Scenario 2: Specific Campaign Tag (vCard)
             if ( $trigger === 'tag' && !empty($config['audience_tag']) ) {
                 if ( strtolower($config['audience_tag']) === strtolower($lead->campaign_tag) ) {
                     $should_queue = true;
@@ -67,9 +69,6 @@ class MT_Workflows {
         }
     }
 
-    /**
-     * The Morning Robot: Runs at 8:00 AM every day to sweep the CRM.
-     */
     public function run_daily_scanners() {
         global $wpdb;
         $brands = $wpdb->get_col( "SELECT id FROM {$wpdb->prefix}mt_brands" );
@@ -77,7 +76,6 @@ class MT_Workflows {
         $leads_table = $wpdb->prefix . 'mt_guest_leads';
 
         foreach ( $brands as $brand_id ) {
-            // Fetch active daily workflows for this brand (Birthdays & Winbacks)
             $workflows = $wpdb->get_results( $wpdb->prepare("SELECT id, config_json FROM $campaigns_table WHERE brand_id = %d AND campaign_type = 'workflow'", $brand_id) );
 
             foreach ( $workflows as $wf ) {
@@ -86,8 +84,12 @@ class MT_Workflows {
                 $location_id = $config['location_id'] ?? 'all';
 
                 if ( $trigger === 'birthday' ) {
-                    // Find guests whose birthday is today (Month and Day match)
-                    $query = "SELECT id FROM $leads_table WHERE brand_id = %d AND status = 'active' AND MONTH(birthday) = MONTH(NOW()) AND DAY(birthday) = DAY(NOW())";
+                    $target_date_sql = "NOW()";
+                    if ( isset($config['delay_unit']) && $config['delay_unit'] === 'days_before' ) {
+                        $target_date_sql = "DATE_ADD(NOW(), INTERVAL " . intval($config['delay_val']) . " DAY)";
+                    }
+
+                    $query = "SELECT id FROM $leads_table WHERE brand_id = %d AND status = 'active' AND MONTH(birthday) = MONTH($target_date_sql) AND DAY(birthday) = DAY($target_date_sql)";
                     $params = [ $brand_id ];
 
                     if ( $location_id !== 'all' ) {
@@ -97,18 +99,16 @@ class MT_Workflows {
 
                     $birthday_leads = $wpdb->get_col( $wpdb->prepare($query, ...$params) );
                     foreach ( $birthday_leads as $lead_id ) {
-                        // Ensure we haven't already sent them a birthday email this year
                         if ( ! $this->has_been_queued_recently( $wf->id, $lead_id, 300 ) ) {
-                            $this->add_to_queue( $brand_id, $wf->id, $lead_id, $config );
+                            $this->add_to_queue( $brand_id, $wf->id, $lead_id, $config, true );
                         }
                     }
                 }
 
                 if ( $trigger === 'winback' ) {
-                    // Win-back: e.g., haven't been seen in 30 days
-                    // In Phase 3, this will check 'last_login', but for now we use 'created_at' as a baseline
-                    $days_missing = 30; // Default threshold
-                    $query = "SELECT id FROM $leads_table WHERE brand_id = %d AND status = 'active' AND created_at <= DATE_SUB(NOW(), INTERVAL %d DAY)";
+                    // Win-back relies strictly on the actual last visit, ensuring accurate missing duration
+                    $days_missing = 30; 
+                    $query = "SELECT id FROM $leads_table WHERE brand_id = %d AND status = 'active' AND last_visit <= DATE_SUB(NOW(), INTERVAL %d DAY) AND last_visit IS NOT NULL";
                     $params = [ $brand_id, $days_missing ];
 
                     if ( $location_id !== 'all' ) {
@@ -118,7 +118,6 @@ class MT_Workflows {
 
                     $missing_leads = $wpdb->get_col( $wpdb->prepare($query, ...$params) );
                     foreach ( $missing_leads as $lead_id ) {
-                        // Ensure we only send the win-back email ONCE per workflow
                         if ( ! $this->has_been_queued_recently( $wf->id, $lead_id, 9999 ) ) {
                             $this->add_to_queue( $brand_id, $wf->id, $lead_id, $config );
                         }
@@ -128,10 +127,7 @@ class MT_Workflows {
         }
     }
 
-    /**
-     * Calculates the delay and drops the payload into the Queue table.
-     */
-    private function add_to_queue( $brand_id, $campaign_id, $lead_id, $config ) {
+    private function add_to_queue( $brand_id, $campaign_id, $lead_id, $config, $is_birthday_scan = false ) {
         global $wpdb;
         $queue_table = $wpdb->prefix . 'mt_email_queue';
         $leads_table = $wpdb->prefix . 'mt_guest_leads';
@@ -139,13 +135,13 @@ class MT_Workflows {
         $lead_email = $wpdb->get_var( $wpdb->prepare("SELECT email FROM $leads_table WHERE id = %d", $lead_id) );
         if ( ! $lead_email ) return;
 
-        // Calculate Delay
         $delay_val = intval($config['delay_val'] ?? 0);
         $delay_unit = $config['delay_unit'] ?? 'minutes';
 
-        $send_after = current_time('mysql'); // Default: Send immediately
+        $send_after = current_time('mysql'); 
 
-        if ( $delay_val > 0 ) {
+        // Since birthdays are fetched proactively by the exact calculated day by the scanner, no further offset is needed here.
+        if ( $delay_val > 0 && ! $is_birthday_scan ) {
             if ( $delay_unit === 'minutes' ) {
                 $send_after = date('Y-m-d H:i:s', strtotime("+$delay_val minutes", current_time('timestamp')));
             } elseif ( $delay_unit === 'hours' ) {
@@ -153,7 +149,6 @@ class MT_Workflows {
             } elseif ( $delay_unit === 'days' ) {
                 $send_after = date('Y-m-d H:i:s', strtotime("+$delay_val days", current_time('timestamp')));
             }
-            // Note: 'days_before' logic for birthdays requires advanced parsing, skipping for MVP
         }
 
         $wpdb->insert( $queue_table, array(
@@ -166,9 +161,6 @@ class MT_Workflows {
         ) );
     }
 
-    /**
-     * Prevents spamming. Checks if a lead was already added to the queue for a specific workflow within X days.
-     */
     private function has_been_queued_recently( $campaign_id, $lead_id, $days = 300 ) {
         global $wpdb;
         $queue_table = $wpdb->prefix . 'mt_email_queue';
@@ -180,5 +172,62 @@ class MT_Workflows {
         ", $campaign_id, $lead_id, $days) );
 
         return $recent ? true : false;
+    }
+
+    public function process_queue() {
+        global $wpdb;
+        $queue_table     = $wpdb->prefix . 'mt_email_queue';
+        $leads_table     = $wpdb->prefix . 'mt_guest_leads';
+        $templates_table = $wpdb->prefix . 'mt_email_templates';
+        $campaigns_table = $wpdb->prefix . 'mt_campaigns';
+        
+        $pending = $wpdb->get_results("SELECT * FROM $queue_table WHERE status = 'pending' AND send_after <= NOW() LIMIT 50");
+        if ( empty($pending) ) return;
+
+        $email_engine = new MT_Email();
+
+        foreach ( $pending as $job ) {
+            $campaign = $wpdb->get_row($wpdb->prepare("SELECT config_json, campaign_name FROM $campaigns_table WHERE id = %d", $job->campaign_id));
+            if ( ! $campaign ) {
+                $wpdb->update($queue_table, ['status' => 'failed'], ['id' => $job->id]);
+                continue;
+            }
+            $config = json_decode($campaign->config_json, true) ?: [];
+            $template_id = $config['template_id'] ?? 0;
+            $subject = $config['subject'] ?? $campaign->campaign_name;
+
+            $template = $wpdb->get_row($wpdb->prepare("SELECT email_body, email_subject FROM $templates_table WHERE id = %d", $template_id));
+            if ( ! $template ) {
+                $wpdb->update($queue_table, ['status' => 'failed'], ['id' => $job->id]);
+                continue;
+            }
+            
+            if( empty($subject) || $subject === $campaign->campaign_name ) $subject = $template->email_subject;
+
+            $lead = $wpdb->get_row($wpdb->prepare("SELECT * FROM $leads_table WHERE id = %d", $job->lead_id), ARRAY_A);
+            if ( ! $lead || in_array($lead['status'], ['unsubscribed', 'trashed', 'deleted']) ) {
+                $wpdb->update($queue_table, ['status' => 'skipped'], ['id' => $job->id]);
+                continue;
+            }
+
+            $brand_name = $wpdb->get_var($wpdb->prepare("SELECT brand_name FROM {$wpdb->prefix}mt_brands WHERE id = %d", $job->brand_id));
+            $store_name = $wpdb->get_var($wpdb->prepare("SELECT store_name FROM {$wpdb->prefix}mt_stores WHERE id = %d", $lead['store_id']));
+
+            $html = $email_engine->parse_tags($template->email_body, $lead, $brand_name, $store_name ?: 'HQ');
+            
+            $result = $email_engine->route_email($job->to_email, $subject, $html, $job->brand_id, 'bulk');
+            
+            if ( $result === true ) {
+                $wpdb->update($queue_table, ['status' => 'sent', 'sent_at' => current_time('mysql')], ['id' => $job->id]);
+                $wpdb->insert($wpdb->prefix . 'mt_email_sends', [
+                    'brand_id'    => $job->brand_id,
+                    'campaign_id' => $job->campaign_id,
+                    'lead_id'     => $job->lead_id,
+                    'sent_at'     => current_time('mysql')
+                ]);
+            } else {
+                $wpdb->update($queue_table, ['status' => 'failed'], ['id' => $job->id]);
+            }
+        }
     }
 }
