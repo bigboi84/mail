@@ -36,6 +36,9 @@ class MT_SuperAdmin {
         if (!in_array('storage_limit_mb', $brand_cols)) $wpdb->query("ALTER TABLE `$table_brands` ADD `storage_limit_mb` int(11) DEFAULT 50");
         if (!in_array('renewal_date', $brand_cols)) $wpdb->query("ALTER TABLE `$table_brands` ADD `renewal_date` date DEFAULT NULL");
         if (!in_array('custom_mrr', $brand_cols)) $wpdb->query("ALTER TABLE `$table_brands` ADD `custom_mrr` decimal(10,2) DEFAULT NULL");
+        
+        // AUDIT FIX: Added API Sending permission column
+        if (!in_array('api_sending_enabled', $brand_cols)) $wpdb->query("ALTER TABLE `$table_brands` ADD `api_sending_enabled` tinyint(1) DEFAULT 0");
 
         // 2. Repair mt_stores table
         $table_stores = $wpdb->prefix . 'mt_stores';
@@ -44,7 +47,6 @@ class MT_SuperAdmin {
         if (!in_array('splash_config', $store_cols)) $wpdb->query("ALTER TABLE `$table_stores` ADD `splash_config` LONGTEXT");
         if (!in_array('local_offer_json', $store_cols)) $wpdb->query("ALTER TABLE `$table_stores` ADD `local_offer_json` LONGTEXT");
         if (!in_array('router_identity', $store_cols)) $wpdb->query("ALTER TABLE `$table_stores` ADD `router_identity` varchar(100)");
-    
     }
 
     // --- VIEW: MASTER DASHBOARD ---
@@ -280,10 +282,21 @@ class MT_SuperAdmin {
                         </div>
 
                         <h2 class="text-lg font-bold border-b pb-4 mb-4">Custom Limit Overrides</h2>
-                        <div class="grid grid-cols-3 gap-4 mb-6 bg-gray-50 p-4 rounded border">
+                        <div class="grid grid-cols-3 gap-4 mb-4 bg-gray-50 p-4 rounded border">
                             <div><label class="block text-xs font-bold text-gray-500 mb-1 uppercase">Locations</label><input type="number" name="location_limit" class="w-full p-2 border rounded font-bold" value="<?php echo esc_attr($brand->location_limit); ?>"></div>
                             <div><label class="block text-xs font-bold text-gray-500 mb-1 uppercase">Storage (MB)</label><input type="number" name="storage_limit_mb" class="w-full p-2 border rounded font-bold" value="<?php echo esc_attr($brand->storage_limit_mb); ?>"></div>
                             <div><label class="block text-xs font-bold text-gray-500 mb-1 uppercase">Emails / Mo</label><input type="number" name="email_limit" class="w-full p-2 border rounded font-bold" value="<?php echo esc_attr($brand->email_limit); ?>"></div>
+                        </div>
+
+                        <div class="mb-6 bg-purple-50 p-4 rounded border border-purple-100 flex justify-between items-center">
+                            <div>
+                                <h3 class="font-bold text-purple-900 text-sm"><i class="fa-solid fa-key"></i> Premium API Sending</h3>
+                                <p class="text-xs text-purple-700 mt-1">Allow this tenant to use SendGrid/Postmark API keys instead of Standard SMTP.</p>
+                            </div>
+                            <select name="api_sending_enabled" class="p-2 border rounded font-bold outline-none text-sm w-40">
+                                <option value="0" <?php selected($brand->api_sending_enabled, 0); ?>>Restricted</option>
+                                <option value="1" <?php selected($brand->api_sending_enabled, 1); ?>>Enabled</option>
+                            </select>
                         </div>
 
                         <h2 class="text-lg font-bold border-b pb-4 mb-4">Billing Tracking</h2>
@@ -379,6 +392,7 @@ class MT_SuperAdmin {
             'storage_limit_mb' => $storage_limit,
             'email_limit' => $email_limit,
             'custom_mrr' => $custom_mrr,
+            'api_sending_enabled' => intval($_POST['api_sending_enabled']), // AUDIT FIX: Save API Preference
             'renewal_date' => sanitize_text_field($_POST['renewal_date'])
         ), array( 'id' => $brand_id ) );
 
@@ -429,6 +443,7 @@ class MT_SuperAdmin {
             'storage_limit_mb' => $pkg->storage_limit_mb,
             'email_limit' => $pkg->email_limit,
             'custom_mrr' => 0.00,
+            'api_sending_enabled' => 0, // Default to restricted on new accounts
             'renewal_date' => date('Y-m-d', strtotime('+1 month')),
             'primary_color' => '#E31E24'
         ));
