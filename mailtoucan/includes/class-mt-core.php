@@ -4,6 +4,8 @@
  * Loads isolated modules securely.
  */
 
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 class MT_Core {
     public function __construct() {
         $this->load_dependencies();
@@ -16,8 +18,9 @@ class MT_Core {
         require_once MT_PATH . 'includes/modules/auth/class-mt-auth.php';
         require_once MT_PATH . 'includes/modules/dashboard/class-mt-dashboard.php';
         
-        // --- THE FIX: Load the Email Engine ---
+        // Email & Automation Engines
         require_once MT_PATH . 'includes/modules/email/class-mt-email.php';
+        require_once MT_PATH . 'includes/modules/email/class-mt-workflows.php';
         
         // Super Admin Backend Module
         if ( is_admin() ) {
@@ -35,8 +38,11 @@ class MT_Core {
         $dashboard_engine = new MT_Dashboard();
         $dashboard_engine->init();
 
-        // --- THE FIX: Boot up the Email Engine globally so AJAX hooks register! ---
         $email_engine = new MT_Email();
+        $email_engine->maybe_create_email_tables(); // Ensures tracking tables exist
+
+        $workflow_engine = new MT_Workflows();
+        $workflow_engine->init();
 
         if ( is_admin() ) {
             $super_admin = new MT_SuperAdmin();
