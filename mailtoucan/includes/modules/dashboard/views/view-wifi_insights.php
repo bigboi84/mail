@@ -12,22 +12,44 @@ $table_stores = $wpdb->prefix . 'mt_stores';
 $table_campaigns = $wpdb->prefix . 'mt_campaigns';
 $table_responses = $wpdb->prefix . 'mt_campaign_responses';
 
-// 1. Core Network Metrics
-$total_guests = $wpdb->get_var($wpdb->prepare("SELECT COUNT(id) FROM $table_leads WHERE brand_id = %d", $brand->id));
-$active_guests = $wpdb->get_var($wpdb->prepare("SELECT COUNT(id) FROM $table_leads WHERE brand_id = %d AND status = 'active'", $brand->id));
-$total_campaign_engagements = $wpdb->get_var($wpdb->prepare("SELECT COUNT(r.id) FROM $table_responses r INNER JOIN $table_campaigns c ON r.campaign_id = c.id WHERE c.brand_id = %d", $brand->id));
+// AUDIT FIX: Process Date Filter Range
+$range = isset($_GET['range']) ? intval($_GET['range']) : 30;
+$date_cond = $range > 0 ? "AND created_at >= NOW() - INTERVAL " . intval($range) . " DAY" : "";
 
-// 2. Location Breakdown
+// AUDIT FIX: Queries now respect 'deleted_at' and the active date filter
+$total_guests = $wpdb->get_var($wpdb->prepare("SELECT COUNT(id) FROM $table_leads WHERE brand_id = %d AND deleted_at IS NULL AND status NOT IN ('trashed','deleted') $date_cond", $brand->id));
+$active_guests = $wpdb->get_var($wpdb->prepare("SELECT COUNT(id) FROM $table_leads WHERE brand_id = %d AND deleted_at IS NULL AND status IN ('active','verified') $date_cond", $brand->id));
+$total_campaign_engagements = $wpdb->get_var($wpdb->prepare("SELECT COUNT(r.id) FROM $table_responses r INNER JOIN $table_campaigns c ON r.campaign_id = c.id WHERE c.brand_id = %d $date_cond", $brand->id));
+
+// AUDIT FIX: Compute real Avg Session time using last_visit proxy
+$avg_session = $wpdb->get_var($wpdb->prepare("
+    SELECT ROUND(AVG(TIMESTAMPDIFF(MINUTE, created_at, IFNULL(last_visit, created_at))))
+    FROM $table_leads
+    WHERE brand_id = %d AND last_visit IS NOT NULL AND last_visit != created_at
+      AND deleted_at IS NULL AND status != 'trashed' $date_cond
+", $brand->id));
+$avg_session = $avg_session ?: 0;
+
+// Location Breakdown with Date Filter
 $location_stats = $wpdb->get_results($wpdb->prepare("
     SELECT s.store_name, COUNT(l.id) as guest_count 
     FROM $table_stores s 
-    LEFT JOIN $table_leads l ON s.id = l.store_id 
+    LEFT JOIN $table_leads l ON s.id = l.store_id AND l.deleted_at IS NULL AND l.status != 'trashed' $date_cond
     WHERE s.brand_id = %d 
     GROUP BY s.id 
     ORDER BY guest_count DESC
 ", $brand->id));
 
-// 3. Campaign Performance History
+// AUDIT FIX: Gather Daily Connections for Graph
+$daily_connections = $wpdb->get_results($wpdb->prepare("
+    SELECT DATE(created_at) as day, COUNT(id) as count
+    FROM $table_leads
+    WHERE brand_id = %d AND deleted_at IS NULL AND status != 'trashed' $date_cond
+    GROUP BY DATE(created_at)
+    ORDER BY day ASC
+", $brand->id));
+
+// Campaign Performance History
 $campaign_stats = $wpdb->get_results($wpdb->prepare("
     SELECT c.id, c.campaign_name, c.campaign_type, c.config_json, c.created_at, COUNT(r.id) as total_responses
     FROM $table_campaigns c
@@ -37,7 +59,7 @@ $campaign_stats = $wpdb->get_results($wpdb->prepare("
     ORDER BY c.created_at DESC
 ", $brand->id));
 
-// 4. Pre-fetch all responses
+// Pre-fetch all responses
 $responses_raw = $wpdb->get_results($wpdb->prepare("
     SELECT r.id, r.campaign_id, r.response_data, r.created_at, l.email, l.guest_name, s.store_name 
     FROM $table_responses r
@@ -73,10 +95,10 @@ foreach($responses_raw as $r) {
         <p class="text-gray-500 text-sm">Analyze network traffic, location performance, and campaign engagement.</p>
     </div>
     <div class="flex gap-3">
-        <select class="bg-white border border-gray-300 px-4 py-2 rounded-lg font-bold text-sm text-gray-600 outline-none shadow-sm cursor-pointer">
-            <option>Last 30 Days</option>
-            <option>Last 7 Days</option>
-            <option>All Time</option>
+        <select onchange="window.location.search = '?view=wifi_insights&range=' + this.value" class="bg-white border border-gray-300 px-4 py-2 rounded-lg font-bold text-sm text-gray-600 outline-none shadow-sm cursor-pointer">
+            <option value="30" <?php echo ($range===30)?'selected':'';?>>Last 30 Days</option>
+            <option value="7"  <?php echo ($range===7) ?'selected':'';?>>Last 7 Days</option>
+            <option value="0"  <?php echo ($range===0) ?'selected':'';?>>All Time</option>
         </select>
         <button onclick="exportGlobalReport()" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-bold text-sm shadow-sm hover:bg-gray-50 transition flex items-center gap-2">
             <i class="fa-solid fa-download text-indigo-500"></i> Global Report
@@ -106,17 +128,28 @@ foreach($responses_raw as $r) {
     <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
         <div class="absolute -right-4 -top-4 text-gray-100 text-7xl"><i class="fa-solid fa-clock"></i></div>
         <p class="text-xs font-bold text-gray-400 uppercase mb-1 relative z-10">Avg Session Time</p>
-        <p class="text-3xl font-bold text-gray-900 relative z-10">42 <span class="text-sm">mins</span></p>
+        <p class="text-3xl font-bold text-gray-900 relative z-10"><?php echo $avg_session; ?> <span class="text-sm">mins</span></p>
         <p class="text-[10px] text-gray-400 font-bold mt-2 relative z-10">Estimated network dwell time</p>
     </div>
 </div>
 
 <div class="grid grid-cols-3 gap-8 mb-8">
     <div class="col-span-2 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-        <h3 class="font-bold text-gray-900 mb-6">Network Connections (30 Days)</h3>
-        <div class="w-full h-64 flex items-center justify-center bg-gray-50 rounded-lg border border-dashed border-gray-300">
-            <p class="text-sm font-bold text-gray-400"><i class="fa-solid fa-chart-line mr-2"></i> Collecting daily traffic data...</p>
-        </div>
+        <h3 class="font-bold text-gray-900 mb-6">Network Connections <?php echo $range > 0 ? "($range Days)" : "(All Time)"; ?></h3>
+        
+        <canvas id="connections_chart" height="90"></canvas>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+        <script>
+        const dailyData = <?php echo wp_json_encode($daily_connections); ?>;
+        new Chart(document.getElementById('connections_chart'), {
+            type: 'bar',
+            data: { 
+                labels: dailyData.map(d => d.day), 
+                datasets: [{ label: 'New Connections', data: dailyData.map(d => d.count), backgroundColor: '#6366F1', borderRadius: 4 }] 
+            },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+        });
+        </script>
     </div>
 
     <div class="col-span-1 bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col">
@@ -269,7 +302,6 @@ foreach($responses_raw as $r) {
 </div>
 
 <script>
-    // TOAST LOGIC
     function showToast(msg, type = 'info') {
         const toast = document.getElementById('mt_toast');
         document.getElementById('mt_toast_msg').innerText = msg;
@@ -283,7 +315,6 @@ foreach($responses_raw as $r) {
         setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
     }
 
-    // GLOBAL EXPORT LOGIC (FIXED: Escaped PHP properly)
     function exportGlobalReport() {
         showToast("Generating Global Location Report...", "info");
         
@@ -309,18 +340,14 @@ foreach($responses_raw as $r) {
         setTimeout(() => showToast("Export Successful!", "success"), 500);
     }
 
-    function escapeCsv(str) {
-        return str.replace(/"/g, '""');
-    }
+    function escapeCsv(str) { return str.replace(/"/g, '""'); }
 
     const fullCampData = <?php echo wp_json_encode($js_campaigns); ?>;
     let activeCampId = null;
     let currentFilteredRows = [];
 
     function openCampaignDeepDive(id) {
-        activeCampId = id;
-        const camp = fullCampData[id];
-        if(!camp) return;
+        activeCampId = id; const camp = fullCampData[id]; if(!camp) return;
 
         document.getElementById('modal_camp_name').innerText = camp.campaign_name;
         document.getElementById('modal_camp_type').innerText = camp.campaign_type;
@@ -341,20 +368,15 @@ foreach($responses_raw as $r) {
         } 
         else if (camp.campaign_type === 'wheel' || camp.campaign_type === 'box') {
             ansWrapper.classList.remove('hidden');
-            if(camp.config.prizes) {
-                camp.config.prizes.forEach(p => { ansSelect.innerHTML += `<option value="${p.name}">Won: ${p.name}</option>`; });
-            }
+            if(camp.config.prizes) { camp.config.prizes.forEach(p => { ansSelect.innerHTML += `<option value="${p.name}">Won: ${p.name}</option>`; }); }
         }
         else if (camp.campaign_type === 'survey' && camp.config.stars) {
             ansWrapper.classList.remove('hidden');
             ansSelect.innerHTML += `<option value="5">5 Stars</option><option value="4">4 Stars</option><option value="3">3 Stars</option><option value="2">2 Stars</option><option value="1">1 Star</option>`;
         }
-        else {
-            ansWrapper.classList.add('hidden');
-        }
+        else { ansWrapper.classList.add('hidden'); }
 
-        resetDeepFilters(false);
-        applyDeepFilters();
+        resetDeepFilters(false); applyDeepFilters();
 
         const modal = document.getElementById('camp_data_modal');
         const content = document.getElementById('camp_data_content');
@@ -365,17 +387,12 @@ foreach($responses_raw as $r) {
     function closeCampaignDeepDive() {
         const modal = document.getElementById('camp_data_modal');
         const content = document.getElementById('camp_data_content');
-        content.classList.add('scale-95');
-        modal.classList.add('opacity-0');
+        content.classList.add('scale-95'); modal.classList.add('opacity-0');
         setTimeout(() => { modal.classList.add('hidden'); activeCampId = null; }, 300);
     }
 
     function resetDeepFilters(reRender = true) {
-        document.getElementById('flt_date_start').value = '';
-        document.getElementById('flt_date_end').value = '';
-        document.getElementById('flt_location').value = '';
-        document.getElementById('flt_answer').value = '';
-        document.getElementById('flt_search').value = '';
+        document.getElementById('flt_date_start').value = ''; document.getElementById('flt_date_end').value = ''; document.getElementById('flt_location').value = ''; document.getElementById('flt_answer').value = ''; document.getElementById('flt_search').value = '';
         if(reRender) applyDeepFilters();
     }
 
@@ -383,11 +400,7 @@ foreach($responses_raw as $r) {
         if(!activeCampId || !fullCampData[activeCampId]) return;
         
         const camp = fullCampData[activeCampId];
-        const dateStart = document.getElementById('flt_date_start').value;
-        const dateEnd = document.getElementById('flt_date_end').value;
-        const loc = document.getElementById('flt_location').value;
-        const ans = document.getElementById('flt_answer').value;
-        const search = document.getElementById('flt_search').value.toLowerCase();
+        const dateStart = document.getElementById('flt_date_start').value; const dateEnd = document.getElementById('flt_date_end').value; const loc = document.getElementById('flt_location').value; const ans = document.getElementById('flt_answer').value; const search = document.getElementById('flt_search').value.toLowerCase();
 
         currentFilteredRows = camp.responses.filter(r => {
             if (dateStart) { const rowDate = new Date(r.created_at.split(' ')[0]); if(rowDate < new Date(dateStart)) return false; }
@@ -424,21 +437,11 @@ foreach($responses_raw as $r) {
     }
 
     function renderTableRows() {
-        const tbody = document.getElementById('camp_data_tbody');
-        const emptyState = document.getElementById('camp_data_empty');
-        const countTxt = document.getElementById('txt_showing_count');
-        const campType = fullCampData[activeCampId].campaign_type;
+        const tbody = document.getElementById('camp_data_tbody'); const emptyState = document.getElementById('camp_data_empty'); const countTxt = document.getElementById('txt_showing_count'); const campType = fullCampData[activeCampId].campaign_type;
 
         tbody.innerHTML = '';
-        
-        if (currentFilteredRows.length === 0) {
-            emptyState.classList.remove('hidden');
-            countTxt.innerText = "Showing 0 records";
-            return;
-        }
-
-        emptyState.classList.add('hidden');
-        countTxt.innerText = `Showing ${currentFilteredRows.length} records`;
+        if (currentFilteredRows.length === 0) { emptyState.classList.remove('hidden'); countTxt.innerText = "Showing 0 records"; return; }
+        emptyState.classList.add('hidden'); countTxt.innerText = `Showing ${currentFilteredRows.length} records`;
 
         currentFilteredRows.forEach(r => {
             const displayDate = new Date(r.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -446,78 +449,40 @@ foreach($responses_raw as $r) {
             
             tbody.innerHTML += `
                 <tr class="hover:bg-indigo-50/30 transition">
-                    <td class="p-4 pl-6">
-                        <div class="font-bold text-gray-800 text-sm">${displayDate.split(', ')[0]}</div>
-                        <div class="text-[10px] text-gray-400 font-bold">${displayDate.split(', ')[1] || ''}</div>
-                    </td>
-                    <td class="p-4">
-                        <div class="font-bold text-gray-900 text-sm">${r.email}</div>
-                        <div class="text-[10px] text-gray-500 uppercase font-bold">${r.guest_name || 'Unknown'}</div>
-                    </td>
-                    <td class="p-4">
-                        <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-[10px] font-bold uppercase border border-gray-200">
-                            ${r.store_name || 'Global Web'}
-                        </span>
-                    </td>
-                    <td class="p-4">
-                        ${resultHtml}
-                    </td>
+                    <td class="p-4 pl-6"><div class="font-bold text-gray-800 text-sm">${displayDate.split(', ')[0]}</div><div class="text-[10px] text-gray-400 font-bold">${displayDate.split(', ')[1] || ''}</div></td>
+                    <td class="p-4"><div class="font-bold text-gray-900 text-sm">${r.email}</div><div class="text-[10px] text-gray-500 uppercase font-bold">${r.guest_name || 'Unknown'}</div></td>
+                    <td class="p-4"><span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-[10px] font-bold uppercase border border-gray-200">${r.store_name || 'Global Web'}</span></td>
+                    <td class="p-4">${resultHtml}</td>
                 </tr>
             `;
         });
     }
 
     function exportCampaignCSV() {
-        if(currentFilteredRows.length === 0) {
-            showToast("No records match your filters to export.", "error");
-            return;
-        }
-
+        if(currentFilteredRows.length === 0) { showToast("No records match your filters to export.", "error"); return; }
         showToast("Generating filtered report...", "info");
 
-        const camp = fullCampData[activeCampId];
-        let csvContent = "data:text/csv;charset=utf-8,";
-        
+        const camp = fullCampData[activeCampId]; let csvContent = "data:text/csv;charset=utf-8,";
         let headers = ["Date", "Email", "Name", "Location"];
         if (camp.campaign_type === 'versus') headers.push("A/B Choice");
         else if (camp.campaign_type === 'birthday') headers.push("Birthday");
         else if (camp.campaign_type === 'wheel' || camp.campaign_type === 'box') headers.push("Prize Won");
-        else if (camp.campaign_type === 'survey') {
-            headers.push("Star Rating");
-            headers.push("Full Form Data (JSON)"); 
-        }
+        else if (camp.campaign_type === 'survey') { headers.push("Star Rating"); headers.push("Full Form Data (JSON)"); }
         else headers.push("Engagement Type");
 
         csvContent += headers.join(",") + "\n";
-
         currentFilteredRows.forEach(r => {
-            let row = [
-                r.created_at,
-                r.email,
-                `"${escapeCsv(r.guest_name || '')}"`,
-                `"${escapeCsv(r.store_name || 'Global Web')}"`
-            ];
-            
+            let row = [ r.created_at, r.email, `"${escapeCsv(r.guest_name || '')}"`, `"${escapeCsv(r.store_name || 'Global Web')}"` ];
             if (camp.campaign_type === 'versus') row.push(`"${escapeCsv(r.parsed_data?.versus_choice || '')}"`);
             else if (camp.campaign_type === 'birthday') row.push(`"${escapeCsv(r.parsed_data?.birthday || '')}"`);
             else if (camp.campaign_type === 'wheel' || camp.campaign_type === 'box') row.push(`"${escapeCsv(r.parsed_data?.prize || '')}"`);
-            else if (camp.campaign_type === 'survey') {
-                row.push(r.parsed_data?.rating || '');
-                let rawJson = r.response_data ? r.response_data.replace(/"/g, '""') : '{}';
-                row.push(`"${rawJson}"`);
-            }
+            else if (camp.campaign_type === 'survey') { row.push(r.parsed_data?.rating || ''); let rawJson = r.response_data ? r.response_data.replace(/"/g, '""') : '{}'; row.push(`"${rawJson}"`); }
             else row.push("Impression Tracked");
-
             csvContent += row.join(",") + "\n";
         });
 
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        const cleanName = camp.campaign_name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `report_${cleanName}_${new Date().toISOString().slice(0,10)}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const encodedUri = encodeURI(csvContent); const link = document.createElement("a"); const cleanName = camp.campaign_name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        link.setAttribute("href", encodedUri); link.setAttribute("download", `report_${cleanName}_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
     }
 </script>
