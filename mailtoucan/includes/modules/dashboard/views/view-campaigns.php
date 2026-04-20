@@ -22,7 +22,10 @@ $locations = $wpdb->get_results( $wpdb->prepare("SELECT id, store_name FROM $tab
 // FETCH DYNAMIC BRANDING
 $brand_color = !empty($brand->primary_color) ? $brand->primary_color : '#0f172a';
 $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => '#1A232E'] );
-$sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
+
+// AUDIT FIX B-3: Dynamically pull the verified domain from the database instead of hardcoding .pro
+$brand_config = json_decode($brand->brand_config, true) ?: [];
+$sender_email = !empty($brand_config['delivery']['from_email']) ? $brand_config['delivery']['from_email'] : sanitize_title($brand->brand_name) . '@fly.mailtoucan.com';
 ?>
 
 <style>
