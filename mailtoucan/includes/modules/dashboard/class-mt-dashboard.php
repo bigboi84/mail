@@ -149,12 +149,19 @@ class MT_Dashboard {
     public function add_rewrite_rules() { 
         add_rewrite_rule( '^app/?$', 'index.php?mt_app=1', 'top' );
         add_rewrite_rule( '^splash/([^/]+)/([^/]+)/?$', 'index.php?mt_splash_brand=$matches[1]&mt_splash_loc=$matches[2]', 'top' );
+        
+        // CHANGES GUIDE ITEM 7: Vanity URL for Tracking Pixel
+        add_rewrite_rule( '^mt-track/open/([0-9]+)/([0-9]+)/?$', 'index.php?mt_track_c=$matches[1]&mt_track_l=$matches[2]', 'top' );
     }
     
     public function add_query_vars( $vars ) { 
         $vars[] = 'mt_app';
         $vars[] = 'mt_splash_brand'; 
         $vars[] = 'mt_splash_loc'; 
+        
+        // CHANGES GUIDE ITEM 7: Tracking query vars
+        $vars[] = 'mt_track_c'; 
+        $vars[] = 'mt_track_l'; 
         return $vars; 
     }
 
@@ -841,6 +848,13 @@ class MT_Dashboard {
     }
 
     public function render_app() {
+        // CHANGES GUIDE ITEM 7: Intercept Vanity Tracking Pixel
+        if ( get_query_var( 'mt_track_c' ) && get_query_var( 'mt_track_l' ) ) {
+            $email_engine = new MT_Email();
+            $email_engine->process_tracking_pixel( intval(get_query_var('mt_track_c')), intval(get_query_var('mt_track_l')) );
+            exit;
+        }
+
         if ( get_query_var( 'mt_splash_brand' ) ) {
             $splash_file = MT_PATH . 'includes/modules/dashboard/views/view-live-splash.php';
             if ( file_exists( $splash_file ) ) {
