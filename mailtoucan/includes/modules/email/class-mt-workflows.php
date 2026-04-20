@@ -106,8 +106,9 @@ class MT_Workflows {
                 }
 
                 if ( $trigger === 'winback' ) {
-                    // Win-back relies strictly on the actual last visit, ensuring accurate missing duration
-                    $days_missing = 30; 
+                    // CHANGES GUIDE ITEM 11: Dynamic win-back days from configuration
+                    $days_missing = !empty($config['delay_val']) ? intval($config['delay_val']) : 30; 
+                    
                     $query = "SELECT id FROM $leads_table WHERE brand_id = %d AND status = 'active' AND last_visit <= DATE_SUB(NOW(), INTERVAL %d DAY) AND last_visit IS NOT NULL";
                     $params = [ $brand_id, $days_missing ];
 
@@ -140,7 +141,6 @@ class MT_Workflows {
 
         $send_after = current_time('mysql'); 
 
-        // Since birthdays are fetched proactively by the exact calculated day by the scanner, no further offset is needed here.
         if ( $delay_val > 0 && ! $is_birthday_scan ) {
             if ( $delay_unit === 'minutes' ) {
                 $send_after = date('Y-m-d H:i:s', strtotime("+$delay_val minutes", current_time('timestamp')));
@@ -215,18 +215,37 @@ class MT_Workflows {
 
             $html = $email_engine->parse_tags($template->email_body, $lead, $brand_name, $store_name ?: 'HQ');
             
+            // Inject Vanity Tracking Pixel
+            $html = $email_engine->inject_tracking_pixel($html, $job->campaign_id, $job->lead_id);
+            
             $result = $email_engine->route_email($job->to_email, $subject, $html, $job->brand_id, 'bulk');
             
-            if ( $result === true ) {
+            if ( is_array($result) && isset($result['success']) && $result['success'] === true ) {
                 $wpdb->update($queue_table, ['status' => 'sent', 'sent_at' => current_time('mysql')], ['id' => $job->id]);
+                
+                // CHANGES GUIDE ITEM 9: Log the actual provider used
+                $provider_used = isset($result['provider']) ? $result['provider'] : 'system';
                 $wpdb->insert($wpdb->prefix . 'mt_email_sends', [
                     'brand_id'    => $job->brand_id,
                     'campaign_id' => $job->campaign_id,
                     'lead_id'     => $job->lead_id,
+                    'provider'    => $provider_used,
                     'sent_at'     => current_time('mysql')
                 ]);
             } else {
-                $wpdb->update($queue_table, ['status' => 'failed'], ['id' => $job->id]);
+                // CHANGES GUIDE ITEM 10: 3-Strike Exponential Backoff Retry Logic
+                $retries = isset($job->retries) ? intval($job->retries) + 1 : 1;
+                
+                if ( $retries >= 3 ) {
+                    $wpdb->update($queue_table, ['status' => 'failed'], ['id' => $job->id]);
+                } else {
+                    // Retry in 15 minutes
+                    $next_attempt = date('Y-m-d H:i:s', strtotime('+15 minutes', current_time('timestamp')));
+                    $wpdb->update($queue_table, [
+                        'retries' => $retries,
+                        'send_after' => $next_attempt
+                    ], ['id' => $job->id]);
+                }
             }
         }
     }
