@@ -12,7 +12,14 @@ $brand_config = json_decode($brand->brand_config, true) ?: [];
 $brand_logo = isset($brand_config['logos']['main']) && !empty($brand_config['logos']['main']) ? $brand_config['logos']['main'] : 'https://placehold.co/400x150/e2e8f0/0f172a?text=Your+Logo';
 $brand_color = !empty($brand->primary_color) ? $brand->primary_color : '#0f172a';
 $brand_name = esc_html($brand->brand_name);
-$sender_email = sanitize_title($brand->brand_name) . '@mailtoucan.pro';
+
+// DYNAMIC SENDER EMAIL
+$master_saas_domain = 'fly.mailtoucan.com';
+$raw_slug = sanitize_title($brand->brand_name);
+$clean_slug = str_replace('-', '', $raw_slug); 
+if (empty($clean_slug)) $clean_slug = 'hello';
+$system_email = $clean_slug . '@' . $master_saas_domain;
+$sender_email = !empty($brand_config['delivery']['from_email']) ? $brand_config['delivery']['from_email'] : $system_email;
 
 // PRE-LOAD VAULT IMAGES
 $vault_assets = [];
@@ -25,7 +32,7 @@ if(isset($brand_config['vault']) && is_array($brand_config['vault'])) {
 }
 $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => '#1A232E'] );
 
-// THE DEFAULT TEMPLATE
+// STRICT MJML DEFAULT TEMPLATE (Fixed <br /> tags)
 $default_mjml = "
 <mjml>
   <mj-head>
@@ -34,9 +41,6 @@ $default_mjml = "
       <mj-text font-size=\"15px\" color=\"#334155\" line-height=\"1.6\"></mj-text>
       <mj-section padding=\"0\"></mj-section>
     </mj-attributes>
-    <mj-style>
-      .email-card { box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; }
-    </mj-style>
   </mj-head>
   <mj-body background-color=\"#f1f5f9\">
     <mj-section padding=\"30px 0 10px 0\" background-color=\"transparent\">
@@ -44,20 +48,18 @@ $default_mjml = "
         <mj-image src=\"{$brand_logo}\" alt=\"{$brand_name}\" width=\"160px\" align=\"center\"></mj-image>
       </mj-column>
     </mj-section>
-    <mj-wrapper background-color=\"#ffffff\" border-radius=\"12px\" padding=\"20px\" css-class=\"email-card\">
-      <mj-section padding=\"20px 0\">
-        <mj-column>
-          <mj-text font-size=\"24px\" color=\"#0f172a\" font-weight=\"900\" align=\"center\">Welcome to {$brand_name}</mj-text>
-          <mj-text align=\"center\" padding-top=\"10px\" padding-bottom=\"20px\">Drag and drop beautiful, pre-designed sections from the left panel to build your email.</mj-text>
-          <mj-button background-color=\"{$brand_color}\" color=\"#ffffff\" font-weight=\"bold\" border-radius=\"6px\" inner-padding=\"14px 28px\" href=\"#\">Get Started</mj-button>
-        </mj-column>
-      </mj-section>
-    </mj-wrapper>
+    <mj-section background-color=\"#ffffff\" border-radius=\"12px\" padding=\"20px\">
+      <mj-column>
+        <mj-text font-size=\"24px\" color=\"#0f172a\" font-weight=\"900\" align=\"center\">Welcome to {$brand_name}</mj-text>
+        <mj-text align=\"center\" padding-top=\"10px\" padding-bottom=\"20px\" line-height=\"1.6\" color=\"#475569\">Drag and drop beautiful, pre-designed sections from the left panel to build your email.</mj-text>
+        <mj-button background-color=\"{$brand_color}\" color=\"#ffffff\" font-weight=\"bold\" border-radius=\"6px\" inner-padding=\"14px 28px\" href=\"https://google.com\">Get Started</mj-button>
+      </mj-column>
+    </mj-section>
     <mj-section padding=\"30px 0\" background-color=\"transparent\">
       <mj-column>
         <mj-text font-size=\"12px\" color=\"#94a3b8\" align=\"center\" line-height=\"1.5\">
-          <strong>{$brand_name}</strong><br>
-          123 Brand Street, City, State 12345<br>
+          <strong>{$brand_name}</strong><br />
+          123 Brand Street, City, State 12345<br />
           You are receiving this email because you opted in.
         </mj-text>
         <mj-text font-size=\"12px\" align=\"center\">
@@ -85,125 +87,71 @@ $default_mjml = "
         --gjs-quaternary-color: var(--mt-brand);     
         --gjs-font-color: #0f172a;           
     }
-
     .gjs-one-bg { background-color: #ffffff !important; }
     .gjs-two-color { color: #334155 !important; }
     .gjs-three-bg { background-color: #ffffff !important; }
     .gjs-four-color, .gjs-four-color-h:hover { color: var(--mt-brand) !important; }
-    
     .gjs-editor-cont { font-family: 'Inter', sans-serif !important; background: transparent !important; }
     .gjs-pn-panels { display: none !important; } 
     .gjs-cv-canvas { top: 0 !important; width: 100% !important; height: 100% !important; background: #f1f5f9 !important;}
-
-    /* TABS */
     .pill-tab { transition: all 0.2s; color: #64748b; font-weight: 800; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; padding: 15px 0; border-bottom: 2px solid transparent;}
     .pill-tab:hover { color: #0f172a; }
     .pill-tab.active { color: var(--mt-brand); border-bottom-color: var(--mt-brand); }
     .panel-tab-content { display: none; background: #ffffff; }
     .panel-tab-content.active { display: block; }
     #tab-sections.active { display: flex !important; flex-direction: column; }
-
     .sub-pill-tab { transition: all 0.2s; color: #64748b; font-weight: 800; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px; padding: 12px 0; background: #f8fafc; border: none; border-bottom: 2px solid transparent; cursor: pointer; outline: none; border-right: 1px solid #f1f5f9; }
     .sub-pill-tab:hover { color: #0f172a; background: #f1f5f9; }
     .sub-pill-tab.active { color: var(--mt-brand); border-bottom-color: var(--mt-brand); background: #ffffff; }
     .sub-panel { display: none; }
     .sub-panel.active { display: block !important; }
     .sub-panel.hidden { display: none !important; }
-
-    /* BLOCKS */
     .gjs-block-category { border: none !important; width: 100% !important; background: #ffffff !important;}
-    .gjs-block-category .gjs-title { 
-        display: block !important; font-weight: 800 !important; color: #94a3b8 !important; font-size: 10px !important; 
-        text-transform: uppercase; letter-spacing: 1px; padding: 15px 20px !important; background: #ffffff !important; 
-        border: none !important; border-bottom: 1px solid #f1f5f9 !important; cursor: pointer !important; transition: color 0.2s;
-    }
+    .gjs-block-category .gjs-title { display: block !important; font-weight: 800 !important; color: #94a3b8 !important; font-size: 10px !important; text-transform: uppercase; letter-spacing: 1px; padding: 15px 20px !important; background: #ffffff !important; border: none !important; border-bottom: 1px solid #f1f5f9 !important; cursor: pointer !important; transition: color 0.2s;}
     .gjs-block-category .gjs-title:hover { color: #0f172a !important; }
     .gjs-block-category .gjs-blocks-c { display: none !important; }
     .gjs-block-category.gjs-open .gjs-blocks-c { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px !important; padding: 15px 20px 20px 20px !important; background: #ffffff !important; }
-    
-    .gjs-block { 
-        display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important;
-        border: 1px solid #e2e8f0 !important; border-radius: 8px !important; padding: 15px 5px !important; background: #ffffff !important; width: 100% !important; margin: 0 !important;
-        transition: all 0.2s ease !important; min-height: 85px !important; cursor: grab !important; box-shadow: none !important;
-    }
+    .gjs-block { display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; border: 1px solid #e2e8f0 !important; border-radius: 8px !important; padding: 15px 5px !important; background: #ffffff !important; width: 100% !important; margin: 0 !important; transition: all 0.2s ease !important; min-height: 85px !important; cursor: grab !important; box-shadow: none !important;}
     .gjs-block:hover { border-color: var(--mt-brand) !important; box-shadow: 0 4px 10px rgba(0,0,0,0.04) !important; transform: translateY(-2px); }
     .gjs-block svg { width: 22px !important; height: 22px !important; fill: #475569 !important; transition: fill 0.2s; }
     .gjs-block-label { font-family: 'Inter', sans-serif !important; font-weight: 700 !important; margin: 8px 0 0 0 !important; font-size: 10px !important; color: #334155 !important; text-align: center; }
     .gjs-block:hover svg { fill: var(--mt-brand) !important; }
     .gjs-block:hover .gjs-block-label { color: var(--mt-brand) !important; }
-    
-    /* EDIT STATE */
     #mt-left-panel * { box-sizing: border-box; }
     .gjs-sm-sector, .gjs-trt-traits, .gjs-sm-properties { background: #ffffff !important; border-bottom: none !important; }
-    
-    .gjs-sm-title, .gjs-trt-header, .gjs-sm-title-c, .gjs-sm-sector-title, .gjs-sm-title *, .gjs-trt-header * { 
-        background-color: #ffffff !important; color: #0f172a !important; font-weight: 800 !important; font-size: 11px !important; letter-spacing: 0.5px !important; text-transform: uppercase !important; border: none !important; 
-    }
+    .gjs-sm-title, .gjs-trt-header, .gjs-sm-title-c, .gjs-sm-sector-title, .gjs-sm-title *, .gjs-trt-header * { background-color: #ffffff !important; color: #0f172a !important; font-weight: 800 !important; font-size: 11px !important; letter-spacing: 0.5px !important; text-transform: uppercase !important; border: none !important; }
     .gjs-sm-title, .gjs-trt-header { border-top: 1px solid #e2e8f0 !important; border-bottom: 1px solid #f1f5f9 !important; padding: 15px 20px !important; cursor: pointer !important; }
     .gjs-sm-sector.gjs-open { border-bottom: 1px solid #f1f5f9 !important; }
-
     .gjs-sm-property, .gjs-trt-trait { overflow: visible !important; padding: 12px 20px !important; border-bottom: 1px solid #f8fafc !important; display: flex; flex-direction: column; background: #ffffff !important; width: 100% !important;}
     .gjs-sm-label, .gjs-trt-label, .gjs-sm-label *, .gjs-trt-label * { color: #475569 !important; font-size: 10px !important; font-weight: 800 !important; text-transform: uppercase; margin-bottom: 6px !important; display: block; letter-spacing: 0.5px !important; white-space: normal !important; word-break: break-word !important; }
-    
     .gjs-field, .gjs-field input, .gjs-field select, .gjs-field textarea { background-color: #ffffff !important; border: 1px solid #cbd5e1 !important; color: #0f172a !important; border-radius: 6px !important; font-size: 12px !important; font-family: 'Inter', sans-serif !important; width: 100% !important; font-weight: 600 !important; box-shadow: none !important; min-height: 36px !important;}
     .gjs-field { padding: 0 !important; display: flex !important; align-items: center !important; overflow: hidden !important;}
     .gjs-field input, .gjs-field select, .gjs-field textarea { border: none !important; padding: 8px 12px !important; height: 100% !important; flex: 1 !important;}
     .gjs-field input:focus, .gjs-field textarea:focus, .gjs-field select:focus { outline: none !important; box-shadow: inset 0 0 0 2px rgba(15,23,42,0.1) !important;}
     .gjs-field-arrows { display: none !important; }
-
-    /* SEGMENTED CONTROLS FIX */
-    .gjs-field-radio {
-        display: flex !important; flex-direction: row !important; background-color: #f8fafc !important; 
-        border-radius: 8px !important; padding: 4px !important; border: 1px solid #e2e8f0 !important;
-        width: 100% !important; gap: 4px !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important;
-    }
-    .gjs-radio-item {
-        flex: 1 !important; background: transparent !important; border: none !important; box-shadow: none !important;
-        border-radius: 6px !important; padding: 6px 0 !important; display: flex !important; align-items: center !important;
-        justify-content: center !important; cursor: pointer !important; transition: all 0.2s ease !important;
-    }
+    .gjs-field-radio { display: flex !important; flex-direction: row !important; background-color: #f8fafc !important; border-radius: 8px !important; padding: 4px !important; border: 1px solid #e2e8f0 !important; width: 100% !important; gap: 4px !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02) !important;}
+    .gjs-radio-item { flex: 1 !important; background: transparent !important; border: none !important; box-shadow: none !important; border-radius: 6px !important; padding: 6px 0 !important; display: flex !important; align-items: center !important; justify-content: center !important; cursor: pointer !important; transition: all 0.2s ease !important;}
     .gjs-radio-item input { display: none !important; }
     .gjs-radio-item-label { color: #64748b !important; cursor: pointer !important; display: flex !important; align-items: center !important; justify-content: center !important; width: 100% !important;}
     .gjs-radio-item-label svg { fill: #64748b !important; width: 14px !important; height: 14px !important; transition: fill 0.2s; }
     .gjs-radio-item.gjs-active { background-color: #ffffff !important; box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important; }
     .gjs-radio-item.gjs-active .gjs-radio-item-label { color: var(--mt-brand) !important; font-weight: 800 !important; }
     .gjs-radio-item.gjs-active .gjs-radio-item-label svg { fill: var(--mt-brand) !important; }
-
-    /* PERFECT COLOR CIRCLE FIX */
     .gjs-field-color { flex-direction: row !important; padding: 4px 8px !important; align-items: center !important;}
-    .gjs-field-color-picker, .gjs-field-colorp { 
-        border: 1px solid #cbd5e1 !important; border-radius: 50% !important; width: 24px !important; height: 24px !important; 
-        cursor: pointer !important; margin-right: 8px !important; flex-shrink: 0 !important; position: relative !important;
-        overflow: hidden !important; background: transparent !important; display: flex !important; align-items: center !important;
-        justify-content: center !important; padding: 0 !important;
-    }
+    .gjs-field-color-picker, .gjs-field-colorp { border: 1px solid #cbd5e1 !important; border-radius: 50% !important; width: 24px !important; height: 24px !important; cursor: pointer !important; margin-right: 8px !important; flex-shrink: 0 !important; position: relative !important; overflow: hidden !important; background: transparent !important; display: flex !important; align-items: center !important; justify-content: center !important; padding: 0 !important;}
     .gjs-checker-bg { display: none !important; background-image: none !important;}
-    .gjs-field-color-picker-color, .gjs-field-colorp-color, .gjs-field-colorp-c { 
-        width: 100% !important; height: 100% !important; border-radius: 50% !important; position: absolute !important;
-        top: 0 !important; left: 0 !important; border: none !important; margin: 0 !important; padding: 0 !important;
-        transform: scale(1.15) !important; 
-    }
-
-    /* CUSTOM IN-PLATFORM COLOR DRAWER UI */
-    #mt_color_drawer {
-        position: absolute; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 1px solid #e2e8f0;
-        padding: 20px; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 500; box-shadow: 0 -10px 40px rgba(0,0,0,0.08);
-    }
+    .gjs-field-color-picker-color, .gjs-field-colorp-color, .gjs-field-colorp-c { width: 100% !important; height: 100% !important; border-radius: 50% !important; position: absolute !important; top: 0 !important; left: 0 !important; border: none !important; margin: 0 !important; padding: 0 !important; transform: scale(1.15) !important; }
+    #mt_color_drawer { position: absolute; bottom: 0; left: 0; right: 0; background: #ffffff; border-top: 1px solid #e2e8f0; padding: 20px; transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 500; box-shadow: 0 -10px 40px rgba(0,0,0,0.08);}
     #mt_color_drawer.open { transform: translateY(0); }
     .color-swatch-btn { width: 100%; aspect-ratio: 1; border-radius: 50%; border: 1px solid #cbd5e1; cursor: pointer; transition: transform 0.2s; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
     .color-swatch-btn:hover { transform: scale(1.1); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    
     input[type="color"] { -webkit-appearance: none; border: none; width: 100%; height: 40px; border-radius: 6px; padding: 0; cursor: pointer; background: transparent; }
     input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
     input[type="color"]::-webkit-color-swatch { border: 1px solid #cbd5e1; border-radius: 6px; }
-
-    /* PADDING & MARGIN FIX */
     .gjs-sm-composite .gjs-sm-properties { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px !important; padding: 5px 0 0 0 !important; background: #ffffff !important; border: none !important; }
     .gjs-sm-composite .gjs-sm-property { padding: 0 !important; border: none !important; background: transparent !important; width: 100% !important;}
     .gjs-sm-property__padding-indicator, .gjs-sm-property__margin-indicator, .gjs-sm-composite-ch { display: none !important; }
     .gjs-sm-composite .gjs-sm-label { font-size: 9px !important; color: #94a3b8 !important; margin-bottom: 4px !important; display: block !important; text-align: left !important; }
-    
     .gjs-clm-tags, .gjs-sm-property[data-property="flex-direction"], .gjs-sm-property[data-property="position"] { display: none !important; } 
     .gjs-sm-clear { display: none !important; } 
     .gjs-layer-manager { padding: 10px 0; background: #ffffff; }
@@ -211,21 +159,15 @@ $default_mjml = "
     .gjs-layer:hover { border-color: var(--mt-brand); }
     .gjs-layer.gjs-layer-active { border-color: var(--mt-brand); color: var(--mt-brand); background: #f8fafc;}
     .gjs-layer-name { margin-left: 5px; }
-
     #builder_loader { transition: opacity 0.3s; }
     #shortcode_drawer { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); transform: translateY(100%); }
     #shortcode_drawer.open { transform: translateY(0); }
     .sc-chip { cursor: pointer; transition: all 0.2s; border: 1px solid #e2e8f0; background: #fff; }
     .sc-chip:hover { border-color: var(--mt-brand); background: #f8fafc; transform: translateY(-1px); }
-
     .studio-tab-btn { transition: all 0.2s; cursor: pointer; border-bottom: 2px solid transparent; }
     .studio-tab-btn.active { border-bottom-color: var(--mt-accent); color: #0f172a; font-weight: 800; }
     .studio-tab-content { display: none; }
     .studio-tab-content.active { display: block; }
-
-    /* ================================================================== */
-    /* STUDIO DARK MODE OVERRIDES                                         */
-    /* ================================================================== */
     .studio-dark { background-color: #0f172a !important; }
     .studio-dark .bg-white { background-color: #1e293b !important; border-color: #334155 !important; color: #f8fafc !important;}
     .studio-dark .bg-gray-50 { background-color: #0f172a !important; border-color: #334155 !important; }
@@ -234,33 +176,27 @@ $default_mjml = "
     .studio-dark .border-gray-200, .studio-dark .border-gray-100 { border-color: #334155 !important; }
     .studio-dark input { background-color: #0f172a !important; color: #f8fafc !important; border-color: #334155 !important; }
     .studio-dark input::placeholder { color: #64748b !important; }
-    
     .studio-dark #mt-left-panel, .studio-dark .panel-tab-content { background-color: #1e293b !important; border-color: #334155 !important;}
     .studio-dark .gjs-block { background-color: #0f172a !important; border-color: #334155 !important; }
     .studio-dark .gjs-block-label { color: #cbd5e1 !important; }
     .studio-dark .gjs-block svg { fill: #cbd5e1 !important; }
     .studio-dark .gjs-block-category .gjs-title { background-color: #1e293b !important; border-color: #334155 !important; color: #cbd5e1 !important;}
     .studio-dark .gjs-block-category.gjs-open .gjs-blocks-c { background-color: #1e293b !important; }
-    
     .studio-dark .gjs-sm-title, .studio-dark .gjs-sm-sector, .studio-dark .gjs-sm-properties, .studio-dark .gjs-sm-property, .studio-dark .gjs-trt-trait { background-color: #1e293b !important; color: #f8fafc !important; border-color: #334155 !important; }
     .studio-dark .gjs-sm-title *, .studio-dark .gjs-trt-header * { background-color: transparent !important; color: #f8fafc !important; }
     .studio-dark .gjs-sm-label, .studio-dark .gjs-sm-label * { color: #94a3b8 !important; }
     .studio-dark .gjs-field, .studio-dark .gjs-field input, .studio-dark .gjs-field select { background-color: #0f172a !important; color: #f8fafc !important; border-color: #334155 !important; }
     .studio-dark .gjs-field-color-picker, .studio-dark .gjs-field-colorp { border-color: #475569 !important; background: transparent !important;}
-    
     .studio-dark .gjs-field-radio { background-color: #0f172a !important; border-color: #334155 !important;}
     .studio-dark .gjs-radio-item.gjs-active { background-color: #334155 !important; box-shadow: none !important;}
     .studio-dark .gjs-radio-item.gjs-active .gjs-radio-item-label svg { fill: #ffffff !important; }
-    
     .studio-dark #mt_color_drawer { background-color: #1e293b !important; border-top-color: #334155 !important; }
     .studio-dark .color-swatch-btn { border-color: #475569 !important; }
-
     .studio-dark .pill-tab:hover { color: #f8fafc; }
     .studio-dark .sub-pill-tab { background: #0f172a !important; border-color: #334155 !important; }
     .studio-dark .sub-pill-tab.active { background: #1e293b !important; color: var(--mt-brand) !important; }
     .studio-dark .gjs-layer { background: #0f172a !important; border-color: #334155 !important; color: #cbd5e1 !important; }
     .studio-dark .gjs-layer.gjs-layer-active { border-color: var(--mt-brand) !important; background: #1e293b !important; color:#ffffff !important;}
-    
     .studio-dark #shortcode_drawer { background-color: #0f172a !important; border-top-color: #334155 !important; }
     .studio-dark #shortcode_drawer h3 { color: #f8fafc !important; }
     .studio-dark #shortcode_drawer p.italic { color: #94a3b8 !important; }
@@ -268,7 +204,6 @@ $default_mjml = "
     .studio-dark .sc-chip:hover { background-color: #334155 !important; }
     .studio-dark #shortcode_tab { background-color: #1e293b !important; border-color: #334155 !important; }
     .studio-dark #shortcode_tab span, .studio-dark #shortcode_tab i { color: #cbd5e1 !important; }
-    
     .studio-dark .device-btn { background: transparent !important; color: #64748b !important; }
     .studio-dark .device-btn.active { background: #334155 !important; color: #ffffff !important; }
     .studio-dark #btn-dark-mode:hover { background-color: #334155 !important; color: #ffffff !important;}
@@ -388,8 +323,6 @@ $default_mjml = "
         <div class="flex items-center gap-2 bg-gray-50 border border-gray-200 p-1 rounded-lg transition-colors">
             <button onclick="setDevice('desktop')" id="device-desktop" class="device-btn active w-8 h-8 rounded bg-white shadow-sm flex items-center justify-center text-gray-800 transition"><i class="fa-solid fa-desktop text-xs"></i></button>
             <button onclick="setDevice('mobile')" id="device-mobile" class="device-btn w-8 h-8 rounded hover:bg-gray-200 flex items-center justify-center text-gray-500 transition"><i class="fa-solid fa-mobile-alt text-xs"></i></button>
-            <div class="h-4 w-px bg-gray-300 mx-1 transition-colors"></div>
-            <button onclick="toggleDarkMode()" id="btn-dark-mode" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200 text-gray-500 transition" title="Toggle Dark Mode"><i class="fa-solid fa-moon text-sm"></i></button>
         </div>
 
         <div class="flex items-center gap-3">
@@ -497,7 +430,7 @@ $default_mjml = "
         </div>
 
         <div id="canvas-wrapper" class="flex-1 relative overflow-y-auto flex justify-center pt-10 pb-24 bg-[#f1f5f9] transition-colors custom-scrollbar">
-            <div id="gjs-container" class="w-full max-w-[650px] relative transition-all duration-300 mx-auto">
+            <div id="gjs-container" class="w-full max-w-[1000px] relative transition-all duration-300 mx-auto">
                 <div id="gjs" class="absolute inset-0 bg-transparent"></div>
             </div>
             
@@ -586,14 +519,27 @@ $default_mjml = "
 <div id="mt_toast_container" class="fixed bottom-8 right-8 z-[400] flex flex-col items-end pointer-events-none"></div>
 
 <script>
-    let editor = null;
-    const defaultMjml = `<?php echo addslashes(str_replace(["\r", "\n"], '', $default_mjml)); ?>`;
+    // FIX ISSUE 1: Proper UTF-8 decoding for saved templates
+    function decodeUTF8Base64(str) {
+        try {
+            return decodeURIComponent(atob(str).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
+        } catch(e) {
+            return decodeURIComponent(escape(atob(str)));
+        }
+    }
+    
+    function encodeUTF8Base64(str) {
+        return btoa(unescape(encodeURIComponent(str)));
+    }
+
     const brandPrimaryColor = '<?php echo esc_js($brand_color); ?>';
     const brandAccentColor = '<?php echo esc_js($mt_palette["accent"]); ?>';
     const brandLogoUrl = '<?php echo esc_js($brand_logo); ?>';
     const brandName = '<?php echo esc_js($brand_name); ?>';
+    const defaultMjml = `<?php echo addslashes(str_replace(["\r", "\n"], '', $default_mjml)); ?>`;
+    let editor = null;
+    let hasUnsavedChanges = false;
 
-    // --- UI/UX: CUSTOM POPUPS & TOASTS ---
     function showToast(message, type = 'success') {
         const container = document.getElementById('mt_toast_container');
         const toast = document.createElement('div');
@@ -641,12 +587,10 @@ $default_mjml = "
         setTimeout(() => { document.getElementById('mt_prompt_modal').classList.add('hidden'); document.getElementById('mt_prompt_modal').classList.remove('flex'); }, 150);
     }
     function executePrompt() { 
-        const val = document.getElementById('prompt_input').value;
-        if(promptCallback) promptCallback(val); 
+        if(promptCallback) promptCallback(document.getElementById('prompt_input').value); 
         closePromptModal(); 
     }
 
-    // --- DARK MODE LOGIC ---
     function toggleDarkMode() {
         const builder = document.getElementById('view_builder');
         const icon = document.querySelector('#btn-dark-mode i');
@@ -662,9 +606,7 @@ $default_mjml = "
         }
     }
 
-    // --- CUSTOM COLOR DRAWER LOGIC WITH AUTO-CLOSE ---
     let activeColorInput = null;
-
     document.getElementById('mt-left-panel').addEventListener('click', function(e) {
         const pickerBtn = e.target.closest('.gjs-field-color-picker') || e.target.closest('.gjs-field-colorp');
         const insideDrawer = e.target.closest('#mt_color_drawer');
@@ -677,11 +619,7 @@ $default_mjml = "
                 activeColorInput = fieldWrapper.querySelector('input[type="text"]');
                 if(activeColorInput) {
                     document.getElementById('mt_color_drawer').classList.add('open');
-                    let currentVal = activeColorInput.value;
-                    document.getElementById('mt_custom_color_hex').value = currentVal;
-                    if(currentVal && currentVal !== 'transparent' && currentVal !== 'none') {
-                        try { document.getElementById('mt_custom_color_picker').value = currentVal.slice(0,7); } catch(err){}
-                    }
+                    document.getElementById('mt_custom_color_hex').value = activeColorInput.value;
                 }
             }
         } else if (!insideDrawer) {
@@ -689,156 +627,136 @@ $default_mjml = "
         }
     }, true);
 
-    function closeColorDrawer() {
-        document.getElementById('mt_color_drawer').classList.remove('open');
-        activeColorInput = null;
-    }
+    function closeColorDrawer() { document.getElementById('mt_color_drawer').classList.remove('open'); activeColorInput = null; }
 
     function applyCustomColor(hex) {
         if(!activeColorInput) return;
         document.getElementById('mt_custom_color_hex').value = hex;
-        if(hex && hex !== 'transparent' && hex !== 'none') {
-            try { document.getElementById('mt_custom_color_picker').value = hex.slice(0,7); } catch(err){}
-        }
         activeColorInput.value = hex;
         activeColorInput.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
-    // --- TAB LOGIC ---
     function switchStudioTab(tab, el) {
-        document.querySelectorAll('.studio-tab-btn').forEach(b => b.classList.remove('active'));
-        el.classList.add('active');
-        document.querySelectorAll('.studio-tab-content').forEach(c => c.classList.remove('active'));
-        document.getElementById('tab_' + tab).classList.add('active');
+        document.querySelectorAll('.studio-tab-btn').forEach(b => b.classList.remove('active')); el.classList.add('active');
+        document.querySelectorAll('.studio-tab-content').forEach(c => c.classList.remove('active')); document.getElementById('tab_' + tab).classList.add('active');
     }
     function switchLeftTab(tab) {
-        document.querySelectorAll('.pill-tab').forEach(b => { b.classList.remove('active'); });
-        document.getElementById('tab-btn-' + tab).classList.add('active');
-        document.querySelectorAll('.panel-tab-content').forEach(c => { c.classList.remove('active'); });
-        document.getElementById('tab-' + tab).classList.add('active');
+        document.querySelectorAll('.pill-tab').forEach(b => b.classList.remove('active')); document.getElementById('tab-btn-' + tab).classList.add('active');
+        document.querySelectorAll('.panel-tab-content').forEach(c => c.classList.remove('active')); document.getElementById('tab-' + tab).classList.add('active');
         closeColorDrawer();
     }
     function switchSubTab(tab) {
-        document.querySelectorAll('.sub-pill-tab').forEach(b => b.classList.remove('active'));
-        document.getElementById('sub-btn-' + tab).classList.add('active');
+        document.querySelectorAll('.sub-pill-tab').forEach(b => b.classList.remove('active')); document.getElementById('sub-btn-' + tab).classList.add('active');
         document.querySelectorAll('.sub-panel').forEach(c => { c.classList.remove('active'); c.classList.add('hidden'); });
-        document.getElementById('sub-content-' + tab).classList.remove('hidden');
-        document.getElementById('sub-content-' + tab).classList.add('active');
+        document.getElementById('sub-content-' + tab).classList.remove('hidden'); document.getElementById('sub-content-' + tab).classList.add('active');
     }
-    function closeEditPanel() { 
-        if(editor) editor.select(null); 
-        document.getElementById('panel-edit-menu').classList.add('hidden'); 
-        closeColorDrawer();
+    function closeEditPanel() { if(editor) editor.select(null); document.getElementById('panel-edit-menu').classList.add('hidden'); closeColorDrawer(); }
+
+    // BUGFIX: MJML Compiler extraction with error logging
+    function extractEmailHtml() {
+        const cmd = editor.runCommand('mjml-get-code');
+        if (cmd && cmd.errors && cmd.errors.length > 0) {
+            console.error("MJML Compilation Errors:", cmd.errors);
+        }
+        if (!cmd || !cmd.html || cmd.html.trim() === '') {
+            throw new Error("Compiler failed. Please check for broken blocks.");
+        }
+        return { html: cmd.html, mjml: cmd.mjml || editor.getHtml() };
     }
 
-    // --- ACTIONS & MODALS ---
     function openTestModal() { document.getElementById('test_email_modal').classList.remove('hidden'); document.getElementById('test_email_modal').classList.add('flex'); }
-    function closeTestModal() { document.getElementById('test_email_modal').classList.add('hidden'); }
+    function closeTestModal() { document.getElementById('test_email_modal').classList.add('hidden'); document.getElementById('test_email_modal').classList.remove('flex'); }
+
     function sendTestEmail() { 
-        const to = document.getElementById('test_recipient').value;
-        if(!to) { showToast("Please enter a recipient email.", "error"); return; }
-        showToast("Test Email queued successfully!"); closeTestModal(); 
+        const email = document.getElementById('test_recipient').value;
+        if(!email || !email.includes('@')) { showToast("Please enter a valid email.", "error"); return; }
+        
+        // FIX ISSUE 2: Prevent null reference on test_subject
+        const subjEl = document.getElementById('test_subject');
+        const nameEl = document.getElementById('builder_tpl_name');
+        const subject = (subjEl && subjEl.value.trim() !== '') ? subjEl.value.trim() : ((nameEl && nameEl.value.trim() !== '') ? nameEl.value.trim() : 'Studio Test Preview');
+        
+        showToast("Compiling design and sending...", "success");
+
+        let extracted;
+        try {
+            // Wait for extraction
+            extracted = extractEmailHtml();
+        } catch (e) {
+            showToast(e.message, "error");
+            return;
+        }
+
+        const fd = new FormData();
+        fd.append('action', 'mt_fire_diagnostic_test'); 
+        fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
+        fd.append('brand_id', '<?php echo intval($brand->id); ?>'); 
+        fd.append('to_email', email);
+        fd.append('subject', '[TEST] ' + subject);
+        
+        // FIX ISSUE 3: Send raw HTML payload for proper email render
+        const payload = JSON.stringify({ html: extracted.html });
+        fd.append('payload', payload);
+        
+        const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
+        fetch(ajaxUrl, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
+            if(res.success) {
+                closeTestModal(); showToast(res.data, "success");
+            } else {
+                showToast(res.data || "Failed to send test email.", "error");
+            }
+        }).catch(err => {
+            showToast("Network Error.", "error");
+        });
     }
     
     function toggleShortcodes() { document.getElementById('shortcode_drawer').classList.toggle('open'); }
     function copyTag(tag) { navigator.clipboard.writeText(tag); showToast(`Copied ${tag} to clipboard!`); }
-    
     function closeBuilder() { 
-        mtConfirm("Exit Studio", "Are you sure you want to exit? Any unsaved changes will be lost.", function() {
-            window.location.reload(); 
-        });
+        if(hasUnsavedChanges) mtConfirm("Discard Unsaved Changes?", "Are you sure you want to leave?", () => window.location.reload());
+        else window.location.reload();
     }
-
     function setDevice(device) {
-        document.querySelectorAll('.device-btn').forEach(b => { b.classList.remove('active', 'bg-white', 'shadow-sm'); });
+        document.querySelectorAll('.device-btn').forEach(b => b.classList.remove('active', 'bg-white', 'shadow-sm'));
         document.getElementById('device-' + device).classList.add('active', 'bg-white', 'shadow-sm');
-        if(editor) {
-            if(device === 'mobile') editor.setDevice('Mobile portrait'); else editor.setDevice('Desktop');
-        }
+        if(editor) editor.setDevice(device === 'mobile' ? 'Mobile portrait' : 'Desktop');
     }
     function updateOuterBg(color) { 
         document.getElementById('canvas-wrapper').style.backgroundColor = color; 
-        if(editor) { const body = editor.getWrapper().find('mj-body')[0]; if(body) body.addAttributes({'background-color': color}); }
+        if(editor) { const b = editor.getWrapper().find('mj-body')[0]; if(b) b.addAttributes({'background-color': color}); }
     }
     function updateInnerBg(color) {
-        if(editor) { const innerWrapper = editor.getWrapper().find('mj-wrapper')[0]; if(innerWrapper) innerWrapper.addAttributes({'background-color': color}); }
+        if(editor) { const w = editor.getWrapper().find('mj-wrapper')[0]; if(w) w.addAttributes({'background-color': color}); }
     }
     function insertImageToCanvas(url) {
-        const selected = editor.getSelected();
-        if(selected && selected.is('mj-image')) { selected.addAttributes({'src': url}); showToast("Image updated successfully!"); }
-        else { showToast("Please select an Image block on the canvas first.", "error"); }
+        const s = editor.getSelected();
+        if(s && s.is('mj-image')) { s.addAttributes({'src': url}); showToast("Image updated successfully!"); }
+        else showToast("Please select an Image block on the canvas first.", "error");
     }
 
-    // --- SILENT AUTO-SAVE DRAFT LOGIC ---
-    function silentDraftSave() {
-        const now = new Date();
-        const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        const dateString = now.toLocaleDateString();
-        const draftName = 'Draft - ' + dateString + ' ' + timeString;
-        
-        const fd = new FormData();
-        fd.append('action', 'mt_save_template'); 
-        fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
-        fd.append('template_id', 0); 
-        fd.append('template_name', draftName);
-        
-        const payload = JSON.stringify({ html: '', mjml: defaultMjml });
-        const safePayload = btoa(unescape(encodeURIComponent(payload))); 
-        fd.append('email_body', safePayload);
-        
-        const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
-        fetch(ajaxUrl, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
-            if(res.success) {
-                document.getElementById('builder_tpl_id').value = res.data.id;
-                document.getElementById('builder_tpl_name').value = draftName;
-            }
-        }).catch(err => console.error("Silent Draft Save Failed", err));
-    }
-
-    // --- TRASH RESTORE / EMPTY / PERMANENT LOGIC ---
     function trashTemplate(id) { 
-        mtConfirm("Trash Template", "Are you sure you want to move this design to the trash?", function() {
-            const fd = new FormData(); 
-            fd.append('action','mt_trash_template'); 
-            fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
-            fd.append('template_id',id); 
-            
-            const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
-            fetch(ajaxUrl,{method:'POST',body:fd}).then(()=>window.location.reload());
+        mtConfirm("Trash Template", "Move this design to the trash?", () => {
+            const fd = new FormData(); fd.append('action','mt_trash_template'); fd.append('template_id',id); 
+            fetch('/wp-admin/admin-ajax.php',{method:'POST',body:fd}).then(()=>window.location.reload());
         });
     }
-    
     function restoreTemplate(id) {
-        const fd = new FormData(); 
-        fd.append('action','mt_restore_template'); 
-        fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
-        fd.append('template_id',id); 
-        const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
-        fetch(ajaxUrl,{method:'POST',body:fd}).then(()=>window.location.reload());
+        const fd = new FormData(); fd.append('action','mt_restore_template'); fd.append('template_id',id); 
+        fetch('/wp-admin/admin-ajax.php',{method:'POST',body:fd}).then(()=>window.location.reload());
     }
-
     function emptyTrash() {
-        mtConfirm("Empty Trash", "Are you sure you want to permanently delete all items in the trash? This cannot be undone.", function() {
-            const fd = new FormData(); 
-            fd.append('action','mt_empty_trash'); 
-            fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
-            const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
-            fetch(ajaxUrl,{method:'POST',body:fd}).then(()=>window.location.reload());
+        mtConfirm("Empty Trash", "Permanently delete all items?", () => {
+            const fd = new FormData(); fd.append('action','mt_empty_trash'); 
+            fetch('/wp-admin/admin-ajax.php',{method:'POST',body:fd}).then(()=>window.location.reload());
         });
     }
-
     function deletePermanent(id) {
-        mtConfirm("Delete Forever", "Are you sure you want to permanently delete this template? This cannot be undone.", function() {
-            const fd = new FormData(); 
-            fd.append('action','mt_delete_template_permanent'); 
-            fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
-            fd.append('template_id',id); 
-            const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
-            fetch(ajaxUrl,{method:'POST',body:fd}).then(()=>window.location.reload());
+        mtConfirm("Delete Forever", "Permanently delete this template?", () => {
+            const fd = new FormData(); fd.append('action','mt_delete_template_permanent'); fd.append('template_id',id); 
+            fetch('/wp-admin/admin-ajax.php',{method:'POST',body:fd}).then(()=>window.location.reload());
         });
     }
 
-    // --- BUILDER CORE ---
     function openBuilder(id, name = '') {
         document.getElementById('builder_tpl_id').value = id;
         document.getElementById('builder_tpl_name').value = name;
@@ -852,15 +770,19 @@ $default_mjml = "
         if(id !== 0) { 
             let rawBody = document.getElementById('raw_body_' + id).value.trim(); 
             if (rawBody && !rawBody.startsWith('{') && !rawBody.startsWith('<')) {
-                try { rawBody = decodeURIComponent(escape(atob(rawBody))); } catch(e) { console.error("Base64 decode failed"); }
+                try {
+                    let decoded = decodeUTF8Base64(rawBody);
+                    let parsed = JSON.parse(decoded); 
+                    startingData = parsed.mjml || defaultMjml; 
+                } catch(e) { startingData = rawBody || defaultMjml; }
+            } else {
+                try { 
+                    let parsed = JSON.parse(rawBody); 
+                    startingData = parsed.mjml || defaultMjml; 
+                } catch(e) { startingData = rawBody || defaultMjml; }
             }
-            try { 
-                let parsed = JSON.parse(rawBody); 
-                startingData = parsed.mjml || defaultMjml; 
-            } catch(e) { startingData = rawBody || defaultMjml; }
         } else { 
             startingData = defaultMjml; 
-            silentDraftSave();
         }
 
         if (!editor) { initGrapesJS(startingData); } 
@@ -871,16 +793,43 @@ $default_mjml = "
         closeEditPanel(); switchLeftTab('content'); 
     }
 
+    function silentDraftSave() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        const dateString = now.toLocaleDateString();
+        const draftName = 'Draft - ' + dateString + ' ' + timeString;
+        
+        let data = { html: '', mjml: defaultMjml };
+        if (editor) {
+            try { data = extractEmailHtml(); } catch(e) {}
+        }
+        
+        const fd = new FormData();
+        fd.append('action', 'mt_save_template'); 
+        fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
+        fd.append('template_id', 0); 
+        fd.append('template_name', draftName);
+        
+        const payload = JSON.stringify({ html: data.html, mjml: data.mjml });
+        const safePayload = encodeUTF8Base64(payload); 
+        fd.append('email_body', safePayload);
+        
+        const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
+        fetch(ajaxUrl, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
+            if(res.success) {
+                document.getElementById('builder_tpl_id').value = res.data.id;
+                document.getElementById('builder_tpl_name').value = draftName;
+            }
+        }).catch(err => console.error("Silent Draft Save Failed"));
+    }
+
     function initGrapesJS(startingData) {
         editor = grapesjs.init({
             container: '#gjs',
             fromElement: false,
             components: startingData, 
-            height: '100%',
-            width: '100%',
-            storageManager: false,
-            plugins: ['grapesjs-mjml'],
-            pluginsOpts: { 'grapesjs-mjml': {} },
+            height: '100%', width: '100%', storageManager: false,
+            plugins: ['grapesjs-mjml'], pluginsOpts: { 'grapesjs-mjml': {} },
             colorPicker: false, 
             blockManager: { appendTo: '#mt-blocks-container' },
             layerManager: { appendTo: '#mt-layers-container' },
@@ -896,19 +845,17 @@ $default_mjml = "
         });
 
         editor.on('load', () => {
-            const bm = editor.BlockManager;
-            bm.getAll().reset(); 
+            const bm = editor.BlockManager; bm.getAll().reset(); 
             
-            /* 1. THE ELEMENTS TAB (Structure) */
+            // All buttons contain a real domain (https://google.com) to stop Outlook VML bugs
             bm.add('mt-1-col', { category: 'Structure', label: `<i class="fa-regular fa-square"></i><div class="gjs-block-label">1 Column</div>`, content: `<mj-section padding="10px 0"><mj-column><mj-text>Content</mj-text></mj-column></mj-section>` });
             bm.add('mt-2-col', { category: 'Structure', label: `<i class="fa-solid fa-table-columns"></i><div class="gjs-block-label">2 Columns</div>`, content: `<mj-section padding="10px 0"><mj-column padding="0 10px"><mj-text>Left</mj-text></mj-column><mj-column padding="0 10px"><mj-text>Right</mj-text></mj-column></mj-section>` });
             bm.add('mt-3-col', { category: 'Structure', label: `<i class="fa-solid fa-bars-staggered"></i><div class="gjs-block-label">3 Columns</div>`, content: `<mj-section padding="10px 0"><mj-column padding="0 5px"><mj-text align="center">1</mj-text></mj-column><mj-column padding="0 5px"><mj-text align="center">2</mj-text></mj-column><mj-column padding="0 5px"><mj-text align="center">3</mj-text></mj-column></mj-section>` });
             bm.add('mt-4-col', { category: 'Structure', label: `<i class="fa-solid fa-grip"></i><div class="gjs-block-label">4 Columns</div>`, content: `<mj-section padding="10px 0"><mj-column padding="0 5px"><mj-text align="center">1</mj-text></mj-column><mj-column padding="0 5px"><mj-text align="center">2</mj-text></mj-column><mj-column padding="0 5px"><mj-text align="center">3</mj-text></mj-column><mj-column padding="0 5px"><mj-text align="center">4</mj-text></mj-column></mj-section>` });
 
-            /* 2. THE ELEMENTS TAB (Basic Elements) */
             bm.add('mt-logo', { category: 'Basic', label: `<i class="fa-solid fa-leaf"></i><div class="gjs-block-label">Logo</div>`, content: `<mj-image src="${brandLogoUrl}" alt="Logo" width="120px" align="center" padding="10px 0"></mj-image>` });
             bm.add('mt-spacer', { category: 'Basic', label: `<i class="fa-solid fa-arrows-up-down"></i><div class="gjs-block-label">Padding</div>`, content: `<mj-spacer height="20px"></mj-spacer>` });
-            bm.add('mt-social', { category: 'Basic', label: `<i class="fa-solid fa-hashtag"></i><div class="gjs-block-label">Social</div>`, content: `<mj-social font-size="15px" icon-size="30px" mode="horizontal" padding="10px"><mj-social-element name="facebook" href="#"></mj-social-element><mj-social-element name="instagram" href="#"></mj-social-element><mj-social-element name="twitter" href="#"></mj-social-element></mj-social>` });
+            bm.add('mt-social', { category: 'Basic', label: `<i class="fa-solid fa-hashtag"></i><div class="gjs-block-label">Social</div>`, content: `<mj-social font-size="15px" icon-size="30px" mode="horizontal" padding="10px"><mj-social-element name="facebook" href="https://google.com"></mj-social-element><mj-social-element name="instagram" href="https://google.com"></mj-social-element><mj-social-element name="twitter" href="https://google.com"></mj-social-element></mj-social>` });
             bm.add('mt-title', { category: 'Basic', label: `<i class="fa-solid fa-heading"></i><div class="gjs-block-label">Title</div>`, content: `<mj-text font-size="24px" color="#0f172a" font-weight="900" line-height="1.4" padding="10px 0">Add your heading</mj-text>` });
             bm.add('mt-text', { category: 'Basic', label: `<i class="fa-solid fa-font"></i><div class="gjs-block-label">Paragraph</div>`, content: `<mj-text font-size="15px" color="#334155" line-height="1.6" padding="10px 0">Type your paragraph here. You can add more text to fill this area.</mj-text>` });
             bm.add('mt-boxed-text', { category: 'Basic', label: `<i class="fa-regular fa-square-plus"></i><div class="gjs-block-label">Boxed Text</div>`, content: `<mj-text container-background-color="#f8fafc" padding="20px" font-size="15px" color="#334155" line-height="1.6" border-radius="6px">This text is highlighted inside a shaded box.</mj-text>` });
@@ -916,30 +863,33 @@ $default_mjml = "
             bm.add('mt-image', { category: 'Basic', label: `<i class="fa-regular fa-image"></i><div class="gjs-block-label">Image</div>`, content: `<mj-image src="https://placehold.co/600x300/e2e8f0/94a3b8?text=Image" border-radius="6px" padding="10px 0"></mj-image>` });
             bm.add('mt-image-group', { category: 'Basic', label: `<i class="fa-regular fa-images"></i><div class="gjs-block-label">Image Group</div>`, content: `<mj-section padding="10px 0"><mj-group><mj-column padding="0 5px"><mj-image src="https://placehold.co/300x300/e2e8f0/94a3b8?text=Img+1" border-radius="6px" padding="0"></mj-image></mj-column><mj-column padding="0 5px"><mj-image src="https://placehold.co/300x300/e2e8f0/94a3b8?text=Img+2" border-radius="6px" padding="0"></mj-image></mj-column></mj-group></mj-section>` });
             bm.add('mt-divider', { category: 'Basic', label: `<i class="fa-solid fa-minus"></i><div class="gjs-block-label">Divider</div>`, content: `<mj-divider border-width="2px" border-color="#f1f5f9" padding="20px 0"></mj-divider>` });
-            bm.add('mt-button', { category: 'Basic', label: `<i class="fa-solid fa-hand-pointer"></i><div class="gjs-block-label">Button</div>`, content: `<mj-button background-color="${brandPrimaryColor}" color="#ffffff" font-weight="bold" border-radius="6px" inner-padding="14px 28px" padding="15px 0" href="#">Click Here</mj-button>` });
+            bm.add('mt-button', { category: 'Basic', label: `<i class="fa-solid fa-hand-pointer"></i><div class="gjs-block-label">Button</div>`, content: `<mj-button background-color="${brandPrimaryColor}" color="#ffffff" font-weight="bold" border-radius="6px" inner-padding="14px 28px" padding="15px 0" href="https://google.com">Click Here</mj-button>` });
 
-            /* 3. THE ELEMENTS TAB (Advanced Elements) */
             bm.add('adv-dual-hdr', { category: 'Advanced', label: `<i class="fa-solid fa-text-width"></i><div class="gjs-block-label">Dual Header</div>`, content: `<mj-text font-size="28px" font-weight="900" align="center" padding="10px 0"><span style="color:#0f172a;">MAIN</span> <span style="color:${brandPrimaryColor};">HIGHLIGHT</span></mj-text>` });
-            bm.add('adv-img-card', { category: 'Advanced', label: `<i class="fa-regular fa-id-card"></i><div class="gjs-block-label">Image Card</div>`, content: `<mj-section background-color="#ffffff" border-radius="8px" border="1px solid #e2e8f0" padding="0"><mj-column><mj-image src="https://placehold.co/600x300/f8fafc/94a3b8?text=Card+Image" padding="0" border-radius="8px 8px 0 0"></mj-image><mj-text font-size="20px" font-weight="800" color="#0f172a" padding="20px 20px 5px 20px">Card Title</mj-text><mj-text font-size="15px" color="#475569" line-height="1.6" padding="0 20px 20px 20px">This is a beautiful image card. Add your descriptive paragraph here to engage your audience.</mj-text><mj-button background-color="${brandPrimaryColor}" color="#ffffff" font-weight="bold" border-radius="6px" inner-padding="12px 25px" align="left" padding="0 20px 20px 20px" href="#">Action</mj-button></mj-column></mj-section>` });
-            bm.add('adv-img-cap', { category: 'Advanced', label: `<i class="fa-solid fa-photo-film"></i><div class="gjs-block-label">Img + Caption</div>`, content: `<mj-section padding="15px 0"><mj-column width="50%" padding="0 10px 0 0"><mj-image src="https://placehold.co/400x400/e2e8f0/94a3b8?text=Image" border-radius="6px" padding="0"></mj-image></mj-column><mj-column width="50%" padding="0 0 0 10px" vertical-align="middle"><mj-text font-size="18px" font-weight="800" color="#0f172a" padding="0 0 10px 0">Feature Title</mj-text><mj-text font-size="14px" color="#475569" line-height="1.6" padding="0 0 15px 0">Describe your product or feature here. Keep it concise.</mj-text><mj-button background-color="${brandPrimaryColor}" color="#ffffff" font-weight="bold" border-radius="6px" inner-padding="10px 20px" align="left" padding="0" href="#">Learn More</mj-button></mj-column></mj-section>` });
-            bm.add('adv-video', { category: 'Advanced', label: `<i class="fa-solid fa-circle-play"></i><div class="gjs-block-label">Video</div>`, content: `<mj-image src="https://placehold.co/600x337/1e293b/ffffff?text=▶+PLAY+VIDEO" href="#" border-radius="8px" padding="10px 0"></mj-image>` });
+            bm.add('adv-img-card', { category: 'Advanced', label: `<i class="fa-regular fa-id-card"></i><div class="gjs-block-label">Image Card</div>`, content: `<mj-section background-color="#ffffff" border-radius="8px" border="1px solid #e2e8f0" padding="0"><mj-column><mj-image src="https://placehold.co/600x300/f8fafc/94a3b8?text=Card+Image" padding="0" border-radius="8px 8px 0 0"></mj-image><mj-text font-size="20px" font-weight="800" color="#0f172a" padding="20px 20px 5px 20px">Card Title</mj-text><mj-text font-size="15px" color="#475569" line-height="1.6" padding="0 20px 20px 20px">This is a beautiful image card. Add your descriptive paragraph here to engage your audience.</mj-text><mj-button background-color="${brandPrimaryColor}" color="#ffffff" font-weight="bold" border-radius="6px" inner-padding="12px 25px" align="left" padding="0 20px 20px 20px" href="https://google.com">Action</mj-button></mj-column></mj-section>` });
+            bm.add('adv-img-cap', { category: 'Advanced', label: `<i class="fa-solid fa-photo-film"></i><div class="gjs-block-label">Img + Caption</div>`, content: `<mj-section padding="15px 0"><mj-column width="50%" padding="0 10px 0 0"><mj-image src="https://placehold.co/400x400/e2e8f0/94a3b8?text=Image" border-radius="6px" padding="0"></mj-image></mj-column><mj-column width="50%" padding="0 0 0 10px" vertical-align="middle"><mj-text font-size="18px" font-weight="800" color="#0f172a" padding="0 0 10px 0">Feature Title</mj-text><mj-text font-size="14px" color="#475569" line-height="1.6" padding="0 0 15px 0">Describe your product or feature here. Keep it concise.</mj-text><mj-button background-color="${brandPrimaryColor}" color="#ffffff" font-weight="bold" border-radius="6px" inner-padding="10px 20px" align="left" padding="0" href="https://google.com">Learn More</mj-button></mj-column></mj-section>` });
+            bm.add('adv-video', { category: 'Advanced', label: `<i class="fa-solid fa-circle-play"></i><div class="gjs-block-label">Video</div>`, content: `<mj-image src="https://placehold.co/600x337/1e293b/ffffff?text=▶+PLAY+VIDEO" href="https://google.com" border-radius="8px" padding="10px 0"></mj-image>` });
             bm.add('adv-product', { category: 'Advanced', label: `<i class="fa-solid fa-store"></i><div class="gjs-block-label">Product Sync</div>`, content: `<mj-section background-color="#f8fafc" border-radius="8px" border="1px dashed #cbd5e1" padding="20px"><mj-column><mj-text align="center" font-size="24px" color="#94a3b8"><i class="fa-solid fa-shop"></i></mj-text><mj-text align="center" font-weight="bold" color="#0f172a" padding-top="10px">Dynamic Product Sync</mj-text><mj-text align="center" font-size="12px" color="#64748b" padding-top="5px">Select a WooCommerce/Shopify product from the right panel to populate this card.</mj-text></mj-column></mj-section>` });
             bm.add('adv-crm', { category: 'Advanced', label: `<i class="fa-solid fa-chart-pie"></i><div class="gjs-block-label">CRM Survey</div>`, content: `<mj-section background-color="#f8fafc" border-radius="8px" border="1px dashed #cbd5e1" padding="20px"><mj-column><mj-text align="center" font-size="24px" color="#94a3b8"><i class="fa-solid fa-chart-pie"></i></mj-text><mj-text align="center" font-weight="bold" color="#0f172a" padding-top="10px">CRM Survey Block</mj-text><mj-text align="center" font-size="12px" color="#64748b" padding-top="5px">Displays NPS / Feedback survey linked to CRM.</mj-text></mj-column></mj-section>` });
 
-            /* 4. THE PRE-BUILT SECTIONS TAB (Templates) */
             bm.add('hdr-center', { category: 'Headers', label: `<i class="fa-solid fa-arrows-to-dot"></i><div class="gjs-block-label">Logo Center</div>`, content: `<mj-section background-color="transparent" padding="20px 0"><mj-column><mj-image src="${brandLogoUrl}" alt="Logo" width="150px" align="center"></mj-image></mj-column></mj-section>` });
             bm.add('hdr-left', { category: 'Headers', label: `<i class="fa-solid fa-arrow-left"></i><div class="gjs-block-label">Logo Left</div>`, content: `<mj-section background-color="transparent" padding="20px 0"><mj-column width="50%"><mj-image src="${brandLogoUrl}" alt="Logo" width="150px" align="left"></mj-image></mj-column><mj-column width="50%"></mj-column></mj-section>` });
             bm.add('hdr-right', { category: 'Headers', label: `<i class="fa-solid fa-arrow-right"></i><div class="gjs-block-label">Logo Right</div>`, content: `<mj-section background-color="transparent" padding="20px 0"><mj-column width="50%"></mj-column><mj-column width="50%"><mj-image src="${brandLogoUrl}" alt="Logo" width="150px" align="right"></mj-image></mj-column></mj-section>` });
 
-            bm.add('hero-center', { category: 'Hero Banners', label: `<i class="fa-regular fa-image"></i><div class="gjs-block-label">Hero Center</div>`, content: `<mj-section background-url="https://placehold.co/600x400/1e293b/ffffff?text=Hero+Banner" background-size="cover" background-repeat="no-repeat" padding="80px 20px" border-radius="8px"><mj-column><mj-text align="center" color="#ffffff" font-size="32px" font-weight="900" padding-bottom="10px">Big Headline</mj-text><mj-text align="center" color="#f8fafc" font-size="16px" line-height="1.5" padding-bottom="20px">Catchy subheadline to drive clicks.</mj-text><mj-button align="center" background-color="${brandPrimaryColor}" color="#ffffff" border-radius="6px" inner-padding="15px 30px" font-weight="bold" href="#">Shop Now</mj-button></mj-column></mj-section>` });
-            bm.add('hero-left', { category: 'Hero Banners', label: `<i class="fa-solid fa-image"></i><div class="gjs-block-label">Hero Left</div>`, content: `<mj-section background-url="https://placehold.co/600x400/1e293b/ffffff?text=Hero+Banner" background-size="cover" background-repeat="no-repeat" padding="80px 20px" border-radius="8px"><mj-column><mj-text align="left" color="#ffffff" font-size="32px" font-weight="900" padding-bottom="10px">Big Headline</mj-text><mj-text align="left" color="#f8fafc" font-size="16px" line-height="1.5" padding-bottom="20px">Catchy subheadline to drive clicks.</mj-text><mj-button align="left" background-color="${brandPrimaryColor}" color="#ffffff" border-radius="6px" inner-padding="15px 30px" font-weight="bold" href="#">Shop Now</mj-button></mj-column></mj-section>` });
-            bm.add('hero-right', { category: 'Hero Banners', label: `<i class="fa-regular fa-images"></i><div class="gjs-block-label">Hero Right</div>`, content: `<mj-section background-url="https://placehold.co/600x400/1e293b/ffffff?text=Hero+Banner" background-size="cover" background-repeat="no-repeat" padding="80px 20px" border-radius="8px"><mj-column><mj-text align="right" color="#ffffff" font-size="32px" font-weight="900" padding-bottom="10px">Big Headline</mj-text><mj-text align="right" color="#f8fafc" font-size="16px" line-height="1.5" padding-bottom="20px">Catchy subheadline to drive clicks.</mj-text><mj-button align="right" background-color="${brandPrimaryColor}" color="#ffffff" border-radius="6px" inner-padding="15px 30px" font-weight="bold" href="#">Shop Now</mj-button></mj-column></mj-section>` });
+            bm.add('hero-center', { category: 'Hero Banners', label: `<i class="fa-regular fa-image"></i><div class="gjs-block-label">Hero Center</div>`, content: `<mj-section background-url="https://placehold.co/600x400/1e293b/ffffff?text=Hero+Banner" background-size="cover" background-repeat="no-repeat" padding="80px 20px" border-radius="8px"><mj-column><mj-text align="center" color="#ffffff" font-size="32px" font-weight="900" padding-bottom="10px">Big Headline</mj-text><mj-text align="center" color="#f8fafc" font-size="16px" line-height="1.5" padding-bottom="20px">Catchy subheadline to drive clicks.</mj-text><mj-button align="center" background-color="${brandPrimaryColor}" color="#ffffff" border-radius="6px" inner-padding="15px 30px" font-weight="bold" href="https://google.com">Shop Now</mj-button></mj-column></mj-section>` });
+            bm.add('hero-left', { category: 'Hero Banners', label: `<i class="fa-solid fa-image"></i><div class="gjs-block-label">Hero Left</div>`, content: `<mj-section background-url="https://placehold.co/600x400/1e293b/ffffff?text=Hero+Banner" background-size="cover" background-repeat="no-repeat" padding="80px 20px" border-radius="8px"><mj-column><mj-text align="left" color="#ffffff" font-size="32px" font-weight="900" padding-bottom="10px">Big Headline</mj-text><mj-text align="left" color="#f8fafc" font-size="16px" line-height="1.5" padding-bottom="20px">Catchy subheadline to drive clicks.</mj-text><mj-button align="left" background-color="${brandPrimaryColor}" color="#ffffff" border-radius="6px" inner-padding="15px 30px" font-weight="bold" href="https://google.com">Shop Now</mj-button></mj-column></mj-section>` });
+            bm.add('hero-right', { category: 'Hero Banners', label: `<i class="fa-regular fa-images"></i><div class="gjs-block-label">Hero Right</div>`, content: `<mj-section background-url="https://placehold.co/600x400/1e293b/ffffff?text=Hero+Banner" background-size="cover" background-repeat="no-repeat" padding="80px 20px" border-radius="8px"><mj-column><mj-text align="right" color="#ffffff" font-size="32px" font-weight="900" padding-bottom="10px">Big Headline</mj-text><mj-text align="right" color="#f8fafc" font-size="16px" line-height="1.5" padding-bottom="20px">Catchy subheadline to drive clicks.</mj-text><mj-button align="right" background-color="${brandPrimaryColor}" color="#ffffff" border-radius="6px" inner-padding="15px 30px" font-weight="bold" href="https://google.com">Shop Now</mj-button></mj-column></mj-section>` });
 
-            bm.add('body-promo', { category: 'Body Layouts', label: `<i class="fa-solid fa-newspaper"></i><div class="gjs-block-label">Promo Post</div>`, content: `<mj-section background-color="#ffffff" padding="0" border-radius="8px"><mj-column width="100%"><mj-image src="https://placehold.co/600x300/e2e8f0/94a3b8?text=Promo+Banner" padding="0" border-radius="8px 8px 0 0"></mj-image></mj-column><mj-column width="100%" padding="30px 20px"><mj-text font-size="24px" font-weight="800" color="#0f172a" padding-bottom="10px">Exciting Updates</mj-text><mj-text font-size="15px" color="#475569" line-height="1.6" padding-bottom="20px">Keep your audience engaged with this clean layout.</mj-text><mj-button align="left" background-color="${brandPrimaryColor}" color="#ffffff" border-radius="6px" inner-padding="12px 25px" font-weight="bold" href="#">Learn More</mj-button></mj-column></mj-section>` });
-            bm.add('body-prod1', { category: 'Body Layouts', label: `<i class="fa-solid fa-box"></i><div class="gjs-block-label">1 Product</div>`, content: `<mj-section background-color="#f8fafc" padding="30px 20px" border-radius="8px"><mj-column width="100%"><mj-image src="https://placehold.co/400x300/e2e8f0/94a3b8?text=Product+Image" border-radius="6px" padding="0 0 20px 0"></mj-image><mj-text font-size="22px" font-weight="800" color="#0f172a" align="center">Premium Product</mj-text><mj-text font-size="20px" font-weight="900" color="${brandPrimaryColor}" align="center" padding="10px 0">$49.99</mj-text><mj-text font-size="14px" color="#475569" line-height="1.5" align="center" padding-bottom="20px">A brief description of this product.</mj-text><mj-button background-color="${brandPrimaryColor}" color="#ffffff" border-radius="6px" inner-padding="14px 30px" font-weight="bold" width="100%">Add to Cart</mj-button></mj-column></mj-section>` });
-            bm.add('body-prod2', { category: 'Body Layouts', label: `<i class="fa-solid fa-boxes-stacked"></i><div class="gjs-block-label">2 Products</div>`, content: `<mj-section background-color="#ffffff" padding="10px 0"><mj-column width="48%" background-color="#f8fafc" padding="20px 10px" border-radius="8px"><mj-image src="https://placehold.co/300x300/e2e8f0/94a3b8?text=Item+1" border-radius="6px" padding="0 0 15px 0"></mj-image><mj-text font-size="16px" font-weight="800" color="#0f172a" align="center" padding="0">Product A</mj-text><mj-text font-size="16px" font-weight="900" color="${brandPrimaryColor}" align="center" padding="5px 0 15px 0">$29.99</mj-text><mj-button background-color="${brandPrimaryColor}" color="#ffffff" border-radius="6px" inner-padding="10px" font-weight="bold" width="100%">Buy</mj-button></mj-column><mj-column width="4%"></mj-column><mj-column width="48%" background-color="#f8fafc" padding="20px 10px" border-radius="8px"><mj-image src="https://placehold.co/300x300/e2e8f0/94a3b8?text=Item+2" border-radius="6px" padding="0 0 15px 0"></mj-image><mj-text font-size="16px" font-weight="800" color="#0f172a" align="center" padding="0">Product B</mj-text><mj-text font-size="16px" font-weight="900" color="${brandPrimaryColor}" align="center" padding="5px 0 15px 0">$34.99</mj-text><mj-button background-color="${brandPrimaryColor}" color="#ffffff" border-radius="6px" inner-padding="10px" font-weight="bold" width="100%">Buy</mj-button></mj-column></mj-section>` });
+            bm.add('body-promo', { category: 'Body Layouts', label: `<i class="fa-solid fa-newspaper"></i><div class="gjs-block-label">Promo Post</div>`, content: `<mj-section background-color="#ffffff" padding="0" border-radius="8px"><mj-column width="100%"><mj-image src="https://placehold.co/600x300/e2e8f0/94a3b8?text=Promo+Banner" padding="0" border-radius="8px 8px 0 0"></mj-image></mj-column><mj-column width="100%" padding="30px 20px"><mj-text font-size="24px" font-weight="800" color="#0f172a" padding-bottom="10px">Exciting Updates</mj-text><mj-text font-size="15px" color="#475569" line-height="1.6" padding-bottom="20px">Keep your audience engaged with this clean layout.</mj-text><mj-button align="left" background-color="${brandPrimaryColor}" color="#ffffff" border-radius="6px" inner-padding="12px 25px" font-weight="bold" href="https://google.com">Learn More</mj-button></mj-column></mj-section>` });
+            bm.add('body-prod1', { category: 'Body Layouts', label: `<i class="fa-solid fa-box"></i><div class="gjs-block-label">1 Product</div>`, content: `<mj-section background-color="#f8fafc" padding="30px 20px" border-radius="8px"><mj-column width="100%"><mj-image src="https://placehold.co/400x300/e2e8f0/94a3b8?text=Product+Image" border-radius="6px" padding="0 0 20px 0"></mj-image><mj-text font-size="22px" font-weight="800" color="#0f172a" align="center">Premium Product</mj-text><mj-text font-size="20px" font-weight="900" color="${brandPrimaryColor}" align="center" padding="10px 0">$49.99</mj-text><mj-text font-size="14px" color="#475569" line-height="1.5" align="center" padding-bottom="20px">A brief description of this product.</mj-text><mj-button background-color="${brandPrimaryColor}" color="#ffffff" border-radius="6px" inner-padding="14px 30px" font-weight="bold" width="100%" href="https://google.com">Add to Cart</mj-button></mj-column></mj-section>` });
+            bm.add('body-prod2', { category: 'Body Layouts', label: `<i class="fa-solid fa-boxes-stacked"></i><div class="gjs-block-label">2 Products</div>`, content: `<mj-section background-color="#ffffff" padding="10px 0"><mj-column width="48%" background-color="#f8fafc" padding="20px 10px" border-radius="8px"><mj-image src="https://placehold.co/300x300/e2e8f0/94a3b8?text=Item+1" border-radius="6px" padding="0 0 15px 0"></mj-image><mj-text font-size="16px" font-weight="800" color="#0f172a" align="center" padding="0">Product A</mj-text><mj-text font-size="16px" font-weight="900" color="${brandPrimaryColor}" align="center" padding="5px 0 15px 0">$29.99</mj-text><mj-button background-color="${brandPrimaryColor}" color="#ffffff" border-radius="6px" inner-padding="10px" font-weight="bold" width="100%" href="https://google.com">Buy</mj-button></mj-column><mj-column width="4%"></mj-column><mj-column width="48%" background-color="#f8fafc" padding="20px 10px" border-radius="8px"><mj-image src="https://placehold.co/300x300/e2e8f0/94a3b8?text=Item+2" border-radius="6px" padding="0 0 15px 0"></mj-image><mj-text font-size="16px" font-weight="800" color="#0f172a" align="center" padding="0">Product B</mj-text><mj-text font-size="16px" font-weight="900" color="${brandPrimaryColor}" align="center" padding="5px 0 15px 0">$34.99</mj-text><mj-button background-color="${brandPrimaryColor}" color="#ffffff" border-radius="6px" inner-padding="10px" font-weight="bold" width="100%" href="https://google.com">Buy</mj-button></mj-column></mj-section>` });
 
-            bm.add('ftr-standard', { category: 'Footers', label: `<i class="fa-solid fa-shoe-prints"></i><div class="gjs-block-label">Full Footer</div>`, content: `<mj-section padding="30px 20px" background-color="transparent"><mj-column><mj-image src="${brandLogoUrl}" width="120px" align="center" padding-bottom="15px"></mj-image><mj-social font-size="15px" icon-size="30px" mode="horizontal" padding-bottom="20px"><mj-social-element name="facebook" href="#"></mj-social-element><mj-social-element name="instagram" href="#"></mj-social-element></mj-social><mj-text font-size="12px" color="#94a3b8" align="center" line-height="1.5"><strong>${brandName}</strong><br>123 Brand Street, City, State 12345<br>contact@domain.com | (555) 123-4567<br><br>You received this because you opted in.</mj-text><mj-text font-size="12px" align="center" padding-top="5px"><a href="[Unsubscribe_Link]" style="color:#64748b; text-decoration:underline;">Unsubscribe Safely</a></mj-text></mj-column></mj-section>` });
+            bm.add('ftr-standard', { category: 'Footers', label: `<i class="fa-solid fa-shoe-prints"></i><div class="gjs-block-label">Full Footer</div>`, content: `<mj-section padding="30px 20px" background-color="transparent"><mj-column><mj-image src="${brandLogoUrl}" width="120px" align="center" padding-bottom="15px"></mj-image><mj-social font-size="15px" icon-size="30px" mode="horizontal" padding-bottom="20px"><mj-social-element name="facebook" href="https://google.com"></mj-social-element><mj-social-element name="instagram" href="https://google.com"></mj-social-element></mj-social><mj-text font-size="12px" color="#94a3b8" align="center" line-height="1.5"><strong>${brandName}</strong><br />123 Brand Street, City, State 12345<br />contact@domain.com | (555) 123-4567<br /><br />You received this because you opted in.</mj-text><mj-text font-size="12px" align="center" padding-top="5px"><a href="[Unsubscribe_Link]" style="color:#64748b; text-decoration:underline;">Unsubscribe Safely</a></mj-text></mj-column></mj-section>` });
+
+            // FIX ISSUE 4: Fire silent draft save safely after blocks load
+            if (document.getElementById('builder_tpl_id').value === '0') {
+                setTimeout(silentDraftSave, 1500); 
+            }
 
             setTimeout(() => { 
                 const cats = document.querySelectorAll('.gjs-block-category');
@@ -948,7 +898,7 @@ $default_mjml = "
                     const titleEl = cat.querySelector('.gjs-title');
                     if(titleEl) {
                         const title = titleEl.innerText.trim().toUpperCase();
-                        if(['HEADERS', 'HERO BANNERS', 'BODY LAYOUTS', 'FOOTERS'].includes(title)) {
+                        if(['HEADERS', 'HERO BANNERS', 'BODY LAYOUTS', 'FOOTERS', 'STRUCTURE', 'BASIC', 'ADVANCED'].includes(title)) {
                             prebuiltContainer.appendChild(cat);
                         }
                     }
@@ -960,6 +910,8 @@ $default_mjml = "
             if(editorBody) editorBody.style.backgroundColor = 'transparent';
         });
 
+        editor.on('change:changesCount', () => { hasUnsavedChanges = true; });
+
         editor.on('component:selected', component => { 
             document.getElementById('panel-edit-menu').classList.remove('hidden');
             document.getElementById('panel-edit-menu').classList.add('flex');
@@ -969,7 +921,27 @@ $default_mjml = "
         });
     }
 
-    function saveBuilder() {
+    // FIX ISSUE 6: Save As Template Rollback feature
+    function saveAsTemplate() {
+        const originalId = document.getElementById('builder_tpl_id').value;
+        const originalName = document.getElementById('builder_tpl_name').value;
+        const currentName = originalName || 'Untitled Design';
+
+        mtPrompt("Save as New Template", "Enter a name for the new design:", currentName + " (Copy)", function(newName) {
+            if(!newName) return;
+            document.getElementById('builder_tpl_id').value = 0; 
+            document.getElementById('builder_tpl_name').value = newName;
+            
+            saveBuilder({
+                onError: function() {
+                    document.getElementById('builder_tpl_id').value = originalId;
+                    document.getElementById('builder_tpl_name').value = originalName;
+                }
+            });
+        });
+    }
+
+    function saveBuilder(opts = {}) {
         const btn = document.getElementById('btn_save_builder');
         const id = document.getElementById('builder_tpl_id').value;
         const name = document.getElementById('builder_tpl_name').value.trim();
@@ -979,47 +951,47 @@ $default_mjml = "
         btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Saving...'; 
         btn.disabled = true;
         
-        let htmlData = '';
-        let mjmlData = '';
-        
-        try {
-            const compiled = editor.runCommand('mjml-get-code');
-            if (compiled && compiled.html) {
-                htmlData = compiled.html;
-                mjmlData = compiled.mjml || '';
-            } else {
-                throw new Error("MJML command returned empty data");
+        // FIX ISSUE 5: Delay execution to allow MJML compiler to finish building
+        setTimeout(() => {
+            let extracted;
+            try {
+                extracted = extractEmailHtml();
+            } catch (error) {
+                showToast("COMPILER ERROR: " + error.message, "error");
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save';
+                btn.disabled = false;
+                if(opts.onError) opts.onError();
+                return;
             }
-        } catch (error) {
-            console.warn("MJML Export Warning. Falling back to standard HTML render:", error);
-            htmlData = editor.getHtml(); 
-            mjmlData = editor.getHtml();
-        }
 
-        const fd = new FormData();
-        fd.append('action', 'mt_save_template'); 
-        fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
-        fd.append('template_id', id); 
-        fd.append('template_name', name);
-        
-        const payload = JSON.stringify({ html: htmlData, mjml: mjmlData });
-        const safePayload = btoa(unescape(encodeURIComponent(payload))); 
-        fd.append('email_body', safePayload);
-        
-        const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : (typeof ajaxurl !== 'undefined' ? ajaxurl : '/wp-admin/admin-ajax.php');
-        
-        fetch(ajaxUrl, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
-            btn.disabled = false; 
-            showToast("Design saved successfully!");
-            if(res.success && id == 0) {
-                document.getElementById('builder_tpl_id').value = res.data.id;
-            }
-            btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save';
-        }).catch(err => {
-            console.error("AJAX Error:", err);
-            btn.disabled = false; 
-            showToast("Error communicating with server. Check console.", "error");
-            btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save';
-        });
+            const fd = new FormData();
+            fd.append('action', 'mt_save_template'); 
+            fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : ''); 
+            fd.append('template_id', id); 
+            fd.append('template_name', name);
+            
+            const payload = JSON.stringify({ html: extracted.html, mjml: extracted.mjml });
+            // FIX ISSUE 1: Safely encode payload to base64
+            const safePayload = encodeUTF8Base64(payload); 
+            fd.append('email_body', safePayload);
+            
+            const ajaxUrl = typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php';
+            
+            fetch(ajaxUrl, { method: 'POST', body: fd }).then(r => r.json()).then(res => {
+                btn.disabled = false; 
+                showToast("Design saved successfully!");
+                if(res.success && id == 0) {
+                    document.getElementById('builder_tpl_id').value = res.data.id;
+                }
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save';
+                hasUnsavedChanges = false;
+            }).catch(err => {
+                console.error("AJAX Error:", err);
+                btn.disabled = false; 
+                showToast("Error communicating with server. Check console.", "error");
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save';
+                if(opts.onError) opts.onError();
+            });
+        }, 300);
     }
 </script>
