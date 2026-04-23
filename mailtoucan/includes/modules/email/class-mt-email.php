@@ -42,8 +42,6 @@ class MT_Email {
         add_action( 'wp_ajax_mt_get_google_auth_url', array( $this, 'ajax_get_google_auth_url' ) );
         add_action( 'wp_ajax_mt_google_oauth_callback', array( $this, 'google_oauth_callback' ) );
         add_action( 'wp_ajax_nopriv_mt_google_oauth_callback', array( $this, 'google_oauth_callback' ) );
-        
-        // Note: Tracking Pixel hooks removed. Now handled cleanly by Dashboard Rewrite Rules (Item 7).
     }
 
     public function maybe_create_email_tables() {
@@ -51,7 +49,6 @@ class MT_Email {
         $charset_collate = $wpdb->get_charset_collate();
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
-        // CHANGES GUIDE ITEM 10: Added `retries` column
         $table_queue = $wpdb->prefix . 'mt_email_queue';
         $sql_queue = "CREATE TABLE $table_queue (
             id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -70,7 +67,6 @@ class MT_Email {
         ) $charset_collate;";
         dbDelta( $sql_queue );
 
-        // CHANGES GUIDE ITEM 9: Added `provider` column
         $table_sends = $wpdb->prefix . 'mt_email_sends';
         $sql_sends = "CREATE TABLE $table_sends (
             id bigint(20) NOT NULL AUTO_INCREMENT,
@@ -168,7 +164,6 @@ class MT_Email {
         $system_email = $clean_slug . '@' . $master_saas_domain;
         $configured_domain_email = !empty($delivery['from_email']) ? $delivery['from_email'] : $system_email;
 
-        // Note: Strict verification is now enforced natively via get_brand_sender().
         return [
             'brand_name'    => $brand->brand_name,
             'system_email'  => $system_email,
@@ -186,7 +181,6 @@ class MT_Email {
         ];
     }
 
-    // CHANGES GUIDE ITEM 3: Strict Domain Verification check
     public function get_brand_sender( $brand_id, $requested_email, $brand_name ) {
         global $wpdb;
         $master_domain = 'fly.mailtoucan.com';
@@ -235,7 +229,6 @@ class MT_Email {
         return str_replace( array_keys($tags), array_values($tags), $html );
     }
 
-    // CHANGES GUIDE ITEM 7: Inject Vanity Tracking URL
     public function inject_tracking_pixel( $html, $campaign_id, $lead_id ) {
         $track_url = site_url('/mt-track/open/' . $campaign_id . '/' . $lead_id);
         $pixel = '<img src="' . esc_url($track_url) . '" width="1" height="1" alt="" style="display:none; visibility:hidden; mso-hide:all;" />';
@@ -246,7 +239,6 @@ class MT_Email {
         return $html . $pixel;
     }
 
-    // CHANGES GUIDE ITEM 7: Process Vanity Endpoint directly from router
     public function process_tracking_pixel( $campaign_id, $lead_id ) {
         if ($campaign_id > 0 && $lead_id > 0) {
             global $wpdb;
@@ -274,7 +266,6 @@ class MT_Email {
         exit;
     }
 
-    // CHANGES GUIDE ITEM 9 & 10: Array return structure with error reporting
     public function route_email( $to_email, $subject, $html_body, $brand_id, $engine = 'bulk' ) {
         $route = $this->get_routing_config( $brand_id );
         if ( ! $route ) return ['success' => false, 'error' => 'Failed to load brand configuration.'];
@@ -284,7 +275,6 @@ class MT_Email {
         $api_key = $route['smtp_key'];
         $from_name = $route['brand_name'];
         
-        // Enforce strict domain ownership (Guide Item 3)
         $from_email = $this->get_brand_sender($brand_id, $route['from_email'], $from_name);
 
         if ( $method === 'google' ) {
@@ -320,26 +310,6 @@ class MT_Email {
                 return ['success' => true, 'provider' => 'sendgrid'];
             }
             return ['success' => false, 'error' => 'SendGrid API Error: ' . wp_remote_retrieve_body($response)];
-        }
-
-        if ( $method === 'api' && $provider === 'mailgun' ) {
-            $domain = substr(strrchr($from_email, "@"), 1);
-            $url = "https://api.mailgun.net/v3/{$domain}/messages";
-            $payload = [
-                'from'    => "{$from_name} <{$from_email}>",
-                'to'      => $to_email,
-                'subject' => $subject,
-                'html'    => $html_body
-            ];
-            $response = wp_remote_post( $url, [
-                'headers' => [ 'Authorization' => 'Basic ' . base64_encode("api:{$api_key}") ],
-                'body'    => $payload,
-                'timeout' => 15
-            ]);
-            if (!is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200) {
-                return ['success' => true, 'provider' => 'mailgun'];
-            }
-            return ['success' => false, 'error' => 'Mailgun API Error: ' . wp_remote_retrieve_body($response)];
         }
 
         if ( $method === 'api' && $provider === 'postmark' ) {
@@ -379,7 +349,7 @@ class MT_Email {
             return ['success' => false, 'error' => 'Brevo API Error: ' . wp_remote_retrieve_body($response)];
         }
         
-        return ['success' => false, 'error' => 'Invalid routing setup. Please configure a valid API or Domain route.']; 
+        return ['success' => false, 'error' => 'Invalid routing setup. Check Delivery Settings.']; 
     }
 
     private function send_via_google_api($to, $subject, $html, $from_name, $brand_id) {
@@ -389,7 +359,7 @@ class MT_Email {
         $refresh_token = $config['delivery']['google_refresh_token'] ?? '';
         $google_email = $config['delivery']['google_email'] ?? '';
         
-        if (empty($refresh_token)) return 'Google Workspace is selected but no account is connected. Please authenticate in the dashboard.';
+        if (empty($refresh_token)) return 'Google Workspace is selected but no account is connected.';
 
         $res = wp_remote_post('https://oauth2.googleapis.com/token', [
             'body' => [
@@ -402,7 +372,7 @@ class MT_Email {
         
         if (is_wp_error($res)) return 'Failed to refresh Google Token.';
         $body = json_decode(wp_remote_retrieve_body($res), true);
-        if (empty($body['access_token'])) return 'Invalid Google Token response. Account may be disconnected.';
+        if (empty($body['access_token'])) return 'Invalid Google Token response.';
         $access_token = $body['access_token'];
 
         $boundary = uniqid('np');
@@ -429,7 +399,7 @@ class MT_Email {
             'body' => json_encode(['raw' => $base64url])
         ]);
 
-        if (is_wp_error($send_res)) return 'Google API Network Error: ' . $send_res->get_error_message();
+        if (is_wp_error($send_res)) return 'Google API Network Error.';
         
         $code = wp_remote_retrieve_response_code($send_res);
         if ($code === 200) return true;
@@ -591,7 +561,11 @@ class MT_Email {
         $subject  = sanitize_text_field( $_POST['subject'] );
         
         $raw_payload = isset($_POST['payload']) ? wp_unslash($_POST['payload']) : '';
-        if ( $raw_payload && !str_starts_with($raw_payload, '{') ) $raw_payload = urldecode(base64_decode($raw_payload));
+        
+        // BUG FIX: Removed urldecode() which was destroying HTML width="100%" tags.
+        if ( $raw_payload && !str_starts_with($raw_payload, '{') ) {
+            $raw_payload = base64_decode($raw_payload); 
+        }
         
         $parsed_data = json_decode($raw_payload, true);
         $html_body = isset($parsed_data['html']) ? $parsed_data['html'] : '<p>Test Email Body</p>';
@@ -606,11 +580,12 @@ class MT_Email {
         try {
             $result = $this->route_email( $to_email, $subject, $final_html, $brand_id, $engine );
             
-            // Adjusted response handler to catch the new array structure securely
             if ( is_array($result) && isset($result['success']) && $result['success'] === true ) {
                 $used_email = ($engine === 'splash' && $route['splash_method'] === 'system') ? $route['system_email'] : $route['from_email'];
-                if ($engine === 'splash' && $route['splash_method'] === 'google') $used_email = $route['google_email'] ?? 'Google API';
-                wp_send_json_success( 'Fired successfully from: ' . $used_email );
+                $provider = isset($result['provider']) ? strtoupper($result['provider']) : 'UNKNOWN';
+                
+                // X-RAY TRACER: This will tell you exactly how it sent!
+                wp_send_json_success( "Fired via [$provider] from: $used_email" );
             } else {
                 wp_send_json_error( isset($result['error']) ? $result['error'] : 'Unknown failure during dispatch.' );
             }
