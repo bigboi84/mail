@@ -1,0 +1,503 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h6 class="mb-0 fw-bold">Template Settings</h6>
+    <button class="btn btn-link btn-sm p-0 text-decoration-none d-flex align-items-center text-dark">
+        <span class="me-1">Randomize</span>
+        <span class="material-symbols-rounded" style="font-size: 16px;">casino</span>
+    </button>
+</div>
+
+<!-- Social Media -->
+<div class="mb-3">
+    <label class="form-label small fw-semibold mb-2">Social Media</label>
+    <select class="form-select" id="socialMediaSelect" name="socialMedia">
+        <option value="linkedin" <%= socialMedia === 'linkedin' ? 'selected' : '' %>>LinkedIn (4:5, Recommended)</option>
+    </select>
+</div>
+
+<button class="btn btn-secondary w-100 mb-3" onclick="changeThemePopup.show();">
+    <span class="d-flex align-items-center justify-content-center">
+        <span class="material-symbols-rounded me-2">palette</span>
+        <span>Select Template...</span>
+    </span>
+</button>
+
+<!-- Divider -->
+<div class="sidebar-divider"></div>
+
+<!-- Color Palette -->
+<div class="mb-2 section-header">
+    <div class="d-flex align-items-center justify-content-between collapsible-header" data-bs-toggle="collapse"
+        data-bs-target="#colorPalette">
+        <span class="fw-semibold small">COLOR PALETTE</span>
+        <span class="material-symbols-rounded collapse-icon">expand_more</span>
+    </div>
+    <div class="collapse" id="colorPalette">
+        <div class="mt-2">
+            <!-- Color Swatches Grid -->
+            <div class="color-palette-grid mb-3">
+                <div class="row g-1">
+                    <!-- Row 1 -->
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #6941C6;" data-color="#6941C6"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #000000;" data-color="#000000"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #EC4899;" data-color="#EC4899"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #7C3AED;" data-color="#7C3AED"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #3B82F6;" data-color="#3B82F6"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #1E40AF;" data-color="#1E40AF"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #374151;" data-color="#374151"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #C4B5FD;" data-color="#C4B5FD"></div>
+                    </div>
+                    <!-- Row 2 -->
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #1E3A8A;" data-color="#1E3A8A"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #FB7185;" data-color="#FB7185"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #0F766E;" data-color="#0F766E"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #DC2626;" data-color="#DC2626"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #0891B2;" data-color="#0891B2"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #059669;" data-color="#059669"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #374151;" data-color="#374151"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #FCA5A5;" data-color="#FCA5A5"></div>
+                    </div>
+                    <!-- Row 3 -->
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #000000;" data-color="#000000"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #A855F7;" data-color="#A855F7"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #000000;" data-color="#000000"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #F97316;" data-color="#F97316"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #000000;" data-color="#000000"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #06B6D4;" data-color="#06B6D4"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #000000;" data-color="#000000"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #10B981;" data-color="#10B981"></div>
+                    </div>
+                    <!-- Row 4 -->
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #EF4444;" data-color="#EF4444"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #7C2D12;" data-color="#7C2D12"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #000000;" data-color="#000000"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #FDBA74;" data-color="#FDBA74"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #000000;" data-color="#000000"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #67E8F9;" data-color="#67E8F9"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #000000;" data-color="#000000"></div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="color-swatch" style="background-color: #FDE047;" data-color="#FDE047"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Color Values Display -->
+            <div class="row mb-3">
+                <div class="col-4">
+                    <label class="form-label small fw-semibold">Background</label>
+                    <div class="color-value-display d-flex align-items-center">
+                        <div class="color-preview me-2"
+                            style="background-color: <%= selectedColorsBackground %>; width: 20px; height: 20px; border-radius: 4px; border: 1px solid #e9ecef;">
+                        </div>
+                        <span class="small text-muted"><%= selectedColorsBackground %></span>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label class="form-label small fw-semibold">Text Color</label>
+                    <div class="color-value-display d-flex align-items-center">
+                        <div class="color-preview me-2"
+                            style="background-color: <%= selectedColorsTextColor %>; width: 20px; height: 20px; border-radius: 4px; border: 1px solid #e9ecef;">
+                        </div>
+                        <span class="small text-muted"><%= selectedColorsTextColor %></span>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <label class="form-label small fw-semibold">Accent Color</label>
+                    <div class="color-value-display d-flex align-items-center">
+                        <div class="color-preview me-2"
+                            style="background-color: <%= selectedColorsAccent %>; width: 20px; height: 20px; border-radius: 4px; border: 1px solid #e9ecef;">
+                        </div>
+                        <span class="small text-muted"><%= selectedColorsAccent %></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alternate Colors Toggle -->
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="alternateColors" name="alternateColors" <%= alternateColors ? 'checked' : '' %>>
+                <label class="form-check-label small" for="alternateColors">
+                    Alternate colors
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Divider -->
+<div class="sidebar-divider"></div>
+
+<!-- Typography -->
+<div class="mb-2 section-header">
+    <div class="d-flex align-items-center justify-content-between collapsible-header" data-bs-toggle="collapse"
+        data-bs-target="#typography">
+        <span class="fw-semibold small">TYPOGRAPHY</span>
+        <span class="material-symbols-rounded collapse-icon">expand_more</span>
+    </div>
+    <div class="collapse" id="typography">
+        <div class="mt-2">
+            <!-- Size and Alignment -->
+            <div class="row mb-3">
+                <div class="col-6">
+                    <label class="form-label small fw-semibold mb-2">Size</label>
+                    <div class="btn-group w-100" role="group" aria-label="Size toggle">
+                        <input type="radio" class="btn-check" name="sizeRadio" id="sizeSmall" autocomplete="off" <%= typographySize === 'small' ? 'checked' : '' %>>
+                        <label
+                            class="btn btn-outline-primary btn-sm flex-fill d-flex align-items-center justify-content-center"
+                            for="sizeSmall" style="font-size: 12px;">A</label>
+
+                        <input type="radio" class="btn-check" name="sizeRadio" id="sizeMedium" autocomplete="off"
+                            <%= typographySize === 'medium' ? 'checked' : '' %>>
+                        <label
+                            class="btn btn-outline-primary btn-sm flex-fill d-flex align-items-center justify-content-center"
+                            for="sizeMedium" style="font-size: 16px;">A</label>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <label class="form-label small fw-semibold mb-2">Alignment</label>
+                    <div class="btn-group w-100" role="group" aria-label="Alignment toggle">
+                        <input type="radio" class="btn-check" name="alignmentRadio" id="alignLeft" autocomplete="off" <%= typographyAlignment === 'left' ? 'checked' : '' %>>
+                        <label
+                            class="btn btn-outline-primary btn-sm flex-fill d-flex align-items-center justify-content-center"
+                            for="alignLeft">
+                            <span class="material-symbols-rounded" style="font-size: 16px;">format_align_left</span>
+                        </label>
+
+                        <input type="radio" class="btn-check" name="alignmentRadio" id="alignCenter" autocomplete="off"
+                            <%= typographyAlignment === 'center' ? 'checked' : '' %>>
+                        <label
+                            class="btn btn-outline-primary btn-sm flex-fill d-flex align-items-center justify-content-center"
+                            for="alignCenter">
+                            <span class="material-symbols-rounded" style="font-size: 16px;">format_align_center</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fonts -->
+            <div class="mb-3">
+                <label class="form-label small fw-semibold mb-2">Fonts</label>
+                <select class="form-select" id="fontSelect" name="fontFamily">
+                    <option value="dm-serif-dm-sans" <%= typographyFontFamily === 'dm-serif-dm-sans' ? 'selected' : '' %>>DM Serif Display + DM Sans</option>
+                    <option value="playfair-source-sans" <%= typographyFontFamily === 'playfair-source-sans' ? 'selected' : '' %>>Playfair Display + Source Sans Pro</option>
+                    <option value="roboto-slab-roboto" <%= typographyFontFamily === 'roboto-slab-roboto' ? 'selected' : '' %>>Roboto Slab + Roboto</option>
+                    <option value="merriweather-open-sans" <%= typographyFontFamily === 'merriweather-open-sans' ? 'selected' : '' %>>Merriweather + Open Sans</option>
+                </select>
+            </div>
+
+            <!-- Font Options -->
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" id="uppercaseTitles" name="uppercaseTitles" <%= typographyUppercaseTitles ? 'checked' : '' %>>
+                <label class="form-check-label small" for="uppercaseTitles">
+                    Uppercase Titles
+                </label>
+            </div>
+
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="customFontPairing" name="customFontPairing" <%= typographyCustomFontPairing ? 'checked' : '' %>>
+                <label class="form-check-label small" for="customFontPairing">
+                    Custom Font Pairing
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Divider -->
+<div class="sidebar-divider"></div>
+
+<!-- Background Design Elements -->
+<div class="mb-2 section-header">
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <label class="toggle-switch me-2">
+                <input type="checkbox" id="backgroundElementsEnabled" name="backgroundElementsEnabled" <%= backgroundElementsEnabled ? 'checked' : '' %>>
+                <span class="slider"></span>
+            </label>
+            <span class="fw-semibold small">BACKGROUND DESIGN ELEMENTS</span>
+        </div>
+        <span class="material-symbols-rounded collapsible-header collapse-icon" data-bs-toggle="collapse"
+            data-bs-target="#backgroundElements">expand_more</span>
+    </div>
+    <div class="collapse" id="backgroundElements">
+        <div class="mt-2">
+            <!-- Design Element Type -->
+            <div class="mb-3">
+                <label class="form-label small fw-semibold mb-2">Design Element</label>
+                <select class="form-select" id="designElementSelect" name="designElement">
+                    <option value="confetti-burst" <%= backgroundElementsDesignElement === 'confetti-burst' ? 'selected' : '' %>>Confetti Burst</option>
+                    <option value="geometric-shapes" <%= backgroundElementsDesignElement === 'geometric-shapes' ? 'selected' : '' %>>Geometric Shapes</option>
+                    <option value="abstract-lines" <%= backgroundElementsDesignElement === 'abstract-lines' ? 'selected' : '' %>>Abstract Lines</option>
+                    <option value="dots-pattern" <%= backgroundElementsDesignElement === 'dots-pattern' ? 'selected' : '' %>>Dots Pattern</option>
+                    <option value="wave-elements" <%= backgroundElementsDesignElement === 'wave-elements' ? 'selected' : '' %>>Wave Elements</option>
+                    <option value="none" <%= backgroundElementsDesignElement === 'none' ? 'selected' : '' %>>None</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Divider -->
+<div class="sidebar-divider"></div>
+
+<!-- Slides Counter -->
+<div class="mb-2 section-header">
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <label class="toggle-switch me-2">
+                <input type="checkbox" id="slidesCounterEnabled" name="slidesCounterEnabled" <%= slidesCounterEnabled ? 'checked' : '' %>>
+                <span class="slider"></span>
+            </label>
+            <span class="fw-semibold small">SLIDES COUNTER</span>
+        </div>
+        <span class="material-symbols-rounded collapsible-header collapse-icon" data-bs-toggle="collapse"
+            data-bs-target="#slidesCounter">expand_less</span>
+    </div>
+    <div class="collapse show" id="slidesCounter">
+        <div class="mt-2">
+            <div class="mb-2">
+                <label class="form-label small fw-semibold">Style</label>
+            </div>
+            <div class="d-flex gap-2 mb-3">
+                <div class="btn-group w-100" role="group" aria-label="Style toggle button group">
+                    <input type="radio" class="btn-check" name="styleRadio" id="styleRadio1" autocomplete="off" <%= slidesCounterStyle === 'filled' ? 'checked' : '' %>>
+                    <label class="btn btn-outline-primary btn-sm flex-fill" for="styleRadio1">Filled</label>
+
+                    <input type="radio" class="btn-check" name="styleRadio" id="styleRadio2" autocomplete="off" <%= slidesCounterStyle === 'outline' ? 'checked' : '' %>>
+                    <label class="btn btn-outline-primary btn-sm flex-fill" for="styleRadio2">Outline</label>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label class="form-label small fw-semibold">Roundness</label>
+                <input type="range" class="form-range" id="roundnessRange" name="roundness" min="0" max="100" value="<%= slidesCounterRoundness %>" style="accent-color: #6941C6;">
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="material-symbols-rounded me-2 text-muted">info</span>
+                <small class="text-muted">Also affects the carousel's overall appearance.</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Divider -->
+<div class="sidebar-divider"></div>
+
+<!-- Identity & Brand -->
+<div class="mb-2 section-header">
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center">
+            <label class="toggle-switch me-2">
+                <input type="checkbox" id="identityBrandEnabled" name="identityBrandEnabled" <%= identityBrandEnabled ? 'checked' : '' %>>
+                <span class="slider"></span>
+            </label>
+            <span class="fw-semibold small">IDENTITY & BRAND</span>
+        </div>
+        <span class="material-symbols-rounded collapsible-header collapse-icon" data-bs-toggle="collapse"
+            data-bs-target="#identityBrand">expand_more</span>
+    </div>
+    <div class="collapse" id="identityBrand">
+        <div class="mt-2">
+            <!-- Brand Type -->
+            <div class="mb-3">
+                <label class="form-label small fw-semibold mb-2">Brand Type</label>
+                <div class="btn-group w-100" role="group" aria-label="Brand type toggle">
+                    <input type="radio" class="btn-check" name="brandTypeRadio" id="brandPersonal" autocomplete="off"
+                        <%= identityBrandBrandType === 'personal' ? 'checked' : '' %> onchange="toggleBrandContent()">
+                    <label class="btn btn-outline-primary btn-sm flex-fill" for="brandPersonal">Personal</label>
+
+                    <input type="radio" class="btn-check" name="brandTypeRadio" id="brandBusiness" autocomplete="off"
+                        <%= identityBrandBrandType === 'business' ? 'checked' : '' %> onchange="toggleBrandContent()">
+                    <label class="btn btn-outline-primary btn-sm flex-fill" for="brandBusiness">Business</label>
+                </div>
+            </div>
+
+            <!-- Personal Brand Content -->
+            <div id="personalBrandContent">
+                <!-- Orientation -->
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold mb-2">Orientation</label>
+                    <div class="btn-group w-100" role="group" aria-label="Orientation toggle">
+                        <input type="radio" class="btn-check" name="orientationRadio" id="orientationTop"
+                            autocomplete="off" <%= identityBrandOrientation === 'top' ? 'checked' : '' %>>
+                        <label
+                            class="btn btn-outline-primary btn-sm flex-fill d-flex align-items-center justify-content-center"
+                            for="orientationTop">
+                            <span class="me-1">Top</span>
+                            <div
+                                style="width: 12px; height: 8px; border: 1px solid currentColor; border-radius: 2px; position: relative;">
+                                <div
+                                    style="width: 4px; height: 2px; background: currentColor; border-radius: 1px; position: absolute; top: 1px; left: 4px;">
+                                </div>
+                            </div>
+                        </label>
+
+                        <input type="radio" class="btn-check" name="orientationRadio" id="orientationBottom"
+                            autocomplete="off" <%= identityBrandOrientation === 'bottom' ? 'checked' : '' %>>
+                        <label
+                            class="btn btn-outline-primary btn-sm flex-fill d-flex align-items-center justify-content-center"
+                            for="orientationBottom">
+                            <span class="me-1">Bottom</span>
+                            <div
+                                style="width: 12px; height: 8px; border: 1px solid currentColor; border-radius: 2px; position: relative;">
+                                <div
+                                    style="width: 4px; height: 2px; background: currentColor; border-radius: 1px; position: absolute; bottom: 1px; left: 4px;">
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Headshot -->
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="fw-semibold small">Headshot</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="headshotEnabled" name="headshotEnabled" <%= identityBrandHeadshotEnabled ? 'checked' : '' %>>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <!-- Upload Headshot Button -->
+                <div class="mb-3">
+                    <button class="btn btn-secondary w-100">
+                        <span class="d-flex align-items-center justify-content-center">
+                            <span class="material-symbols-rounded me-2" style="font-size: 16px;">upload</span>
+                            <span>Upload Headshot</span>
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Name -->
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="fw-semibold small">Name</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="nameEnabled" name="nameEnabled" <%= identityBrandNameEnabled ? 'checked' : '' %>>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <!-- Name Input -->
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="nameInput" name="personName" placeholder="Fernando" value="<%= identityBrandNameValue %>"
+                        style="background-color: #f8f9fa; border: 1px solid #e9ecef; font-size: 0.875rem;">
+                </div>
+
+                <!-- Handle / Role -->
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="fw-semibold small">Handle / Role</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="handleEnabled" name="handleEnabled" <%= identityBrandHandleEnabled ? 'checked' : '' %>>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <!-- Handle Input -->
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="handleInput" name="personHandle" placeholder="Founder at uCarousels"
+                        value="<%= identityBrandHandleValue %>"
+                        style="background-color: #f8f9fa; border: 1px solid #e9ecef; font-size: 0.875rem;">
+                </div>
+            </div>
+
+            <!-- Business Brand Content -->
+            <div id="businessBrandContent" style="display: none;">
+                <!-- Logo -->
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold mb-2">Logo</label>
+                    <button class="btn btn-secondary w-100"
+                        style="background-color: #C4B5FD; border-color: #C4B5FD; color: #6B46C1;">
+                        <span class="d-flex align-items-center justify-content-center">
+                            <span class="material-symbols-rounded me-2" style="font-size: 16px;">upload</span>
+                            <span>Upload Logo</span>
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Website -->
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <span class="fw-semibold small">Website</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="websiteEnabled" name="websiteEnabled" <%= identityBrandWebsiteEnabled ? 'checked' : '' %>>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <!-- Website Input -->
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="websiteInput" name="companyWebsite" placeholder="www.aiCarousels.com"
+                        value="<%= identityBrandWebsiteValue %>"
+                        style="background-color: #f8f9fa; border: 1px solid #e9ecef; font-size: 0.875rem;">
+                </div>
+            </div>
+
+            <!-- Show only in intro and outro slides -->
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="showIntroOutro" name="showIntroOutro" <%= identityBrandShowIntroOutro ? 'checked' : '' %>>
+                <label class="form-check-label small" for="showIntroOutro">
+                    Show only in "Intro" and "Outro" slides
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize brand content visibility
+    toggleBrandContent();
+</script>
