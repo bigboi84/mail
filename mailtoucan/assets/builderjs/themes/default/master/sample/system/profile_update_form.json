@@ -1,0 +1,205 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": "Manage Your Subscription Preferences",
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "type": "h1",
+                    "text": "Manage Your Subscription Preferences",
+                    "formats": {}
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "{LIST_NAME}",
+                    "formats": {}
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "{CURRENT_DATE}",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 40
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "DividerElement",
+                    "template": "Divider",
+                    "formats": {
+                        "background_color": "#D0D0D0",
+                        "height": 2,
+                        "divider_style": "solid",
+                        "padding_top": 10,
+                        "padding_bottom": 10
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 0,
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "type": "h2",
+                    "text": "Choose exactly what you’d like to receive",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "We want to make sure you only get the content that matters most to you. Here you can update your subscription preferences for <strong>{LIST_NAME}</strong> and tailor the emails you receive from us.",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Please review the options below and select the topics, frequency, or updates that best fit your interests. Once you’re done, simply click the button to save your preferences.",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "{FIELDS}",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "{UPDATE_PROFILE_BUTTON}",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "If you’d rather stop receiving all emails from us, you can easily unsubscribe at any time by clicking the link below.",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "LinkElement",
+                    "template": "Link",
+                    "text": "Unsubscribe",
+                    "url": "{UNSUBSCRIBE_URL}",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Copyright (C). {LIST_NAME} | This is an automated message, please do not reply.",
+                    "formats": {
+                        "font_size": 13,
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 60
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#F4F4F4",
+        "padding_top": 40,
+        "padding_right": 60,
+        "padding_bottom": 40,
+        "padding_left": 60
+    },
+    "block_gap": 0,
+    "container_width": "medium",
+    "block_padding_bottom": 20,
+    "block_padding_top": 20,
+    "block_padding_right": 20,
+    "block_padding_left": 20
+}
