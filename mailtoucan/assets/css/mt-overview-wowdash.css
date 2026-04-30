@@ -1,0 +1,82 @@
+/* Overview page refresh inspired by Wowdash layout patterns */
+.mt-overview-wrap {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.mt-overview-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+    border-radius: 20px;
+}
+
+.mt-overview-kpis {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.mt-overview-kpi {
+    padding: 1.25rem;
+    border-radius: 16px;
+}
+
+.mt-kpi-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mt-progress-track {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: #e5e7eb;
+    overflow: hidden;
+}
+
+.mt-progress-fill {
+    height: 8px;
+    border-radius: 999px;
+    background: var(--mt-primary);
+}
+
+.mt-quick-links {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.mt-quick-link {
+    border: 1px solid rgba(17, 24, 39, 0.08);
+    border-radius: 14px;
+    padding: 1rem;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+}
+
+.mt-quick-link:hover {
+    border-color: var(--mt-primary);
+    background: rgba(252, 199, 83, 0.08);
+}
+
+@media (max-width: 1100px) {
+    .mt-overview-kpis {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .mt-quick-links {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .mt-overview-kpis,
+    .mt-quick-links {
+        grid-template-columns: 1fr;
+    }
+}
