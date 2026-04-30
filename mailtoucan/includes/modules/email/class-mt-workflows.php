@@ -176,11 +176,16 @@ class MT_Workflows {
 
     public function process_queue() {
         global $wpdb;
+
+        // ── Global email kill switch ──────────────────────────────────────────────
+        if ( get_option('mt_email_enabled', '1') !== '1' ) return;
+        // ─────────────────────────────────────────────────────────────────────────
+
         $queue_table     = $wpdb->prefix . 'mt_email_queue';
         $leads_table     = $wpdb->prefix . 'mt_guest_leads';
         $templates_table = $wpdb->prefix . 'mt_email_templates';
         $campaigns_table = $wpdb->prefix . 'mt_campaigns';
-        
+
         $pending = $wpdb->get_results("SELECT * FROM $queue_table WHERE status = 'pending' AND send_after <= NOW() LIMIT 50");
         if ( empty($pending) ) return;
 
@@ -210,7 +215,12 @@ class MT_Workflows {
                 continue;
             }
 
-            $brand_name = $wpdb->get_var($wpdb->prepare("SELECT brand_name FROM {$wpdb->prefix}mt_brands WHERE id = %d", $job->brand_id));
+            $brand_row  = $wpdb->get_row($wpdb->prepare("SELECT brand_name, email_paused FROM {$wpdb->prefix}mt_brands WHERE id = %d", $job->brand_id));
+            $brand_name = $brand_row->brand_name ?? '';
+            if ( intval($brand_row->email_paused ?? 0) ) {
+                $wpdb->update($queue_table, ['status' => 'skipped'], ['id' => $job->id]);
+                continue;
+            }
             $store_name = $wpdb->get_var($wpdb->prepare("SELECT store_name FROM {$wpdb->prefix}mt_stores WHERE id = %d", $lead['store_id']));
 
             $html = $email_engine->parse_tags($template->email_body, $lead, $brand_name, $store_name ?: 'HQ');
