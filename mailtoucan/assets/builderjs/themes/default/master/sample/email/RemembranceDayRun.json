@@ -1,0 +1,338 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": null,
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ImageElement",
+                    "template": "Image",
+                    "src": "master/assets/image/remembrance_day_run/banner_wide.png",
+                    "alt": "Alternative text",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "width": 200,
+                        "height": "auto",
+                        "align": "center",
+                        "border_radius": 0
+                    },
+                    "effect": {
+                        "grayscale": null,
+                        "sepia": null,
+                        "invert": null,
+                        "blur": null,
+                        "brightness": null,
+                        "contrast": null,
+                        "saturate": null,
+                        "hueRotate": null,
+                        "opacity": null
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#f6f5f1",
+                "padding_bottom": 60
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "H2Element",
+                    "template": "H2",
+                    "text": "HONOR. REFLECT. RUN",
+                    "formats": {
+                        "font_family": "'Helvetica Neue', Helvetica, Arial, Verdana, sans-serif",
+                        "font_weight": "normal",
+                        "font_size": 16,
+                        "text_color": "#000",
+                        "text_align": "center",
+                        "line_height": 1.25,
+                        "letter_spacing": 2,
+                        "text_direction": "ltr"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#f6f5f1",
+                "padding_bottom": 20
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "H1Element",
+                    "template": "H1",
+                    "text": "Remembrance Day",
+                    "formats": {
+                        "font_family": "'Helvetica Neue', Helvetica, Arial, Verdana, sans-serif",
+                        "font_size": 46,
+                        "text_color": "#f10200",
+                        "text_align": "center",
+                        "line_height": 1.25,
+                        "letter_spacing": 0,
+                        "text_direction": "ltr"
+                    }
+                },
+                {
+                    "name": "H1Element",
+                    "template": "H1",
+                    "text": "5K Run",
+                    "formats": {
+                        "font_family": "'Helvetica Neue', Helvetica, Arial, Verdana, sans-serif",
+                        "font_size": 46,
+                        "text_color": "#f10200",
+                        "text_align": "center",
+                        "line_height": 1.25,
+                        "letter_spacing": 0,
+                        "text_direction": "ltr"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#f6f5f1",
+                "padding_top": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "This Remembrance Day, join the Flexstart 5K Run to honor our heroes and their sacrifice. Let’s move forward together in gratitude and strength.",
+                    "formats": {
+                        "font_family": "'Helvetica Neue', Helvetica, Arial, Verdana, sans-serif",
+                        "font_size": 16,
+                        "text_color": "#000",
+                        "text_align": "center",
+                        "line_height": 1.5,
+                        "letter_spacing": 0
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#f6f5f1",
+                "padding_right": 180,
+                "padding_left": 180
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ButtonElement",
+                    "template": "Button",
+                    "text": "Register Now",
+                    "url": "#",
+                    "formats": {
+                        "align": "center",
+                        "font_family": "inherit",
+                        "font_weight": "400",
+                        "font_size": 18,
+                        "text_color": "#f10200",
+                        "link_color": "#f10200",
+                        "text_align": "center",
+                        "line_height": "1.5",
+                        "text_direction": "ltr",
+                        "background_color": "#fff",
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "padding_top": 8,
+                        "padding_right": 80,
+                        "padding_bottom": 8,
+                        "padding_left": 80,
+                        "border_top_style": "solid",
+                        "border_top_width": 2,
+                        "border_top_color": "#f10200",
+                        "border_right_style": "solid",
+                        "border_right_width": 2,
+                        "border_right_color": "#f10200",
+                        "border_bottom_style": "solid",
+                        "border_bottom_width": 2,
+                        "border_bottom_color": "#f10200",
+                        "border_left_width": 2,
+                        "border_left_style": "solid",
+                        "border_left_color": "#f10200",
+                        "border_radius": 8
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#f6f5f1",
+                "padding_bottom": 60
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ImageElement",
+                    "template": "Image",
+                    "src": "master/assets/image/remembrance_day_run/topBanner.png",
+                    "alt": "Alternative text",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "padding_top": 0,
+                        "padding_right": 0,
+                        "padding_bottom": 0,
+                        "padding_left": 0,
+                        "width": "100%",
+                        "height": "auto",
+                        "align": "center",
+                        "border_radius": 30
+                    },
+                    "effect": {
+                        "grayscale": null,
+                        "sepia": null,
+                        "invert": null,
+                        "blur": null,
+                        "brightness": null,
+                        "contrast": null,
+                        "saturate": null,
+                        "hueRotate": null,
+                        "opacity": null
+                    }
+                }
+            ],
+            "formats": {
+                "background_image": "master/assets/image/remembrance_day_run/footer-bg.png",
+                "background_position": "top center",
+                "background_repeat": "no-repeat",
+                "padding_top": 0,
+                "padding_right": 0,
+                "padding_bottom": 20,
+                "padding_left": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "SocialIconsElement",
+                    "template": "SocialIcons",
+                    "items": [
+                        {
+                            "image_url": "master/assets/image/icons/facebook.png",
+                            "link": "#",
+                            "label": "Facebook"
+                        },
+                        {
+                            "image_url": "master/assets/image/icons/twitter.png",
+                            "link": "#",
+                            "label": "Twitter"
+                        },
+                        {
+                            "image_url": "master/assets/image/icons/instagram.png",
+                            "link": "#",
+                            "label": "Instagram"
+                        }
+                    ],
+                    "size": 30,
+                    "gap": 30,
+                    "align": "center",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat"
+                    }
+                }
+            ],
+            "formats": {
+                "padding_top": 0,
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "LinkElement",
+                    "template": "Link",
+                    "text": "View in browser",
+                    "url": "{WEB_VIEW_URL}",
+                    "formats": {
+                        "font_family": "'Helvetica Neue', Helvetica, Arial, Verdana, sans-serif",
+                        "font_size": 14,
+                        "text_align": "center",
+                        "text_decoration": "underline"
+                    }
+                }
+            ],
+            "formats": {
+                "padding_top": 10,
+                "padding_bottom": 10
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Copyright (C) {CURRENT_YEAR}. All rights reserved.",
+                    "formats": {
+                        "font_family": "'Helvetica Neue', Helvetica, Arial, Verdana, sans-serif",
+                        "font_size": 12,
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "padding_top": 10,
+                "padding_bottom": 20
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "If you no longer want to receive these emails, you can <a href=\"{UNSUBSCRIBE_URL}\">unsubscribe</a>",
+                    "formats": {
+                        "font_family": "'Helvetica Neue', Helvetica, Arial, Verdana, sans-serif",
+                        "font_size": 12,
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "padding_top": 0,
+                "padding_bottom": 30
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#eeede9",
+        "padding_top": 0,
+        "padding_right": 150,
+        "padding_bottom": 0,
+        "padding_left": 150
+    },
+    "block_gap": 0,
+    "container_width": "medium",
+    "block_padding_bottom": 20,
+    "block_padding_top": 20,
+    "block_padding_right": 20,
+    "block_padding_left": 20
+}
