@@ -16,20 +16,40 @@ $saved_font = isset($config['font']) ? $config['font'] : 'Inter';
 $vault_media = isset($config['vault']) ? $config['vault'] : [];
 ?>
 
-<header class="mb-8 flex justify-between items-center">
+<style>
+    .vb-page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+    .vb-page-title{font-size:22px;font-weight:900;color:#111827;display:flex;align-items:center;gap:8px;}
+    .vb-page-sub{font-size:13px;color:#6b7280;margin-top:3px;}
+    .vb-primary-btn{background:var(--mt-brand,var(--mt-primary));color:white;border:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:8px;transition:filter .15s;}
+    .vb-primary-btn:hover{filter:brightness(1.1);}
+    .vb-section{background:white;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.06);padding:24px 28px;margin-bottom:20px;}
+    .vb-section-title{font-size:14px;font-weight:800;color:#111827;padding-bottom:14px;margin-bottom:20px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;gap:8px;}
+
+    /* Mobile */
+    @media(max-width:768px){
+        .vb-page-header{flex-direction:column;align-items:flex-start;}
+        .vb-primary-btn{width:100%;justify-content:center;}
+        .vb-section{padding:16px 18px;}
+        .grid.grid-cols-2{grid-template-columns:1fr!important;}
+        .grid.grid-cols-3{grid-template-columns:1fr!important;}
+        .max-w-5xl{max-width:100%;}
+    }
+</style>
+
+<div class="vb-page-header">
     <div>
-        <h1 class="text-2xl font-bold text-gray-900">Brand Identity</h1>
-        <p class="text-gray-500">Global assets. These automatically populate your WiFi portals and Email templates.</p>
+        <div class="vb-page-title"><i class="fa-solid fa-palette" style="color:var(--mt-brand,var(--mt-primary));"></i> Brand Identity</div>
+        <div class="vb-page-sub">Global assets. These automatically populate your WiFi portals and Email templates.</div>
     </div>
-    <button class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-5 py-2.5 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+    <button class="vb-primary-btn" onclick="launchBrandAI()">
         <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Fill via AI
     </button>
-</header>
+</div>
 
-<div class="max-w-5xl space-y-6 pb-20">
-    
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-        <h2 class="text-lg font-bold text-gray-800 border-b pb-4 mb-6"><i class="fa-solid fa-building text-gray-400 mr-2"></i> Core Details</h2>
+<div class="max-w-5xl space-y-5 pb-20">
+
+    <div class="vb-section">
+        <h2 class="vb-section-title"><i class="fa-solid fa-building" style="color:var(--mt-brand,var(--mt-primary));"></i> Core Details</h2>
         <div class="grid grid-cols-2 gap-6 mb-6">
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Company Name <span class="text-red-500">*</span></label>
@@ -434,6 +454,66 @@ $vault_media = isset($config['vault']) ? $config['vault'] : [];
             <button type="button" onclick="this.parentElement.remove()" class="bg-red-50 text-red-500 hover:text-white hover:bg-red-500 px-4 py-2 border border-l-0 border-red-200 rounded-r-lg transition"><i class="fa-solid fa-trash"></i></button>
         `;
         container.appendChild(div);
+    }
+
+    // ── BRAND AUTO-FILL AI ────────────────────────────────────────────────────
+    function launchBrandAI() {
+        const websiteUrl = document.getElementById('brand_url').value.trim();
+        const brandName  = document.getElementById('brand_name').value.trim();
+
+        if (!websiteUrl && !brandName) {
+            alert('Please enter your Company Name or Website URL first, then click Auto-Fill so Toucan AI has something to work with.');
+            return;
+        }
+
+        const btn = document.querySelector('[onclick="launchBrandAI()"]');
+        const origHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Toucan AI is thinking...';
+        btn.disabled = true;
+
+        const fd = new FormData();
+        fd.append('action',      'mt_ai_brand_autofill');
+        fd.append('security',    mt_nonce);
+        fd.append('website_url', websiteUrl);
+        fd.append('brand_name',  brandName);
+
+        fetch(mt_ajax_url, { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(res => {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+                if (!res.success) {
+                    const msg = res.data?.message || res.data || 'AI error. Please try again.';
+                    alert(msg);
+                    return;
+                }
+                const d = res.data;
+                if (d.slogan)               document.getElementById('brand_slogan').value = d.slogan;
+                if (d.support_email_suggestion) document.getElementById('support_email').value = d.support_email_suggestion;
+                if (d.suggested_primary_color) {
+                    document.getElementById('color_primary').value = d.suggested_primary_color;
+                    document.getElementById('color_primary').nextElementSibling.value = d.suggested_primary_color.toUpperCase();
+                }
+                if (d.suggested_secondary_color) {
+                    document.getElementById('color_secondary').value = d.suggested_secondary_color;
+                    document.getElementById('color_secondary').nextElementSibling.value = d.suggested_secondary_color.toUpperCase();
+                }
+                if (d.suggested_font) {
+                    const fontSel = document.getElementById('brand_font');
+                    for (let i = 0; i < fontSel.options.length; i++) {
+                        if (fontSel.options[i].value === d.suggested_font) { fontSel.selectedIndex = i; break; }
+                    }
+                }
+                const remainText = d.remaining !== undefined ? ` (${d.remaining} auto-fills remaining this month)` : '';
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> Filled! Review & Save' + remainText;
+                btn.style.background = '#16a34a';
+                setTimeout(() => { btn.innerHTML = origHtml; btn.style.background = ''; }, 5000);
+            })
+            .catch(() => {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+                alert('Network error. Please try again.');
+            });
     }
 
     document.getElementById('btn_save_brand').addEventListener('click', async function() {
