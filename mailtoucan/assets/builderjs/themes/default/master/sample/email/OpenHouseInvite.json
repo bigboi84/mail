@@ -1,0 +1,894 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": null,
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/open_house_invite/logo.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 200,
+                                                "align": "left",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 40,
+                                        "padding_bottom": 30,
+                                        "padding_left": 80
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Sat, May 27  |  12:00 pm - 1:30 pm",
+                                            "formats": {
+                                                "font_family": "Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif",
+                                                "font_size": 18,
+                                                "text_color": "#ffffff",
+                                                "text_align": "left"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_left": 80
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h1",
+                                            "text": "Open House",
+                                            "formats": {
+                                                "font_family": "Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 62,
+                                                "text_color": "#ffffff",
+                                                "text_align": "left"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 50,
+                                        "padding_left": 75
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        }
+                    ],
+                    "cell_gap": 30,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#b97c00",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/open_house_invite/building.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "cover",
+                                                "background_repeat": "no-repeat",
+                                                "width": "100%",
+                                                "height": "auto",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 40
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/open_house_invite/couch.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "cover",
+                                                "background_repeat": "no-repeat",
+                                                "width": "100%",
+                                                "height": "auto",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Location:",
+                                            "formats": {
+                                                "font_family": "Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif",
+                                                "font_size": 24,
+                                                "text_color": "#ffffff",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 30
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "1234 Lenox Station",
+                                            "formats": {
+                                                "font_family": "Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif",
+                                                "font_size": 18,
+                                                "text_color": "#ffffff",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Atlanta, GA 44123",
+                                            "formats": {
+                                                "font_family": "Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif",
+                                                "font_size": 18,
+                                                "text_color": "#ffffff",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#b97c00",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h3",
+                                            "text": "The",
+                                            "formats": {
+                                                "font_family": "Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 45,
+                                                "text_color": "#ffffff",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_left": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h3",
+                                            "text": "Specs",
+                                            "formats": {
+                                                "font_family": "Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 45,
+                                                "text_color": "#ffffff",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 10,
+                                        "padding_left": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "•  925 sq ft.",
+                                            "formats": {
+                                                "font_family": "Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif",
+                                                "font_size": 18,
+                                                "text_color": "#ffffff",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_right": 75
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "•  2-bedroom",
+                                            "formats": {
+                                                "font_family": "Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif",
+                                                "font_size": 18,
+                                                "text_color": "#ffffff",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_right": 65
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "•  1-bathroom",
+                                            "formats": {
+                                                "font_family": "Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif",
+                                                "font_size": 18,
+                                                "text_color": "#ffffff",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_right": 60
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "•  Laundry room",
+                                            "formats": {
+                                                "font_family": "Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif",
+                                                "font_size": 18,
+                                                "text_color": "#ffffff",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_right": 40
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "•  1-parking space",
+                                            "formats": {
+                                                "font_family": "Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif",
+                                                "font_size": 18,
+                                                "text_color": "#ffffff",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_right": 25,
+                                        "padding_bottom": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "Add to Calendar",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "center",
+                                                "font_family": "Arimo, Arial, Helvetica Neue, Helvetica, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 17,
+                                                "text_color": "#b97c00",
+                                                "link_color": "#b97c00",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "#ffffff",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 16,
+                                                "padding_right": 28,
+                                                "padding_bottom": 16,
+                                                "padding_left": 28,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 2,
+                                                "border_top_color": "#ffffff",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 2,
+                                                "border_right_color": "#ffffff",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 2,
+                                                "border_bottom_color": "#ffffff",
+                                                "border_left_width": 2,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#ffffff",
+                                                "border_radius": 0
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/open_house_invite/fridge.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_color": "#ffffff",
+                                                "background_position": "center",
+                                                "background_size": "cover",
+                                                "background_repeat": "no-repeat",
+                                                "width": "100%",
+                                                "height": "auto",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 40,
+                                        "padding_bottom": 20
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#b97c00",
+                "background_position": "center",
+                "padding_top": 40,
+                "padding_bottom": 40,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/open_house_invite/agent.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "cover",
+                                                "background_repeat": "no-repeat",
+                                                "width": "100%",
+                                                "height": "auto",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "REAL ESTATE AGENT",
+                                            "formats": {
+                                                "font_family": "Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif",
+                                                "font_size": 15,
+                                                "text_color": "#ffffff",
+                                                "text_align": "left"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 80,
+                                        "padding_left": 60
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h4",
+                                            "text": "Evie Lund",
+                                            "formats": {
+                                                "font_family": "Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 40,
+                                                "text_color": "#ffffff",
+                                                "text_align": "left",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_left": 60
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "404-123-4567 <br> evie-lund@gmail.com <br> www.entrahomes.com",
+                                            "formats": {
+                                                "font_family": "Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif",
+                                                "font_size": 18,
+                                                "text_color": "#ffffff",
+                                                "text_align": "left"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_left": 60
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "SocialIconsElement",
+                                            "template": "SocialIcons",
+                                            "items": [
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/facebook.png",
+                                                    "label": "Facebook"
+                                                },
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/instagram.png",
+                                                    "label": "Instagram"
+                                                },
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/twitter.png",
+                                                    "label": "Twitter"
+                                                },
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/youtube.png",
+                                                    "label": "YouTube"
+                                                }
+                                            ],
+                                            "size": 30,
+                                            "gap": 10,
+                                            "align": "center",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 20,
+                                        "padding_right": 30
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#4d4d4d",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/open_house_invite/logo2.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "height": "auto",
+                                                "max_width": "100%",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 30,
+                                        "margin_right": "auto",
+                                        "margin_left": "auto",
+                                        "width": 227
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "LinkElement",
+                                            "template": "Link",
+                                            "text": "View in browser",
+                                            "url": "{WEB_VIEW_URL}",
+                                            "formats": {
+                                                "font_family": "Work Sans, sans-serif",
+                                                "font_size": 14,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "text_decoration": "underline"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#f4f4f4",
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Copyright (C) {CURRENT_YEAR}. All rights reserved.",
+                                            "formats": {
+                                                "font_family": "Work Sans, sans-serif",
+                                                "font_size": 12,
+                                                "text_color": "#000000",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#f4f4f4",
+                                        "padding_top": 10,
+                                        "padding_bottom": 20
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "If you no longer want to receive these emails, you can <a href=\"{UNSUBSCRIBE_URL}\">unsubscribe</a>",
+                                            "formats": {
+                                                "font_family": "Work Sans, sans-serif",
+                                                "font_size": 12,
+                                                "text_color": "#000000",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#f4f4f4",
+                                        "padding_top": 0,
+                                        "padding_bottom": 30
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#f4f4f4",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#f4f4f4",
+        "padding_top": 0,
+        "padding_right": 0,
+        "padding_bottom": 0,
+        "padding_left": 0
+    },
+    "block_gap": 0,
+    "block_padding_bottom": 0,
+    "block_padding_top": 0,
+    "block_padding_right": 0,
+    "block_padding_left": 0
+}
