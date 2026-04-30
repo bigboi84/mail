@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title %></title>
+
+    <style>
+        html {
+            margin: 0;
+        }
+        body {
+            padding: 0;
+            margin: 0;
+            font-family: <%= (typeof formats !== 'undefined' && formats && formats.font_family) ? formats.font_family : 'Arial, Helvetica, sans-serif' %>;
+            line-height: 1.4;
+        }
+        p, h1, h2, h3, h4, h5, h6, label, ul {
+            margin: 0;
+        }
+        a {
+            color: inherit;
+        }
+        [builder-element="PageElement"] {
+            min-height: 100vh;
+            display: <%= (typeof formats !== 'undefined' && formats && formats.display) ? formats.display : ((typeof display !== 'undefined' && display) ? display : 'block') %>;
+            flex-direction: <%= (typeof formats !== 'undefined' && formats && formats.flex_direction) ? formats.flex_direction : ((typeof flex_direction !== 'undefined' && flex_direction) ? flex_direction : '') %>;
+            justify-content: <%= (typeof formats !== 'undefined' && formats && formats.justify_content) ? formats.justify_content : ((typeof justify_content !== 'undefined' && justify_content) ? justify_content : '') %>;
+            align-items: <%= (typeof formats !== 'undefined' && formats && (formats.align_items || formats.align)) ? (formats.align_items || formats.align) : ((typeof align_items !== 'undefined' && align_items) ? align_items : '') %>;
+        }
+
+        [builder-element="PageElement"] > [builder-element="BlockElement"] {
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        [builder-element="PageElement"] > [builder-element="BlockElement"]:not(:last-child) {
+            margin-bottom: <%= (typeof block_gap !== 'undefined') ? block_gap : 0 %>px;
+        }
+
+        <%
+            var containerWidth = (typeof container_width !== 'undefined' && container_width) ? container_width : 'auto';
+        %>
+
+        <% if (containerWidth === 'narrow') { %>
+        @media (min-width: 800px) {
+            [builder-element="PageElement"] > [builder-element="BlockElement"] {
+                max-width: 600px;
+            }
+        }
+        <% } else if (containerWidth === 'medium') { %>
+        @media (min-width: 800px) {
+            [builder-element="PageElement"] > [builder-element="BlockElement"] {
+                max-width: 800px;
+            }
+        }
+        <% } else if (containerWidth === 'wide') { %>
+        @media (min-width: 900px) {
+            [builder-element="PageElement"] > [builder-element="BlockElement"] {
+                max-width: 1024px;
+            }
+        }
+        <% } else if (containerWidth === 'xl') { %>
+        @media (min-width: 1200px) {
+            [builder-element="PageElement"] > [builder-element="BlockElement"] {
+                max-width: 1200px;
+            }
+        }
+        <% } else if (containerWidth === 'full') { %>
+        [builder-element="PageElement"] > [builder-element="BlockElement"] {
+            max-width: none;
+            width: 100%;
+        }
+        <% } %>
+
+        [builder-element="PageElement"] > [builder-element="BlockElement"] > :first-child {
+            padding-top: <%= (typeof block_padding_top !== 'undefined') ? block_padding_top : 0 %>px;
+            padding-right: <%= (typeof block_padding_right !== 'undefined') ? block_padding_right : 0 %>px;
+            padding-bottom: <%= (typeof block_padding_bottom !== 'undefined') ? block_padding_bottom : 0 %>px;
+            padding-left: <%= (typeof block_padding_left !== 'undefined') ? block_padding_left : 0 %>px;
+        }
+    </style>
+</head>
+<body>
+    <%- page %>
+</body>
+</html>
