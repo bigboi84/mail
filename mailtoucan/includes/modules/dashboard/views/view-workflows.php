@@ -25,7 +25,11 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
         --mt-brand: <?php echo esc_html($brand_color); ?>;
         --mt-accent: <?php echo esc_html($mt_palette['accent']); ?>;
     }
-    
+    .vwf-page-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+    .vwf-page-title{font-size:22px;font-weight:900;color:#111827;display:flex;align-items:center;gap:8px;}
+    .vwf-page-sub{font-size:13px;color:#6b7280;margin-top:3px;}
+    .vwf-primary-btn{background:var(--mt-brand);color:white;border:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:8px;transition:filter .15s;}
+    .vwf-primary-btn:hover{filter:brightness(1.1);}
     /* Wizard Step Transitions */
     .wizard-step { display: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
     .wizard-step.active { display: block; opacity: 1; animation: fadeIn 0.4s ease forwards; }
@@ -49,18 +53,29 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
     .template-card.selected { border-color: var(--mt-brand); background-color: #f8fafc; }
     .template-card.selected .select-check { opacity: 1; scale: 1; }
     .template-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+
+    /* Mobile */
+    @media(max-width:768px){
+        .vwf-page-header{flex-direction:column;align-items:flex-start;}
+        .vwf-page-title{font-size:18px;}
+        .vwf-primary-btn{width:100%;justify-content:center;}
+        .grid.grid-cols-2{grid-template-columns:1fr!important;}
+        .grid.grid-cols-3{grid-template-columns:1fr!important;}
+        .overflow-x-auto{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+        table{min-width:520px;}
+    }
 </style>
 
 <div id="view_workflow_list">
-    <header class="mb-8 flex justify-between items-end">
+    <div class="vwf-page-header">
         <div>
-            <h1 class="text-3xl font-black text-gray-900 flex items-center gap-3">Autopilot</h1>
-            <p class="text-gray-500 text-sm mt-1">Set up automated background rules that trigger while you sleep.</p>
+            <div class="vwf-page-title"><i class="fa-solid fa-robot" style="color:var(--mt-brand);"></i> Autopilot</div>
+            <div class="vwf-page-sub">Set up automated background rules that trigger while you sleep.</div>
         </div>
-        <button onclick="startWizard(0)" class="text-white px-6 py-3 rounded-xl font-bold shadow-lg transition flex items-center gap-2 hover:opacity-90" style="background-color: var(--mt-brand);">
+        <button onclick="startWizard(0)" class="vwf-primary-btn">
             <i class="fa-solid fa-robot"></i> New Automation
         </button>
-    </header>
+    </div>
 
     <?php if(empty($workflows)): ?>
         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden text-center py-24">
@@ -289,9 +304,14 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
             </div>
 
             <div id="step-3" class="wizard-step">
-                <h2 class="text-3xl font-black text-gray-900 mb-2">Pick Your Plumage</h2>
-                <p class="text-gray-500 mb-8">Select the design from Toucan Studio that this automation will deliver.</p>
-                
+                <div class="flex items-center justify-between mb-2">
+                    <h2 class="text-3xl font-black text-gray-900">Pick Your Plumage</h2>
+                    <button onclick="openWorkflowAI()" class="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-indigo-700 transition">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Write Email with AI
+                    </button>
+                </div>
+                <p class="text-gray-500 mb-8">Select a template from Toucan Studio, or let AI write the email body for you.</p>
+
                 <input type="hidden" id="selected_template_id" value="">
 
                 <?php if(empty($active_templates)): ?>
@@ -666,6 +686,111 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
                 showToast("Autopilot Rules Generated! The engine is humming.", "success");
                 setTimeout(() => { window.location.reload(); }, 1500);
             });
+        });
+    }
+
+    // ── WORKFLOW AI EMAIL BODY ─────────────────────────────────────────────────
+    function openWorkflowAI() {
+        let modal = document.getElementById('wf_ai_modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'wf_ai_modal';
+            modal.className = 'fixed inset-0 bg-gray-900/60 z-[500] flex items-center justify-center backdrop-blur-sm';
+            modal.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-8 max-h-[90vh] overflow-y-auto">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center"><i class="fa-solid fa-wand-magic-sparkles text-indigo-600"></i></div>
+                        <div>
+                            <h3 class="text-lg font-black text-gray-900">AI Automation Email</h3>
+                            <p class="text-xs text-gray-500">Toucan AI will write a personalised email body for this automation trigger.</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Email Tone</label>
+                            <select id="wf_ai_tone" class="w-full p-2.5 border border-gray-300 rounded-xl text-sm font-semibold outline-none focus:border-indigo-400">
+                                <option value="warm">Warm &amp; Personal</option>
+                                <option value="excited">Excited &amp; Celebratory</option>
+                                <option value="professional">Professional</option>
+                                <option value="casual">Casual &amp; Friendly</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Special Offer (optional)</label>
+                            <input type="text" id="wf_ai_offer" class="w-full p-2.5 border border-gray-300 rounded-xl text-sm outline-none focus:border-indigo-400" placeholder="e.g. 15% off on your birthday, free coffee on us...">
+                        </div>
+                    </div>
+                    <div id="wf_ai_output" class="hidden mt-5 p-4 bg-gray-50 border border-gray-200 rounded-xl text-sm text-gray-800 leading-relaxed max-h-64 overflow-y-auto"></div>
+                    <div id="wf_ai_error" class="hidden mt-3 text-sm text-red-600 font-medium"></div>
+                    <div class="flex gap-3 mt-6">
+                        <button onclick="document.getElementById('wf_ai_modal').remove()" class="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-xl font-bold hover:bg-gray-200 transition">Cancel</button>
+                        <button id="wf_ai_gen_btn" onclick="runWorkflowAI()" class="flex-1 bg-indigo-600 text-white py-2.5 rounded-xl font-bold hover:bg-indigo-700 transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate
+                        </button>
+                    </div>
+                    <div id="wf_ai_credit_info" class="text-[10px] text-gray-400 text-center mt-3"></div>
+                </div>`;
+            document.body.appendChild(modal);
+        } else {
+            modal.classList.remove('hidden');
+        }
+        // Pre-select the trigger type from step 1 if available
+        const triggerRadio = document.querySelector('.custom-radio-input:checked');
+        if (triggerRadio) modal._detectedTrigger = triggerRadio.value;
+    }
+
+    function runWorkflowAI() {
+        const btn    = document.getElementById('wf_ai_gen_btn');
+        const errBox = document.getElementById('wf_ai_error');
+        errBox.classList.add('hidden');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Writing...';
+
+        // Detect trigger type from wizard
+        const modal = document.getElementById('wf_ai_modal');
+        const triggerRadio = document.querySelector('.custom-radio-input:checked');
+        const triggerType  = triggerRadio ? triggerRadio.value : (modal?._detectedTrigger || 'first_visit');
+
+        const fd = new FormData();
+        fd.append('action',       'mt_ai_workflow_body');
+        fd.append('security',     mt_nonce);
+        fd.append('trigger_type', triggerType);
+        fd.append('tone',         document.getElementById('wf_ai_tone').value);
+        fd.append('offer',        document.getElementById('wf_ai_offer').value);
+
+        fetch(mt_ajax_url, { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(res => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Regenerate';
+                if (!res.success) {
+                    errBox.textContent = res.data?.message || res.data || 'AI error. Please try again.';
+                    errBox.classList.remove('hidden');
+                    return;
+                }
+                const outputBox = document.getElementById('wf_ai_output');
+                outputBox.innerHTML = res.data.text + `
+                    <div class="border-t border-gray-200 mt-4 pt-3 text-right">
+                        <p class="text-[10px] text-gray-400 mb-2">Copy this into your Email Studio template, or save it directly.</p>
+                        <button onclick="copyToClipboard('${encodeURIComponent(res.data.text)}')" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-indigo-700 transition">Copy HTML</button>
+                    </div>`;
+                outputBox.classList.remove('hidden');
+                if (res.data.remaining !== undefined) {
+                    document.getElementById('wf_ai_credit_info').textContent = res.data.remaining + ' automation AI writes remaining this month';
+                }
+            })
+            .catch(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Retry';
+                errBox.textContent = 'Network error. Please try again.';
+                errBox.classList.remove('hidden');
+            });
+    }
+
+    function copyToClipboard(encoded) {
+        navigator.clipboard.writeText(decodeURIComponent(encoded)).then(() => {
+            if (typeof showWFToast === 'function') showWFToast('Email HTML copied to clipboard!', 'success');
+            else alert('Copied!');
         });
     }
 </script>
