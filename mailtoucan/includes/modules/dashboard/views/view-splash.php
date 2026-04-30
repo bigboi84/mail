@@ -53,6 +53,15 @@ function render_swatches($target_id, $primary, $sec, $ext) {
     .ad-float { animation: floatAd 4s ease-in-out infinite; }
     @keyframes floatAd { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
     .ad-glow { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 0 15px rgba(79, 70, 229, 0.3); border: 2px solid rgba(79, 70, 229, 0.15); }
+
+    /* Mobile */
+    @media(max-width:768px){
+        .grid.grid-cols-2{grid-template-columns:1fr!important;}
+        .grid.grid-cols-3{grid-template-columns:1fr!important;}
+        .phone-mockup{width:260px;height:540px;border-width:10px;border-radius:30px;}
+        .desktop-mockup{height:320px;}
+        .flex.gap-6{flex-direction:column;gap:12px;}
+    }
 </style>
 
 <div id="save_modal_overlay" class="fixed inset-0 bg-gray-900/80 z-[100] hidden flex items-center justify-center backdrop-blur-sm transition-opacity duration-300 opacity-0">
@@ -82,12 +91,63 @@ function render_swatches($target_id, $primary, $sec, $ext) {
     </div>
 </div>
 
-<header class="mb-8 flex justify-between items-end">
+<style>
+    .vspl-page-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+    .vspl-page-title{font-size:22px;font-weight:900;color:#111827;display:flex;align-items:center;gap:8px;}
+    .vspl-page-sub{font-size:13px;color:#6b7280;margin-top:3px;}
+</style>
+
+<div class="vspl-page-header">
     <div>
-        <h1 class="text-2xl font-bold text-gray-900">Splash Designer</h1>
-        <p class="text-gray-500 text-sm">Design the exact login portal your guests will see when they connect to the WiFi.</p>
+        <div class="vspl-page-title"><i class="fa-solid fa-mobile-screen-button" style="color:var(--mt-primary);"></i> Splash Designer</div>
+        <div class="vspl-page-sub">Design the exact login portal your guests will see when they connect to the WiFi.</div>
     </div>
-</header>
+    <button onclick="openSplashAI()" class="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-700 transition shadow-sm">
+        <i class="fa-solid fa-wand-magic-sparkles"></i> Write with AI
+    </button>
+</div>
+
+<!-- Splash AI Copy Modal -->
+<div id="splash_ai_modal" class="fixed inset-0 bg-gray-900/60 z-[500] hidden items-center justify-center backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+        <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center"><i class="fa-solid fa-wand-magic-sparkles text-indigo-600"></i></div>
+            <div>
+                <h3 class="text-lg font-black text-gray-900">AI Splash Copy</h3>
+                <p class="text-xs text-gray-500">Let Toucan AI write your headline, subheadline, and CTA button.</p>
+            </div>
+        </div>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Tone</label>
+                <select id="splash_ai_tone" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm font-semibold outline-none focus:border-indigo-400">
+                    <option value="friendly">Friendly &amp; Welcoming</option>
+                    <option value="exciting">Exciting &amp; Energetic</option>
+                    <option value="professional">Professional</option>
+                    <option value="casual">Casual &amp; Fun</option>
+                    <option value="luxurious">Upscale &amp; Luxurious</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Special Offer (optional)</label>
+                <input type="text" id="splash_ai_offer" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm outline-none focus:border-indigo-400" placeholder="e.g. Free dessert on your next visit">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-1">Location Name (optional)</label>
+                <input type="text" id="splash_ai_location" class="w-full p-2.5 border border-gray-300 rounded-lg text-sm outline-none focus:border-indigo-400" placeholder="e.g. Downtown Branch">
+            </div>
+        </div>
+        <div id="splash_ai_preview" class="hidden mt-5 p-4 bg-indigo-50 border border-indigo-200 rounded-xl space-y-2 text-sm"></div>
+        <div id="splash_ai_error" class="hidden mt-3 text-sm text-red-600 font-medium"></div>
+        <div class="flex gap-3 mt-6">
+            <button onclick="closeSplashAI()" class="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-xl font-bold hover:bg-gray-200 transition">Cancel</button>
+            <button id="splash_ai_btn" onclick="runSplashAI()" class="flex-1 bg-indigo-600 text-white py-2.5 rounded-xl font-bold hover:bg-indigo-700 transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Generate
+            </button>
+        </div>
+        <div id="splash_ai_credit_info" class="text-[10px] text-gray-400 text-center mt-3"></div>
+    </div>
+</div>
 
 <div id="splash_error_banner" class="hidden mb-6 p-4 bg-red-50 border-l-4 border-red-500 rounded shadow-sm flex justify-between items-center transition-all">
     <span class="text-red-700 text-sm font-bold"><i class="fa-solid fa-triangle-exclamation mr-2"></i> <span id="splash_error_text">Please fix the highlighted fields.</span></span>
@@ -1310,4 +1370,78 @@ function render_swatches($target_id, $primary, $sec, $ext) {
     }
 
     window.addEventListener('DOMContentLoaded', () => { loadTargetConfig(); });
+
+    // ── SPLASH AI COPY ────────────────────────────────────────────────────────
+    function openSplashAI() {
+        const modal = document.getElementById('splash_ai_modal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.getElementById('splash_ai_preview').classList.add('hidden');
+        document.getElementById('splash_ai_error').classList.add('hidden');
+    }
+    function closeSplashAI() {
+        const modal = document.getElementById('splash_ai_modal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+    function runSplashAI() {
+        const btn  = document.getElementById('splash_ai_btn');
+        const errBox = document.getElementById('splash_ai_error');
+        errBox.classList.add('hidden');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Writing...';
+
+        const fd = new FormData();
+        fd.append('action',   'mt_ai_splash_copy');
+        fd.append('security', mt_nonce);
+        fd.append('tone',     document.getElementById('splash_ai_tone').value);
+        fd.append('offer',    document.getElementById('splash_ai_offer').value);
+        fd.append('location', document.getElementById('splash_ai_location').value);
+
+        fetch(mt_ajax_url, { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(res => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Regenerate';
+                if (!res.success) {
+                    errBox.textContent = res.data?.message || res.data || 'AI error. Please try again.';
+                    errBox.classList.remove('hidden');
+                    return;
+                }
+                const d = res.data;
+                const preview = document.getElementById('splash_ai_preview');
+                preview.innerHTML = `
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-indigo-500 mb-2">Preview — click Apply to use</p>
+                    <div class="font-black text-gray-900 text-base">${d.headline || ''}</div>
+                    <div class="text-gray-600">${d.subheadline || ''}</div>
+                    <div class="inline-block bg-indigo-600 text-white px-4 py-1.5 rounded-lg text-sm font-bold mt-1">${d.cta_button || 'Connect Now'}</div>
+                    <button onclick="applySplashAICopy(${JSON.stringify(d).replace(/"/g,'&quot;')})" class="block w-full mt-3 bg-green-500 text-white py-2 rounded-xl font-bold hover:bg-green-600 transition text-sm">Apply to Splash Page</button>`;
+                preview.classList.remove('hidden');
+                if (res.data.remaining !== undefined) {
+                    document.getElementById('splash_ai_credit_info').textContent = res.data.remaining + ' AI writes remaining this month';
+                }
+            })
+            .catch(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Retry';
+                errBox.textContent = 'Network error. Please try again.';
+                errBox.classList.remove('hidden');
+            });
+    }
+    function applySplashAICopy(d) {
+        // Try to find the active campaign's headline / CTA fields and populate them
+        const headlineInput = document.getElementById('field_headline') || document.querySelector('input[data-field="headline"]') || document.querySelector('[id*="headline"]');
+        const ctaInput      = document.getElementById('field_cta_text') || document.querySelector('input[data-field="cta_text"]') || document.querySelector('[id*="cta"]');
+        const subInput      = document.getElementById('field_subheadline') || document.querySelector('input[data-field="subheadline"]') || document.querySelector('[id*="sub"]');
+        if (headlineInput) headlineInput.value = d.headline || '';
+        if (subInput)      subInput.value      = d.subheadline || '';
+        if (ctaInput)      ctaInput.value      = d.cta_button || '';
+        // Trigger any preview refresh that might be listening
+        ['field_headline','field_cta_text','field_subheadline'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+        closeSplashAI();
+        if (typeof showToast === 'function') showToast('AI copy applied! Review the preview and save.', 'success');
+    }
 </script>
