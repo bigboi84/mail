@@ -1,0 +1,200 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": "Confirm Your Registration",
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "type": "h1",
+                    "text": "Confirm Your Registration",
+                    "formats": {}
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "{CURRENT_DATE}",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 40
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "DividerElement",
+                    "template": "Divider",
+                    "formats": {
+                        "background_color": "#D0D0D0",
+                        "height": 2,
+                        "divider_style": "solid",
+                        "padding_top": 10,
+                        "padding_bottom": 10
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 0,
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "type": "h2",
+                    "text": "Just one more step to activate your account",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Thank you for registering with us! To complete your sign-up and activate your account, please confirm your email address by clicking the secure link below:",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "LinkElement",
+                    "template": "Link",
+                    "text": "Activate My Account",
+                    "url": "{ACTIVATION_URL}",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "If the button above does not work, copy and paste this link into your browser:",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "LinkElement",
+                    "template": "Link",
+                    "text": "{ACTIVATION_URL}",
+                    "url": "{ACTIVATION_URL}",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Why do we ask for confirmation? This step helps us verify your identity, keep your account secure, and ensure you don’t miss any important updates from us.",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "If you did not register for an account, you can safely ignore this email and no action will be taken.",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Copyright (C). This is an automated message, please do not reply.",
+                    "formats": {
+                        "font_size": 13,
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 60
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#F4F4F4",
+        "padding_top": 40,
+        "padding_right": 60,
+        "padding_bottom": 40,
+        "padding_left": 60
+    },
+    "block_gap": 0,
+    "container_width": "medium",
+    "block_padding_bottom": 20,
+    "block_padding_top": 20,
+    "block_padding_right": 20,
+    "block_padding_left": 20
+}
