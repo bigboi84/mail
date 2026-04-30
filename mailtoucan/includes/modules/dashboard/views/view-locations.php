@@ -42,18 +42,37 @@ foreach($stores as $s) {
     #setup_modal:not(.hidden) { opacity: 1; pointer-events: auto; }
 </style>
 
+<style>
+    .vloc-page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+    .vloc-page-title{font-size:22px;font-weight:900;color:#111827;display:flex;align-items:center;gap:8px;}
+    .vloc-page-sub{font-size:13px;color:#6b7280;margin-top:3px;}
+    .vloc-add-btn{background:var(--mt-primary);color:white;border:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:8px;transition:filter .15s;}
+    .vloc-add-btn:hover{filter:brightness(1.1);}
+    .vloc-limit-btn{background:#f3f4f6;color:#9ca3af;border:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;cursor:not-allowed;font-family:inherit;display:inline-flex;align-items:center;gap:8px;}
+
+    /* Mobile */
+    @media(max-width:768px){
+        .vloc-page-header{flex-direction:column;align-items:flex-start;}
+        .vloc-page-title{font-size:18px;}
+        .vloc-add-btn,.vloc-limit-btn{width:100%;justify-content:center;}
+        #map{height:220px;}
+        .overflow-x-auto{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+        table{min-width:600px;}
+    }
+</style>
+
 <div id="view_list">
-    <header class="mb-8 flex justify-between items-center">
+    <div class="vloc-page-header">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Location Manager</h1>
-            <p class="text-gray-500">Manage your physical venues, routers, and localized settings.</p>
+            <div class="vloc-page-title"><i class="fa-solid fa-store" style="color:var(--mt-primary);"></i> Location Manager</div>
+            <div class="vloc-page-sub">Manage your physical venues, routers, and localized settings.</div>
         </div>
         <?php if ($at_limit): ?>
-            <button class="bg-gray-300 text-gray-500 px-5 py-2.5 rounded-lg font-bold shadow-sm cursor-not-allowed flex items-center gap-2"><i class="fa-solid fa-lock"></i> Add Location (Limit Reached)</button>
+            <button class="vloc-limit-btn"><i class="fa-solid fa-lock"></i> Add Location (Limit Reached)</button>
         <?php else: ?>
-            <button onclick="openEditor(0)" class="bg-gray-900 text-white px-5 py-2.5 rounded-lg font-bold shadow-md hover:bg-gray-800 transition flex items-center gap-2"><i class="fa-solid fa-plus"></i> Add New Location</button>
+            <button onclick="openEditor(0)" class="vloc-add-btn"><i class="fa-solid fa-plus"></i> Add New Location</button>
         <?php endif; ?>
-    </header>
+    </div>
 
     <div class="grid grid-cols-3 gap-6">
         <?php if (empty($stores)): ?>
