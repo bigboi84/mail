@@ -1,0 +1,581 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": null,
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "View this email in your browser",
+                    "formats": {
+                        "font_size": 12,
+                        "text_color": "#4A3D34",
+                        "text_align": "center",
+                        "padding_bottom": 10
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#F4F4F4",
+                "padding_top": 10,
+                "padding_bottom": 10,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "text": "FROTHY JANE<br>COFFEE CO.",
+                    "formats": {
+                        "font_family": "Arial Black",
+                        "font_size": 20,
+                        "text_color": "#F0E7E1",
+                        "text_align": "center",
+                        "padding_bottom": 30
+                    }
+                },
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "text": "We miss you",
+                    "formats": {
+                        "font_family": "Arial Black",
+                        "font_size": 62,
+                        "text_color": "#F0E7E1",
+                        "text_align": "center",
+                        "line_height": 1.1,
+                        "padding_bottom": 30
+                    }
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "We noticed it'd been a while since you last ordered coffee from us. We hope you'll return soon!",
+                    "formats": {
+                        "font_size": 18,
+                        "text_color": "#F0E7E1",
+                        "text_align": "center",
+                        "line_height": 1.45,
+                        "padding_bottom": 40
+                    }
+                },
+                {
+                    "name": "BlockElement",
+                    "template": "Block",
+                    "elements": [
+                        {
+                            "name": "PElement",
+                            "template": "P",
+                            "text": "<a href=\"#\" style=\"display:inline-block;text-decoration:none;color:#F0E7E1;border:2px solid #F0E7E1;padding:14px 34px;font-size:18px;font-family:Arial;border-radius:8px;\">Baby come back!</a>",
+                            "formats": {
+                                "text_align": "center"
+                            }
+                        }
+                    ],
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#4A3D34",
+                "padding_top": 60,
+                "padding_right": 40,
+                "padding_bottom": 60,
+                "padding_left": 40,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "text": "Here are a few reasons",
+                    "formats": {
+                        "font_family": "Arial Black",
+                        "font_size": 34,
+                        "text_color": "#4A3D34",
+                        "text_align": "center",
+                        "padding_bottom": 10
+                    }
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "why you'll love ordering from us",
+                    "formats": {
+                        "font_size": 18,
+                        "text_color": "#4A3D34",
+                        "text_align": "center",
+                        "padding_bottom": 40
+                    }
+                },
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/OrderAgain/image1.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 200,
+                                                "height": 270,
+                                                "align": "center",
+                                                "border_radius": 12
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        },
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "text": "Wide selection",
+                                            "formats": {
+                                                "font_family": "Arial Black",
+                                                "font_size": 20,
+                                                "text_color": "#4A3D34",
+                                                "text_align": "center",
+                                                "padding_top": 15
+                                            }
+                                        },
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "of coffee blends",
+                                            "formats": {
+                                                "font_size": 16,
+                                                "text_color": "#4A3D34",
+                                                "text_align": "center",
+                                                "padding_top": 5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 0
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/OrderAgain/image2.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 200,
+                                                "height": 270,
+                                                "align": "center",
+                                                "border_radius": 12
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        },
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "text": "Fast & easy",
+                                            "formats": {
+                                                "font_family": "Arial Black",
+                                                "font_size": 20,
+                                                "text_color": "#4A3D34",
+                                                "text_align": "center",
+                                                "padding_top": 15
+                                            }
+                                        },
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "online ordering",
+                                            "formats": {
+                                                "font_size": 16,
+                                                "text_color": "#4A3D34",
+                                                "text_align": "center",
+                                                "padding_top": 5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/OrderAgain/image3.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 200,
+                                                "height": 270,
+                                                "align": "center",
+                                                "border_radius": 12
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        },
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "text": "Quality",
+                                            "formats": {
+                                                "font_family": "Arial Black",
+                                                "font_size": 20,
+                                                "text_color": "#4A3D34",
+                                                "text_align": "center",
+                                                "padding_top": 15
+                                            }
+                                        },
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "ingredients always",
+                                            "formats": {
+                                                "font_size": 16,
+                                                "text_color": "#4A3D34",
+                                                "text_align": "center",
+                                                "padding_top": 5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 20
+                    }
+                },
+                {
+                    "name": "BlockElement",
+                    "template": "Block",
+                    "elements": [
+                        {
+                            "name": "PElement",
+                            "template": "P",
+                            "text": "<a href=\"#\" style=\"display:inline-block;text-decoration:none;color:#4A3D34;border:2px solid #4A3D34;padding:14px 34px;font-size:18px;font-family:Arial;border-radius:8px;\">Click here to order</a>",
+                            "formats": {
+                                "text_align": "center"
+                            }
+                        }
+                    ],
+                    "formats": {
+                        "padding_top": 40
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#F0E7E1",
+                "padding_top": 60,
+                "padding_right": 40,
+                "padding_bottom": 60,
+                "padding_left": 40,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "SocialIconsElement",
+                    "template": "SocialIcons",
+                    "items": [
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/OrderAgain/facebook.png",
+                            "label": "Facebook"
+                        },
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/OrderAgain/instagram.png",
+                            "label": "Instagram"
+                        },
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/OrderAgain/twitter.png",
+                            "label": "X"
+                        }
+                    ],
+                    "size": 35,
+                    "gap": 25,
+                    "align": "center",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat"
+                    }
+                },
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "text": "SHOP",
+                                            "formats": {
+                                                "font_family": "Arial Black",
+                                                "font_size": 24,
+                                                "text_color": "#4A3034",
+                                                "text_align": "center",
+                                                "padding_bottom": 10
+                                            }
+                                        },
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "text": "CONTACT",
+                                            "formats": {
+                                                "font_family": "Arial Black",
+                                                "font_size": 20,
+                                                "text_color": "#4A3034",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto",
+                                "padding_right": 30,
+                                "padding_left": 100
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "text": "FAQ",
+                                            "formats": {
+                                                "font_family": "Arial Black",
+                                                "font_size": 24,
+                                                "text_color": "#4A3034",
+                                                "text_align": "center",
+                                                "padding_bottom": 10
+                                            }
+                                        },
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "text": "ACCOUNT",
+                                            "formats": {
+                                                "font_family": "Arial Black",
+                                                "font_size": 20,
+                                                "text_color": "#4A3034",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto",
+                                "padding_right": 0,
+                                "padding_left": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "padding_top": 50,
+                        "gap": 80
+                    }
+                },
+                {
+                    "name": "BlockElement",
+                    "template": "Block",
+                    "elements": [
+                        {
+                            "name": "HeadingElement",
+                            "template": "Heading",
+                            "text": "FROTHY JANE",
+                            "formats": {
+                                "font_family": "Arial Black",
+                                "font_size": 28,
+                                "text_color": "#4A3034",
+                                "text_align": "center",
+                                "padding_bottom": 10
+                            }
+                        },
+                        {
+                            "name": "HeadingElement",
+                            "template": "Heading",
+                            "text": "COFFEE CO.",
+                            "formats": {
+                                "font_family": "Arial Black",
+                                "font_size": 18,
+                                "text_color": "#4A3034",
+                                "text_align": "center",
+                                "padding_bottom": 20
+                            }
+                        },
+                        {
+                            "name": "LinkElement",
+                            "template": "Link",
+                            "text": "View in browser",
+                            "url": "{WEB_VIEW_URL}",
+                            "formats": {
+                                "font_size": 14,
+                                "text_color": "#4A3034",
+                                "text_align": "center"
+                            }
+                        },
+                        {
+                            "name": "PElement",
+                            "template": "P",
+                            "text": "Copyright (C) {CURRENT_YEAR}. All rights reserved.",
+                            "formats": {
+                                "font_size": 14,
+                                "text_color": "#4A3034",
+                                "text_align": "center",
+                                "line_height": 1.4,
+                                "padding_bottom": 20
+                            }
+                        },
+                        {
+                            "name": "PElement",
+                            "template": "P",
+                            "text": "If you no longer want to receive these emails, you can <a href=\"{UNSUBSCRIBE_URL}\">unsubscribe</a>.",
+                            "formats": {
+                                "font_size": 14,
+                                "text_color": "#4A3034",
+                                "text_align": "center",
+                                "line_height": 1.4
+                            }
+                        }
+                    ],
+                    "formats": {
+                        "padding_top": 50
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#C970B3",
+                "padding_top": 60,
+                "padding_right": 40,
+                "padding_bottom": 60,
+                "padding_left": 40,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#F4F4F4",
+        "padding_top": 0,
+        "padding_right": 0,
+        "padding_bottom": 0,
+        "padding_left": 0
+    },
+    "block_gap": 0,
+    "block_padding_bottom": 40,
+    "block_padding_top": 40,
+    "block_padding_right": 0,
+    "block_padding_left": 0
+}
