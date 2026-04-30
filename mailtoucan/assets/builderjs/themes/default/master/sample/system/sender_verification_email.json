@@ -1,0 +1,167 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": "Verify Your Email Address",
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "type": "h1",
+                    "text": "Verify Your Email Address",
+                    "formats": {}
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "{CURRENT_DATE}",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "DividerElement",
+                    "template": "Divider",
+                    "formats": {
+                        "background_color": "#D0D0D0",
+                        "height": 2,
+                        "divider_style": "solid",
+                        "padding_top": 10,
+                        "padding_bottom": 10
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "border_radius": 0,
+                "padding_top": 0,
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Hi {USER_NAME}, we need to confirm your email",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "border_radius": 0,
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "We received a request to register <strong>{USER_EMAIL}</strong> as a sender in our system. To complete this process, please confirm that you own this email address by clicking the button below:",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "border_radius": 0,
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "LinkElement",
+                    "template": "Link",
+                    "text": "Verify My Email",
+                    "url": "{VERIFICATION_LINK}",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "If the button above does not work, copy and paste this link into your browser:",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "border_radius": 0,
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "LinkElement",
+                    "template": "Link",
+                    "text": "{VERIFICATION_LINK}",
+                    "url": "{VERIFICATION_LINK}",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Copyright (C). All rights reserved.",
+                    "formats": {
+                        "font_size": 13,
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF"
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#F4F4F4",
+        "padding_top": 40,
+        "padding_right": 60,
+        "padding_bottom": 40,
+        "padding_left": 60
+    },
+    "block_gap": 0,
+    "container_width": "medium",
+    "block_padding_bottom": 20,
+    "block_padding_top": 20,
+    "block_padding_right": 20,
+    "block_padding_left": 20
+}
