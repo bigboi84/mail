@@ -1,0 +1,1233 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": null,
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/fathers_day_specials/logo.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 200,
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 40,
+                                        "padding_bottom": 30
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h1",
+                                            "text": "Father's Day <br> Specials",
+                                            "formats": {
+                                                "font_family": "Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 62,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 20,
+                                        "margin_right": "auto",
+                                        "margin_left": "auto",
+                                        "width": 612
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/fathers_day_specials/header.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 612,
+                                                "max_width": "100%",
+                                                "align": "center",
+                                                "border_radius": 15
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 40,
+                                        "padding_bottom": 30
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 30,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Spoil Dad with these Adventure-Ready Deals!",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 25,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 20,
+                                        "padding_left": 70,
+                                        "width": "100%"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Whether planning a father-child bonding trip or an outing with friends, our premium tents are perfect for any adventure. Enjoy discounts up to 40% off!",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 40,
+                                        "padding_left": 10,
+                                        "margin_right": "auto",
+                                        "margin_left": "auto",
+                                        "width": 612
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/fathers_day_specials/tent.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 282,
+                                                "max_width": "100%",
+                                                "align": "center",
+                                                "border_radius": 15
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 20,
+                                        "width": "100%"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h3",
+                                            "text": "The Summit Family Tent",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 22,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 20,
+                                        "padding_left": 70,
+                                        "width": "100%"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h4",
+                                            "text": "$259.99",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 20,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 20,
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "SHOP NOW",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "center",
+                                                "font_family": "inherit",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#FFFFFF",
+                                                "link_color": "#ffffff",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "#b87b2d",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 16,
+                                                "padding_right": 28,
+                                                "padding_bottom": 16,
+                                                "padding_left": 28,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 0,
+                                                "border_top_color": "#b87b2d",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 0,
+                                                "border_right_color": "#b87b2d",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 0,
+                                                "border_bottom_color": "#b87b2d",
+                                                "border_left_width": 0,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#b87b2d",
+                                                "border_radius": 50
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#FFFFFF"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h3",
+                                            "text": "Ranger Pro 70L Backpack",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 22,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 20,
+                                        "padding_left": 70,
+                                        "width": "100%"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h4",
+                                            "text": "$165.99",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 20,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 20,
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "SHOP NOW",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "center",
+                                                "font_family": "inherit",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#FFFFFF",
+                                                "link_color": "#ffffff",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "#b87b2d",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 16,
+                                                "padding_right": 28,
+                                                "padding_bottom": 16,
+                                                "padding_left": 28,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 0,
+                                                "border_top_color": "#b87b2d",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 0,
+                                                "border_right_color": "#b87b2d",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 0,
+                                                "border_bottom_color": "#b87b2d",
+                                                "border_left_width": 0,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#b87b2d",
+                                                "border_radius": 50
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#FFFFFF",
+                                        "padding_bottom": 60
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/fathers_day_specials/backpack.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 282,
+                                                "max_width": "100%",
+                                                "align": "center",
+                                                "border_radius": 15
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 20,
+                                        "width": "100%"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Trust our gear for their trips:",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#e9efe2",
+                                        "padding_top": 20,
+                                        "padding_right": 10,
+                                        "padding_bottom": 40,
+                                        "padding_left": 10,
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center",
+                                        "align_items": "center"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h4",
+                                            "text": "“I got the Trailblazer backpack as a gift.<strong> High quality </strong>and",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 20,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "line_height": 1.5,
+                                                "text_direction": "ltr"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#e9efe2",
+                                        "padding_right": 10,
+                                        "padding_left": 10,
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center",
+                                        "align_items": "center"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h4",
+                                            "text": "“<strong>really comfortable</strong>!”",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 20,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "line_height": 1.5,
+                                                "text_direction": "ltr"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#e9efe2",
+                                        "padding_right": 10,
+                                        "padding_bottom": 20,
+                                        "padding_left": 10,
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center",
+                                        "align_items": "center"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "- Tom D",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#e9efe2",
+                                        "padding_right": 10,
+                                        "padding_bottom": 30,
+                                        "padding_left": 10,
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center",
+                                        "align_items": "center"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100,
+                                "align_items": "stretch",
+                                "display": "flex",
+                                "flex_direction": "column"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 25,
+                "padding_right": 25,
+                "padding_bottom": 25,
+                "padding_left": 25,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 610
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Shop with Confidence",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 25,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "line_height": 1.5,
+                                                "text_direction": "ltr"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 25,
+                "padding_right": 25,
+                "padding_bottom": 25,
+                "padding_left": 25,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 610
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/fathers_day_specials/delivery.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 44,
+                                                "max_width": "100%",
+                                                "align": "center",
+                                                "border_radius": 15
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Fast delivery",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/fathers_day_specials/price.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 44,
+                                                "max_width": "100%",
+                                                "align": "center",
+                                                "border_radius": 15
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "15 day price matching",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/fathers_day_specials/return.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 44,
+                                                "max_width": "100%",
+                                                "align": "center",
+                                                "border_radius": 15
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Free shipping & returns",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 25,
+                "padding_right": 25,
+                "padding_bottom": 25,
+                "padding_left": 25,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 610
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Let’s keep in touch",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 22,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "line_height": 1.5,
+                                                "text_direction": "ltr"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "SocialIconsElement",
+                                            "template": "SocialIcons",
+                                            "items": [
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/facebook.png",
+                                                    "label": "Facebook"
+                                                },
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/instagram.png",
+                                                    "label": "Instagram"
+                                                },
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/twitter.png",
+                                                    "label": "Twitter"
+                                                }
+                                            ],
+                                            "size": 50,
+                                            "gap": 10,
+                                            "align": "center",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 20
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 25,
+                "padding_right": 25,
+                "padding_bottom": 25,
+                "padding_left": 25,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 610
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "LinkElement",
+                                            "template": "Link",
+                                            "text": "View in browser",
+                                            "url": "{WEB_VIEW_URL}",
+                                            "formats": {
+                                                "font_family": "Work Sans, sans-serif",
+                                                "font_size": 14,
+                                                "text_color": "#000000",
+                                                "text_align": "center",
+                                                "text_decoration": "underline"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#e9efe2",
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Copyright (C) {CURRENT_YEAR}. All rights reserved.",
+                                            "formats": {
+                                                "font_family": "Work Sans, sans-serif",
+                                                "font_size": 12,
+                                                "text_color": "#000000",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#e9efe2",
+                                        "padding_top": 10,
+                                        "padding_bottom": 20
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "If you no longer want to receive these emails, you can <a href=\"{UNSUBSCRIBE_URL}\">unsubscribe</a>",
+                                            "formats": {
+                                                "font_family": "Work Sans, sans-serif",
+                                                "font_size": 12,
+                                                "text_color": "#000000",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#e9efe2"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#e9efe2",
+                "background_position": "center",
+                "padding_top": 25,
+                "padding_right": 25,
+                "padding_bottom": 25,
+                "padding_left": 25,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 610
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#535f46",
+        "padding_top": 0,
+        "padding_right": 0,
+        "padding_bottom": 0,
+        "padding_left": 0
+    },
+    "block_gap": 0,
+    "block_padding_bottom": 0,
+    "block_padding_top": 0,
+    "block_padding_right": 0,
+    "block_padding_left": 0
+}
