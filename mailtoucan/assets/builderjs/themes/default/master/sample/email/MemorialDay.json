@@ -1,0 +1,453 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": null,
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ImageElement",
+                    "template": "Image",
+                    "src": "master/assets/image/memorial_day/topbanner.png",
+                    "alt": "Alternative text",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "padding_top": 0,
+                        "padding_bottom": 0,
+                        "width": 400,
+                        "height": "auto",
+                        "align": "center",
+                        "border_radius": 0
+                    },
+                    "effect": {
+                        "grayscale": null,
+                        "sepia": null,
+                        "invert": null,
+                        "blur": null,
+                        "brightness": null,
+                        "contrast": null,
+                        "saturate": null,
+                        "hueRotate": null,
+                        "opacity": null
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#f4f4f5",
+                "padding_top": 10,
+                "padding_right": 20,
+                "padding_bottom": 0,
+                "padding_left": 20
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ImageElement",
+                    "template": "Image",
+                    "src": "master/assets/image/memorial_day/logo.png",
+                    "alt": "Alternative text",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "width": 150,
+                        "height": "auto",
+                        "align": "center",
+                        "border_radius": 0
+                    },
+                    "effect": {
+                        "grayscale": null,
+                        "sepia": null,
+                        "invert": null,
+                        "blur": null,
+                        "brightness": null,
+                        "contrast": null,
+                        "saturate": null,
+                        "hueRotate": null,
+                        "opacity": null
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#f4f4f5",
+                "padding_top": 0,
+                "padding_right": 20,
+                "padding_bottom": 0,
+                "padding_left": 20
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "H1Element",
+                    "template": "H1",
+                    "text": "Memorial Day",
+                    "formats": {
+                        "font_family": "'DM Sans', sans-serif",
+                        "font_size": 61,
+                        "text_color": "#060881",
+                        "text_align": "center",
+                        "letter_spacing": 2,
+                        "text_direction": "ltr"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#f4f4f5",
+                "padding_top": 0,
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "H2Element",
+                    "template": "H2",
+                    "text": "Honouring all that served",
+                    "formats": {
+                        "font_family": "'DM Sans', sans-serif",
+                        "font_size": 25,
+                        "text_color": "#000",
+                        "text_align": "center",
+                        "letter_spacing": 0,
+                        "text_direction": "ltr"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#f4f4f5",
+                "padding_top": 10,
+                "padding_bottom": 10
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "DividerElement",
+                    "template": "Divider",
+                    "formats": {
+                        "background_color": "#e63a46",
+                        "height": 2,
+                        "divider_style": "solid",
+                        "padding_top": 10,
+                        "padding_bottom": 10
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#f4f4f5"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "As we prepare to honor Memorial Day, Saison Opera House is proud to remember and pay tribute to the brave hearts who have served our nation with valor and dedication. This Memorial Day, we take a moment to reflect on their sacrifices and invite you to join us in a special commemoration.",
+                    "formats": {
+                        "font_family": "'DM Sans', sans-serif",
+                        "font_size": 16,
+                        "text_align": "center",
+                        "line_height": 1.5
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#f4f4f5"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ImageElement",
+                    "template": "Image",
+                    "src": "master/assets/image/memorial_day/Banner.png",
+                    "alt": "Alternative text",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "width": "100%",
+                        "height": "auto",
+                        "align": "center",
+                        "border_radius": 0
+                    },
+                    "effect": {
+                        "grayscale": null,
+                        "sepia": null,
+                        "invert": null,
+                        "blur": null,
+                        "brightness": null,
+                        "contrast": null,
+                        "saturate": null,
+                        "hueRotate": null,
+                        "opacity": null
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#f4f4f5"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Reserve your seats today and be a part of this homage to our heroes. Tickets are limited, so don't miss your chance to experience this powerful performance.",
+                    "formats": {
+                        "font_family": "'DM Sans', sans-serif",
+                        "font_size": 20,
+                        "text_align": "center",
+                        "line_height": 1.5,
+                        "padding_right": 50,
+                        "padding_left": 50
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#f4f4f5"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ButtonElement",
+                    "template": "Button",
+                    "text": "Purchase Tickets",
+                    "url": "#",
+                    "formats": {
+                        "align": "center",
+                        "font_family": "inherit",
+                        "font_weight": "400",
+                        "font_size": 16,
+                        "text_color": "#060881",
+                        "link_color": "#060881",
+                        "text_align": "center",
+                        "line_height": "1.5",
+                        "text_direction": "ltr",
+                        "background_color": "#f4f4f5",
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "padding_top": 16,
+                        "padding_right": 28,
+                        "padding_bottom": 16,
+                        "padding_left": 28,
+                        "border_top_style": "solid",
+                        "border_top_width": 2,
+                        "border_top_color": "#060881",
+                        "border_right_style": "solid",
+                        "border_right_width": 2,
+                        "border_right_color": "#060881",
+                        "border_bottom_style": "solid",
+                        "border_bottom_width": 2,
+                        "border_bottom_color": "#060881",
+                        "border_left_width": 2,
+                        "border_left_style": "solid",
+                        "border_left_color": "#060881",
+                        "border_radius": 0
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#f4f4f5"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "DividerElement",
+                    "template": "Divider",
+                    "formats": {
+                        "background_color": "#e63a46",
+                        "height": 2,
+                        "divider_style": "solid",
+                        "padding_top": 10,
+                        "padding_bottom": 10
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#f4f4f5",
+                "padding_bottom": 10
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "SocialIconsElement",
+                    "template": "SocialIcons",
+                    "items": [
+                        {
+                            "image_url": "master/assets/image/icons/facebook.png",
+                            "link": "#",
+                            "label": "Facebook"
+                        },
+                        {
+                            "image_url": "master/assets/image/icons/twitter.png",
+                            "link": "#",
+                            "label": "Twitter"
+                        },
+                        {
+                            "image_url": "master/assets/image/icons/instagram.png",
+                            "link": "#",
+                            "label": "Instagram"
+                        }
+                    ],
+                    "size": 30,
+                    "gap": 10,
+                    "align": "center",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#f4f4f5",
+                "padding_top": 5
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ImageElement",
+                    "template": "Image",
+                    "src": "master/assets/image/memorial_day/logo.png",
+                    "alt": "Alternative text",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "width": 150,
+                        "height": "auto",
+                        "align": "center",
+                        "border_radius": 0
+                    },
+                    "effect": {
+                        "grayscale": null,
+                        "sepia": null,
+                        "invert": null,
+                        "blur": null,
+                        "brightness": null,
+                        "contrast": null,
+                        "saturate": null,
+                        "hueRotate": null,
+                        "opacity": null
+                    }
+                }
+            ],
+            "formats": {
+                "padding_top": 20,
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "LinkElement",
+                    "template": "Link",
+                    "text": "View in browser",
+                    "url": "{WEB_VIEW_URL}",
+                    "formats": {
+                        "font_family": "'DM Sans', sans-serif",
+                        "font_size": 11,
+                        "text_color": "#000000",
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "padding_top": 0,
+                "padding_bottom": 10
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Copyright (C) {CURRENT_YEAR}. All rights reserved.",
+                    "formats": {
+                        "font_family": "'DM Sans', sans-serif",
+                        "font_size": 11,
+                        "text_color": "#000000",
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "padding_top": 0,
+                "padding_bottom": 10
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "If you no longer want to receive these emails, you can <a href=\"{UNSUBSCRIBE_URL}\">unsubscribe</a>",
+                    "formats": {
+                        "font_family": "'DM Sans', sans-serif",
+                        "font_size": 11,
+                        "text_color": "#000000",
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "padding_top": 0,
+                "padding_bottom": 0
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#e7dfdb",
+        "padding_top": 0,
+        "padding_right": 150,
+        "padding_bottom": 40,
+        "padding_left": 150
+    },
+    "block_gap": 0,
+    "container_width": "medium",
+    "block_padding_bottom": 20,
+    "block_padding_top": 20,
+    "block_padding_right": 20,
+    "block_padding_left": 20
+}
