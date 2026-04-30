@@ -1,0 +1,15 @@
+<% if (type === 'h1') { %>
+    <h1 inline-edit="text" style="<%- formatter.toStyleStringAll() %>"><%- text %></h1>
+<% } else if (type === 'h2') { %>
+    <h2 inline-edit="text" style="<%- formatter.toStyleStringAll() %>"><%- text %></h2>
+<% } else if (type === 'h3') { %>
+    <h3 inline-edit="text" style="<%- formatter.toStyleStringAll() %>"><%- text %></h3>
+<% } else if (type === 'h4') { %>
+    <h4 inline-edit="text" style="<%- formatter.toStyleStringAll() %>"><%- text %></h4>
+<% } else if (type === 'h5') { %>
+    <h5 inline-edit="text" style="<%- formatter.toStyleStringAll() %>"><%- text %></h5>
+<% } else if (type === 'h6') { %>
+    <h6 inline-edit="text" style="<%- formatter.toStyleStringAll() %>"><%- text %></h6>
+<% } else { %>
+    <p inline-edit="text" style="<%- formatter.toStyleStringAll() %>"><%- text %></p>
+<% } %>
