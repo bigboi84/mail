@@ -1,0 +1,123 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Form",
+    "page_title": null,
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Welcome to {LIST_NAME}!",
+                                            "formats": {
+                                                "font_weight": "bold"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 40,
+                                        "padding_bottom": 15
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Fill out the form below to get started.",
+                                            "formats": {
+                                                "padding_bottom": 17
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 10
+                                    }
+                                },
+                                {
+                                    "name": "FormBlockElement",
+                                    "template": "Block",
+                                    "action": "",
+                                    "method": "",
+                                    "elements": [],
+                                    "formats": {
+                                        "background_color": "#fafafa",
+                                        "background_image": "master/assets/image/placeholder_form_fields.svg",
+                                        "background_position": "center center",
+                                        "background_size": "100px",
+                                        "background_repeat": "no-repeat",
+                                        "padding_bottom": 40,
+                                        "height": 200
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 60,
+                                "padding_right": 40,
+                                "padding_left": 40
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [],
+                                    "formats": {
+                                        "background_image": "master/assets/image/placeholder_popup_form.svg",
+                                        "background_position": "center center",
+                                        "background_size": "cover",
+                                        "background_repeat": "no-repeat",
+                                        "height": "100vh"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 40
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 0,
+                        "height": "100vh"
+                    }
+                }
+            ],
+            "formats": {
+                "height": "100vh"
+            }
+        }
+    ],
+    "formats": {
+        "padding_top": 0,
+        "padding_right": 0,
+        "padding_bottom": 0,
+        "padding_left": 0
+    },
+    "block_gap": 0,
+    "block_padding_bottom": 0,
+    "block_padding_top": 0,
+    "block_padding_right": 0,
+    "block_padding_left": 0
+}
