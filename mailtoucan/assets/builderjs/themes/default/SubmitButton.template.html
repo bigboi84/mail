@@ -1,0 +1,13 @@
+
+<div style="text-align: <%- formatter.getFormat("align", "center") %>;">
+    <button type="submit" style="<%- formatter.toStyleStringAll() %>
+        <% if (formatter && formatter.getFormat && formatter.getFormat('width')) { %>
+            display:block;
+            <% if (formatter.getFormat('align') === 'center') { %> margin-left: auto; margin-right: auto; <% } %>
+        <% } else { %>
+            display:inline-block;
+        <% } %>
+        text-decoration: none;"
+        inline-edit="text"><%- text %>
+    </button>
+</div>
