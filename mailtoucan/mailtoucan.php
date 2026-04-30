@@ -3,7 +3,7 @@
  * Plugin Name: MailToucan Pro
  * Plugin URI: https://mailtoucan.pro
  * Description: AI-Powered Email Marketing & Social WiFi SaaS.
- * Version: 1.0.0
+ * Version: 2.0.0
  * Author: Sling
  * Text Domain: mailtoucan
  */
@@ -11,7 +11,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 // Define Constants
-define( 'MT_VERSION', '1.0.0' );
+define( 'MT_VERSION', '2.0.0' );
 define( 'MT_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MT_URL', plugin_dir_url( __FILE__ ) );
 
