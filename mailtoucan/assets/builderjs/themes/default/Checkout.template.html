@@ -1,0 +1,436 @@
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    .checkout-form {
+        background: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .checkout-header {
+        padding: 16px 24px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e0e0e0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #666;
+    }
+
+    .checkout-header-icon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .section {
+        padding: 32px 24px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .section:last-child {
+        border-bottom: none;
+    }
+
+    .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin-bottom: 20px;
+        letter-spacing: 0.3px;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .form-row.full-width {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group {
+        position: relative;
+    }
+
+    .form-label {
+        display: block;
+        font-size: 13px;
+        font-weight: 500;
+        color: #555;
+        margin-bottom: 8px;
+    }
+
+    .form-label .optional {
+        color: #999;
+        font-weight: 400;
+    }
+
+    .form-input,
+    .form-select {
+        width: 100%;
+        padding: 14px 16px;
+        border: 1.5px solid #c5c5c5;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+        background: #fff;
+        transition: all 0.2s ease;
+        outline: none;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+    .form-select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23333' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        padding-right: 40px;
+    }
+
+    .form-input:focus,
+    .form-select:focus {
+        border-color: #4a90e2;
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+    }
+
+    .form-input::placeholder {
+        color: #aaa;
+    }
+
+    .phone-input-wrapper {
+        display: flex;
+        gap: 8px;
+    }
+
+    .phone-flag {
+        width: 70px;
+        flex-shrink: 0;
+        padding: 12px 14px;
+        border: 1px solid #d0d0d0;
+        border-radius: 4px;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .phone-flag:hover {
+        border-color: #4a90e2;
+    }
+
+    .phone-flag img {
+        width: 20px;
+        height: 14px;
+        object-fit: cover;
+    }
+
+    .phone-flag-arrow {
+        font-size: 10px;
+        color: #666;
+        margin-left: auto;
+    }
+
+    .phone-input {
+        flex: 1;
+    }
+
+    .product-list {
+        margin-bottom: 24px;
+    }
+
+    .product-item {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 16px;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        background: #fafafa;
+    }
+
+    .product-radio {
+        width: 20px;
+        height: 20px;
+        accent-color: #4a90e2;
+        cursor: pointer;
+    }
+
+    .product-name {
+        flex: 1;
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .product-price {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .delivery-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 24px;
+        background: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        margin-bottom: 24px;
+    }
+
+    .delivery-icon {
+        width: 32px;
+        height: 32px;
+        color: #666;
+    }
+
+    .delivery-text {
+        font-size: 13px;
+        color: #666;
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+    }
+
+    .checkbox-input {
+        width: 18px;
+        height: 18px;
+        accent-color: #4a90e2;
+        cursor: pointer;
+    }
+
+    .checkbox-label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .payment-summary {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px;
+        background: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .payment-summary:hover {
+        background: #f0f1f2;
+    }
+
+    .payment-icon {
+        width: 24px;
+        height: 24px;
+        color: #333;
+    }
+
+    .payment-title {
+        flex: 1;
+        font-size: 15px;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .payment-cta {
+        font-size: 13px;
+        color: #4a90e2;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .payment-arrow {
+        font-size: 10px;
+    }
+
+    .submit-button {
+        width: 100%;
+        margin-top: 20px;
+        padding: 14px 16px;
+        border: none;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #4a90e2, #3a7acb);
+        color: #fff;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        cursor: pointer;
+        box-shadow: 0 6px 18px rgba(58, 122, 203, 0.25);
+        transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+    }
+
+    .submit-button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 22px rgba(58, 122, 203, 0.3);
+    }
+
+    .submit-button:active {
+        transform: translateY(0);
+        box-shadow: 0 4px 12px rgba(58, 122, 203, 0.2);
+        filter: brightness(0.96);
+    }
+
+    .submit-button:focus-visible {
+        outline: 3px solid rgba(74, 144, 226, 0.35);
+        outline-offset: 2px;
+    }
+
+    .footer-notice {
+        text-align: center;
+        padding: 24px;
+        font-size: 12px;
+        color: #999;
+        background: #f8f9fa;
+    }
+</style>
+
+<form action="<%= action %>" method="<%= method %>">
+    <div class="checkout-container" style="<%- formatter.toStyleStringAll() %>">
+        <div class="checkout-form">
+            <!-- Header -->
+            <div class="checkout-header">
+                <svg class="checkout-header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+                </svg>
+                <span><%- values.headerTitle %></span>
+            </div>
+
+            <!-- Contact Information Section -->
+            <section class="section">
+                <h2 class="section-title"><%- values.headlines.contact %></h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label"><%- values.contactLabels.firstName %></label>
+                        <input type="text" name="first_name" class="form-input" placeholder="<%- values.contactLabels.firstName %>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><%- values.contactLabels.lastName %></label>
+                        <input type="text" name="last_name" class="form-input" placeholder="<%- values.contactLabels.lastName %>">
+                    </div>
+                </div>
+                
+                <div class="form-row full-width">
+                    <div class="form-group">
+                        <label class="form-label"><%- values.contactLabels.email %></label>
+                        <input type="email" name="email" class="form-input" placeholder="<%- values.contactLabels.email %>">
+                    </div>
+                </div>
+                
+                <div class="form-row full-width">
+                    <div class="form-group">
+                        <label class="form-label"><%- values.contactLabels.phone %></label>
+                        <div class="phone-input-wrapper">
+                            <div class="phone-flag">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20'%3E%3Crect fill='%23da251d' width='30' height='20'/%3E%3Cpolygon fill='%23ff0' points='15,4 11.47,14.85 20.71,8.15 9.29,8.15 18.53,14.85'/%3E%3C/svg%3E" alt="VN">
+                                <span class="phone-flag-arrow">▼</span>
+                            </div>
+                            <input type="tel" name="phone" class="form-input phone-input" placeholder="<%- values.contactLabels.phone %>">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Billing Information Section -->
+            <section class="section">
+                <h2 class="section-title"><%- values.headlines.billing %></h2>
+                
+                <div class="form-row full-width">
+                    <div class="form-group">
+                        <label class="form-label"><%- values.contactLabels.address %></label>
+                        <input type="text" name="billing_address" class="form-input" placeholder="<%- values.contactLabels.address %>">
+                    </div>
+                </div>
+
+                <div class="form-row full-width">
+                    <div class="form-group">
+                        <label class="form-label"><%- values.contactLabels.apartment %> <span class="optional"><%- values.contactLabels.apartmentOptional %></span></label>
+                        <input type="text" name="billing_apartment" class="form-input" placeholder="<%- values.contactLabels.apartment %> <%- values.contactLabels.apartmentOptional %>">
+                    </div>
+                </div>
+
+                <div class="form-row full-width">
+                    <div class="form-group">
+                        <label class="form-label"><%- values.contactLabels.country %></label>
+                        <select name="billing_country_id" class="form-select">
+                            <option value="vietnam"><%- values.defaults.country %></option>
+                            <option value="us">United States</option>
+                            <option value="uk">United Kingdom</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row full-width">
+                    <div class="form-group">
+                        <label class="form-label"><%- values.contactLabels.state %></label>
+                        <select name="billing_state" class="form-select">
+                            <option value="an-giang"><%- values.defaults.state %></option>
+                            <option value="hanoi">Hanoi</option>
+                            <option value="hcm">Ho Chi Minh</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label"><%- values.contactLabels.city %></label>
+                        <input type="text" name="billing_city" class="form-input" placeholder="<%- values.contactLabels.city %>">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><%- values.contactLabels.postal %></label>
+                        <input type="text" name="billing_postal" class="form-input" placeholder="<%- values.contactLabels.postal %>">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Payment Information Section -->
+            <section class="section">
+                <h2 class="section-title"><%- values.headlines.payment %></h2>
+                
+                <div class="payment-summary">
+                    <svg class="payment-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                        <line x="1" y1="10" x2="23" y2="10"/>
+                    </svg>
+                    <span class="payment-title"><%- values.paymentSummary.title %></span>
+                    <div class="payment-cta">
+                        <span><%- values.paymentSummary.cta %></span>
+                        <svg class="payment-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-button"><%- values.buttonTexts.guestSubmit %></button>
+            </section>
+
+            <!-- Footer Notice -->
+            <div class="footer-notice">
+                <%- values.headlines.privacy %>
+            </div>
+        </div>
+    </div>
+</form>
