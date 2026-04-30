@@ -21,9 +21,14 @@ class MT_Core {
         // Automated Background Tasks (Cron) - Resolves Blocker B-1
         require_once MT_PATH . 'includes/modules/wifi/class-mt-cron.php';
         
+        // AI Engine — OpenAI / Gemini / Claude
+        require_once MT_PATH . 'includes/modules/ai/class-mt-ai.php';
+
         // Email & Automation Engines
         require_once MT_PATH . 'includes/modules/email/class-mt-email.php';
+        require_once MT_PATH . 'includes/modules/email/class-mt-templates.php';
         require_once MT_PATH . 'includes/modules/email/class-mt-workflows.php';
+        require_once MT_PATH . 'includes/modules/email/class-mt-unsubscribe.php'; // Unsubscribe page + CRM status update
         
         // Super Admin Backend Module
         if ( is_admin() ) {
@@ -47,6 +52,9 @@ class MT_Core {
 
         $email_engine = new MT_Email();
         $email_engine->maybe_create_email_tables(); // Ensures tracking tables exist
+
+        $templates_engine = new MT_Templates();
+        $templates_engine->init();
 
         $workflow_engine = new MT_Workflows();
         $workflow_engine->init();
