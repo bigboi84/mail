@@ -94,10 +94,29 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
     </div>
 </div>
 
-<header class="mb-8 flex justify-between items-end">
+<style>
+    .vcrm-page-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+    .vcrm-page-title{font-size:22px;font-weight:900;color:#111827;display:flex;align-items:center;gap:8px;}
+    .vcrm-page-sub{font-size:13px;color:#6b7280;margin-top:3px;}
+
+    /* Mobile */
+    @media(max-width:768px){
+        .vcrm-page-header{flex-direction:column;align-items:flex-start;}
+        .vcrm-page-title{font-size:18px;}
+        .vcrm-page-header .flex{flex-wrap:wrap;gap:8px;}
+        .overflow-x-auto{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+        table{min-width:640px;}
+        .grid.grid-cols-3,.grid.grid-cols-4{grid-template-columns:1fr 1fr!important;}
+        .fixed.inset-0 > div{margin:12px;max-height:calc(100vh - 24px);overflow-y:auto;}
+    }
+    @media(max-width:420px){
+        .grid.grid-cols-3,.grid.grid-cols-4{grid-template-columns:1fr!important;}
+    }
+</style>
+<div class="vcrm-page-header">
     <div>
-        <h1 class="text-2xl font-bold text-gray-900">The Roost (CRM)</h1>
-        <p class="text-gray-500 text-sm">Manage Guest Identities, Network Access, and Campaigns.</p>
+        <div class="vcrm-page-title"><i class="fa-solid fa-users" style="color:var(--mt-brand,var(--mt-primary));"></i> The Roost (CRM)</div>
+        <div class="vcrm-page-sub">Manage Guest Identities, Network Access, and Campaigns.</div>
     </div>
     <div class="flex gap-3">
         <div class="bg-gray-50 border border-gray-200 rounded-lg p-1 flex items-center shadow-sm mr-4">
@@ -113,8 +132,9 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
             <?php endif; ?>
         </div>
         <button onclick="exportLeadsCSV()" class="bg-white border border-gray-300 px-4 py-2 rounded-lg font-bold text-sm text-gray-600 hover:bg-gray-50 transition shadow-sm"><i class="fa-solid fa-file-csv text-green-600 mr-2"></i> Export CSV</button>
+        <button onclick="openCRMAdvisor()" class="bg-indigo-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-indigo-700 transition shadow-sm flex items-center gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Advisor</button>
     </div>
-</header>
+</div>
 
 <div class="grid grid-cols-4 gap-6 mb-6">
     <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
@@ -1174,5 +1194,128 @@ $api_synced = get_option('mt_api_sync_' . $brand->id, 'no') === 'yes';
         fetch(mt_ajax_url, { method: 'POST', body: formData }).then(res => res.json()).then(data => { 
             if(data.success) { showToast("Campaign deleted.", "success"); setTimeout(() => window.location.reload(), 1000); } else { showToast("Error deleting campaign.", "error"); closeConfirmModal(); btn.innerHTML = 'Yes, Delete'; }
         });
+    }
+
+    // ── CRM AI ADVISOR ────────────────────────────────────────────────────────
+    function openCRMAdvisor() {
+        let panel = document.getElementById('crm_ai_panel');
+        if (!panel) {
+            panel = document.createElement('div');
+            panel.id = 'crm_ai_panel';
+            panel.className = 'fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl z-[600] flex flex-col border-l border-gray-200 transition-transform translate-x-full';
+            panel.style.transition = 'transform 0.3s ease';
+            panel.innerHTML = `
+                <div class="p-6 border-b border-gray-100 flex items-center justify-between bg-indigo-600">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-wand-magic-sparkles text-white text-lg"></i>
+                        <div>
+                            <h3 class="font-black text-white">Toucan AI Advisor</h3>
+                            <p class="text-indigo-200 text-xs">Ask about your audience & campaigns</p>
+                        </div>
+                    </div>
+                    <button onclick="closeCRMAdvisor()" class="text-indigo-200 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+                </div>
+
+                <div id="crm_ai_messages" class="flex-1 overflow-y-auto p-5 space-y-4">
+                    <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-4 text-sm text-indigo-800">
+                        <p class="font-bold mb-1">👋 Hey! I'm your Toucan AI Advisor.</p>
+                        <p>I can analyze your CRM data and help you decide who to target, what campaigns to run, and give you segment insights. Try asking me something or use a quick prompt below.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="sendAdvisorPrompt('Who should I email this month?')" class="text-xs bg-white border border-gray-200 rounded-full px-3 py-1.5 font-semibold text-gray-600 hover:bg-indigo-50 hover:border-indigo-300 transition">Who to email this month?</button>
+                        <button onclick="sendAdvisorPrompt('Which customers have not visited in a while and should get a win-back email?')" class="text-xs bg-white border border-gray-200 rounded-full px-3 py-1.5 font-semibold text-gray-600 hover:bg-indigo-50 hover:border-indigo-300 transition">Win-back candidates?</button>
+                        <button onclick="sendAdvisorPrompt('Analyze my top WiFi capture segments and suggest the best email campaign for each.')" class="text-xs bg-white border border-gray-200 rounded-full px-3 py-1.5 font-semibold text-gray-600 hover:bg-indigo-50 hover:border-indigo-300 transition">Best campaign per segment?</button>
+                        <button onclick="sendAdvisorPrompt('Give me a summary of my CRM health and what I should focus on.')" class="text-xs bg-white border border-gray-200 rounded-full px-3 py-1.5 font-semibold text-gray-600 hover:bg-indigo-50 hover:border-indigo-300 transition">CRM health summary</button>
+                    </div>
+                </div>
+
+                <div id="crm_ai_credits" class="px-5 pb-1 text-[10px] text-gray-400 text-right"></div>
+
+                <div class="p-4 border-t border-gray-100 flex gap-2">
+                    <textarea id="crm_ai_input" placeholder="Ask anything about your audience..." rows="2"
+                        class="flex-1 p-3 border border-gray-300 rounded-xl text-sm outline-none focus:border-indigo-400 resize-none"></textarea>
+                    <button id="crm_ai_send_btn" onclick="sendCRMAdvisorQuery()" class="bg-indigo-600 text-white w-10 h-10 rounded-xl flex items-center justify-center hover:bg-indigo-700 transition self-end shrink-0">
+                        <i class="fa-solid fa-paper-plane text-sm"></i>
+                    </button>
+                </div>`;
+            document.body.appendChild(panel);
+            setTimeout(() => panel.style.transform = 'translateX(0)', 10);
+
+            // Allow Enter to send
+            panel.querySelector('#crm_ai_input').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendCRMAdvisorQuery(); }
+            });
+        } else {
+            panel.style.transform = 'translateX(0)';
+        }
+    }
+
+    function closeCRMAdvisor() {
+        const panel = document.getElementById('crm_ai_panel');
+        if (panel) panel.style.transform = 'translateX(100%)';
+    }
+
+    function sendAdvisorPrompt(text) {
+        document.getElementById('crm_ai_input').value = text;
+        sendCRMAdvisorQuery();
+    }
+
+    function sendCRMAdvisorQuery() {
+        const input   = document.getElementById('crm_ai_input');
+        const question = input.value.trim();
+        if (!question) return;
+
+        const messages = document.getElementById('crm_ai_messages');
+        const btn      = document.getElementById('crm_ai_send_btn');
+
+        // User bubble
+        const userBubble = document.createElement('div');
+        userBubble.className = 'flex justify-end';
+        userBubble.innerHTML = `<div class="bg-indigo-600 text-white rounded-2xl rounded-tr-none px-4 py-3 text-sm max-w-[85%]">${question.replace(/</g,'&lt;')}</div>`;
+        messages.appendChild(userBubble);
+        input.value = '';
+        messages.scrollTop = messages.scrollHeight;
+
+        // Thinking bubble
+        const thinkingBubble = document.createElement('div');
+        thinkingBubble.id = 'crm_ai_thinking';
+        thinkingBubble.className = 'flex gap-2 items-start';
+        thinkingBubble.innerHTML = `<div class="w-7 h-7 bg-indigo-100 rounded-full flex items-center justify-center shrink-0 mt-0.5"><i class="fa-solid fa-wand-magic-sparkles text-indigo-600 text-xs"></i></div><div class="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-3 text-sm text-gray-500 italic">Analysing your CRM data...</div>`;
+        messages.appendChild(thinkingBubble);
+        messages.scrollTop = messages.scrollHeight;
+        btn.disabled = true;
+
+        const fd = new FormData();
+        fd.append('action',   'mt_ai_crm_advisor');
+        fd.append('security', mt_nonce);
+        fd.append('question', question);
+
+        fetch(mt_ajax_url, { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(res => {
+                btn.disabled = false;
+                document.getElementById('crm_ai_thinking')?.remove();
+
+                const aiBubble = document.createElement('div');
+                aiBubble.className = 'flex gap-2 items-start';
+
+                if (!res.success) {
+                    const msg = res.data?.message || res.data || 'AI error. Please try again.';
+                    aiBubble.innerHTML = `<div class="w-7 h-7 bg-red-100 rounded-full flex items-center justify-center shrink-0 mt-0.5"><i class="fa-solid fa-exclamation text-red-500 text-xs"></i></div><div class="bg-red-50 border border-red-200 rounded-2xl rounded-tl-none px-4 py-3 text-sm text-red-700">${msg}</div>`;
+                } else {
+                    const text = res.data.text.replace(/\n/g, '<br>');
+                    aiBubble.innerHTML = `<div class="w-7 h-7 bg-indigo-100 rounded-full flex items-center justify-center shrink-0 mt-0.5"><i class="fa-solid fa-wand-magic-sparkles text-indigo-600 text-xs"></i></div><div class="bg-gray-50 border border-gray-100 rounded-2xl rounded-tl-none px-4 py-3 text-sm text-gray-800 leading-relaxed">${text}</div>`;
+                    if (res.data.remaining !== undefined) {
+                        document.getElementById('crm_ai_credits').textContent = res.data.remaining + ' advisor queries remaining this month';
+                    }
+                }
+                messages.appendChild(aiBubble);
+                messages.scrollTop = messages.scrollHeight;
+            })
+            .catch(() => {
+                btn.disabled = false;
+                document.getElementById('crm_ai_thinking')?.remove();
+                showToast('Network error connecting to AI.', 'error');
+            });
     }
 </script>
