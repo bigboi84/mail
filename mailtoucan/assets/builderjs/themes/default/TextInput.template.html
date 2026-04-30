@@ -1,0 +1,11 @@
+<div<% if (formatter && formatter.getFormat && formatter.getFormat('align')) { %> style="text-align:<%- formatter.getFormat('align') %>"<% } %>>
+    <input type="<%- type %>" name="<%- name %>" value="<%- value %>"
+    <%- required ? 'required' : '' %>
+    placeholder="<%- placeholder %>" style="<%- formatter.toStyleStringAll() %>box-sizing: border-box;
+        <% if (formatter && formatter.getFormat && formatter.getFormat('width')) { %>
+            display:block;
+            <% if (formatter.getFormat('align') === 'center') { %> margin-left: auto; margin-right: auto; <% } %>
+        <% } else { %>
+            display:inline-block;
+        <% } %>" />
+</div>
