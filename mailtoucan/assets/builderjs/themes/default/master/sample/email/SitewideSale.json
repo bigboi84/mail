@@ -1,0 +1,1100 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": "Seedling Soda Co – Black Friday",
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "border_top_style": "solid",
+                "border_top_width": 0,
+                "border_top_color": "#000000",
+                "border_right_style": "solid",
+                "border_right_width": 2,
+                "border_right_color": "#000000",
+                "border_bottom_style": "solid",
+                "border_bottom_width": 2,
+                "border_bottom_color": "#000000",
+                "border_left_width": 2,
+                "border_left_style": "solid",
+                "border_left_color": "#000000",
+                "padding_top": 0,
+                "padding_right": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "<strong>BLACK FRIDAY</strong> STARTS NOW + FREE SHIPPING",
+                    "formats": {
+                        "font_size": 14,
+                        "text_color": "#FFFFFF",
+                        "text_align": "left",
+                        "letter_spacing": 1,
+                        "padding_left": 30
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#242423",
+                "border_right_style": "solid",
+                "border_right_width": 2,
+                "border_right_color": "#000000",
+                "border_left_width": 2,
+                "border_left_style": "solid",
+                "border_left_color": "#000000",
+                "padding_top": 12,
+                "padding_bottom": 12,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ImageElement",
+                    "template": "Image",
+                    "src": "master/assets/image/SitewideSale/logo1.png",
+                    "alt": "Seedling Soda Co",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "padding_left": 30,
+                        "width": 200,
+                        "align": "left",
+                        "border_radius": 0
+                    },
+                    "effect": {
+                        "grayscale": null,
+                        "sepia": null,
+                        "invert": null,
+                        "blur": null,
+                        "brightness": null,
+                        "contrast": null,
+                        "saturate": null,
+                        "hueRotate": null,
+                        "opacity": null
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "border_right_style": "solid",
+                "border_right_width": 2,
+                "border_right_color": "#000000",
+                "border_bottom_style": "solid",
+                "border_bottom_width": 2,
+                "border_bottom_color": "#000000",
+                "border_left_width": 2,
+                "border_left_style": "solid",
+                "border_left_color": "#000000",
+                "padding_top": 28,
+                "padding_bottom": 28,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "type": "h1",
+                    "text": "40% off<br>everything",
+                    "formats": {
+                        "font_size": 44,
+                        "text_align": "left",
+                        "padding_left": 30
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FDF8F4",
+                "border_right_style": "solid",
+                "border_right_width": 2,
+                "border_right_color": "#000000",
+                "border_left_width": 2,
+                "border_left_style": "solid",
+                "border_left_color": "#000000",
+                "padding_top": 40,
+                "padding_bottom": 10,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "What are you waiting for, stock up on your faves",
+                    "formats": {
+                        "font_size": 18,
+                        "text_align": "left",
+                        "padding_left": 30
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FDF8F4",
+                "border_right_style": "solid",
+                "border_right_width": 2,
+                "border_right_color": "#000000",
+                "border_left_width": 2,
+                "border_left_style": "solid",
+                "border_left_color": "#000000",
+                "padding_bottom": 35,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "BlockElement",
+                    "template": "Block",
+                    "elements": [
+                        {
+                            "name": "ButtonElement",
+                            "template": "Button",
+                            "text": "SHOP NOW",
+                            "url": "#",
+                            "formats": {
+                                "align": "left",
+                                "font_family": "inherit",
+                                "font_weight": "400",
+                                "font_size": 16,
+                                "text_color": "#000000",
+                                "link_color": "#ffffff",
+                                "text_align": "center",
+                                "line_height": "1.5",
+                                "text_direction": "ltr",
+                                "background_color": "transparent",
+                                "background_position": "center",
+                                "background_size": "100%",
+                                "background_repeat": "no-repeat",
+                                "padding_top": 12,
+                                "padding_right": 28,
+                                "padding_bottom": 12,
+                                "padding_left": 28,
+                                "border_top_style": "solid",
+                                "border_top_width": 1,
+                                "border_top_color": "#000000",
+                                "border_right_style": "solid",
+                                "border_right_width": 1,
+                                "border_right_color": "#000000",
+                                "border_bottom_style": "solid",
+                                "border_bottom_width": 1,
+                                "border_bottom_color": "#000000",
+                                "border_left_width": 1,
+                                "border_left_style": "solid",
+                                "border_left_color": "#000000",
+                                "border_radius": "0.375rem"
+                            }
+                        }
+                    ],
+                    "formats": {
+                        "padding_left": 30
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FDF8F4",
+                "border_right_style": "solid",
+                "border_right_width": 2,
+                "border_right_color": "#000000",
+                "border_left_width": 2,
+                "border_left_style": "solid",
+                "border_left_color": "#000000",
+                "padding_bottom": 45,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ImageElement",
+                    "template": "Image",
+                    "src": "master/assets/image/SitewideSale/drink1.png",
+                    "alt": "Hero Product",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "padding_bottom": 0,
+                        "width": 703,
+                        "align": "center",
+                        "border_radius": 0
+                    },
+                    "effect": {
+                        "grayscale": null,
+                        "sepia": null,
+                        "invert": null,
+                        "blur": null,
+                        "brightness": null,
+                        "contrast": null,
+                        "saturate": null,
+                        "hueRotate": null,
+                        "opacity": null
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "border_right_style": "solid",
+                "border_right_width": 2,
+                "border_right_color": "#000000",
+                "border_left_width": 2,
+                "border_left_style": "solid",
+                "border_left_color": "#000000",
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "type": "h2",
+                    "text": "Best Sellers",
+                    "formats": {
+                        "font_size": 32,
+                        "text_align": "left",
+                        "padding_left": 30
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "border_top_style": "solid",
+                "border_top_width": 2,
+                "border_top_color": "#000000",
+                "border_right_style": "solid",
+                "border_right_width": 2,
+                "border_right_color": "#000000",
+                "border_bottom_style": "solid",
+                "border_bottom_width": 2,
+                "border_bottom_color": "#000000",
+                "border_left_width": 2,
+                "border_left_style": "solid",
+                "border_left_color": "#000000",
+                "padding_top": 35,
+                "padding_bottom": 15,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/SitewideSale/drink2.png",
+                                            "alt": "Pepper-Melon Bottle",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 300,
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Pepper-Melon",
+                                            "formats": {
+                                                "font_size": 28
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 40,
+                                        "padding_left": 25
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "A bitter bite tempered by a bit of sweetness.",
+                                            "formats": {
+                                                "font_size": 16
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_left": 25
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "SHOP NOW",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "left",
+                                                "font_family": "inherit",
+                                                "font_weight": "400",
+                                                "font_size": 16,
+                                                "text_color": "#000000",
+                                                "link_color": "#ffffff",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "transparent",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 10,
+                                                "padding_right": 26,
+                                                "padding_bottom": 10,
+                                                "padding_left": 26,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 1,
+                                                "border_top_color": "#000000",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 1,
+                                                "border_right_color": "#000000",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 1,
+                                                "border_bottom_color": "#000000",
+                                                "border_left_width": 1,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#000000",
+                                                "border_radius": "0.375rem"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 30,
+                                        "padding_bottom": 25,
+                                        "padding_left": 25
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "border_right_style": "solid",
+                "border_right_width": 2,
+                "border_right_color": "#000000",
+                "border_bottom_style": "solid",
+                "border_bottom_width": 2,
+                "border_bottom_color": "#000000",
+                "border_left_width": 2,
+                "border_left_style": "solid",
+                "border_left_color": "#000000",
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Floral–Orange",
+                                            "formats": {
+                                                "font_size": 28
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 40,
+                                        "padding_left": 25
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Imagine citrus meets herbaceous perennial meets heaven.",
+                                            "formats": {
+                                                "font_size": 16
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_left": 25
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "SHOP NOW",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "left",
+                                                "font_family": "inherit",
+                                                "font_weight": "400",
+                                                "font_size": 16,
+                                                "text_color": "#000000",
+                                                "link_color": "#ffffff",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "transparent",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 10,
+                                                "padding_right": 26,
+                                                "padding_bottom": 10,
+                                                "padding_left": 26,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 1,
+                                                "border_top_color": "#000000",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 1,
+                                                "border_right_color": "#000000",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 1,
+                                                "border_bottom_color": "#000000",
+                                                "border_left_width": 1,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#000000",
+                                                "border_radius": "0.375rem"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 30,
+                                        "padding_bottom": 25,
+                                        "padding_left": 25
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/SitewideSale/drink3.png",
+                                            "alt": "Floral-Orange Bottle",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 300,
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "border_right_style": "solid",
+                "border_right_width": 2,
+                "border_right_color": "#000000",
+                "border_bottom_style": "solid",
+                "border_bottom_width": 2,
+                "border_bottom_color": "#000000",
+                "border_left_width": 2,
+                "border_left_style": "solid",
+                "border_left_color": "#000000",
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/SitewideSale/drink4.png",
+                                            "alt": "Beet–Sumac Bottle",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 300,
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Beet–Sumac",
+                                            "formats": {
+                                                "font_size": 28
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 40,
+                                        "padding_left": 25
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Antioxidant tartness for a better day, your taste buds will ask for more.",
+                                            "formats": {
+                                                "font_size": 16
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_left": 25
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "SHOP NOW",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "left",
+                                                "font_family": "inherit",
+                                                "font_weight": "400",
+                                                "font_size": 16,
+                                                "text_color": "#000000",
+                                                "link_color": "#ffffff",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "transparent",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 10,
+                                                "padding_right": 26,
+                                                "padding_bottom": 10,
+                                                "padding_left": 26,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 1,
+                                                "border_top_color": "#000000",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 1,
+                                                "border_right_color": "#000000",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 1,
+                                                "border_bottom_color": "#000000",
+                                                "border_left_width": 1,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#000000",
+                                                "border_radius": "0.375rem"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 30,
+                                        "padding_bottom": 25,
+                                        "padding_left": 25
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "border_right_style": "solid",
+                "border_right_width": 2,
+                "border_right_color": "#000000",
+                "border_bottom_style": "solid",
+                "border_bottom_width": 2,
+                "border_bottom_color": "#000000",
+                "border_left_width": 2,
+                "border_left_style": "solid",
+                "border_left_color": "#000000",
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Chamo-Kale",
+                                            "formats": {
+                                                "font_size": 28
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 40,
+                                        "padding_left": 25
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Sweet relief and leafy greens, relax the mind and invigorate the soul.",
+                                            "formats": {
+                                                "font_size": 16
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_left": 25
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "SHOP NOW",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "left",
+                                                "font_family": "inherit",
+                                                "font_weight": "400",
+                                                "font_size": 16,
+                                                "text_color": "#000000",
+                                                "link_color": "#ffffff",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "transparent",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 10,
+                                                "padding_right": 26,
+                                                "padding_bottom": 10,
+                                                "padding_left": 26,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 1,
+                                                "border_top_color": "#000000",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 1,
+                                                "border_right_color": "#000000",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 1,
+                                                "border_bottom_color": "#000000",
+                                                "border_left_width": 1,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#000000",
+                                                "border_radius": "0.375rem"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 30,
+                                        "padding_bottom": 25,
+                                        "padding_left": 25
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/SitewideSale/drink5.png",
+                                            "alt": "Chamo-Kale Bottle",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 300,
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "border_right_style": "solid",
+                "border_right_width": 2,
+                "border_right_color": "#000000",
+                "border_bottom_style": "solid",
+                "border_bottom_width": 2,
+                "border_bottom_color": "#000000",
+                "border_left_width": 2,
+                "border_left_style": "solid",
+                "border_left_color": "#000000",
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "SocialIconsElement",
+                    "template": "SocialIcons",
+                    "items": [
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/SitewideSale/facebook.png",
+                            "label": "Facebook"
+                        },
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/SitewideSale/instagram.png",
+                            "label": "Instagram"
+                        },
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/SitewideSale/twitter.png",
+                            "label": "X"
+                        }
+                    ],
+                    "size": 40,
+                    "gap": 20,
+                    "align": "center",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat"
+                    }
+                }
+            ],
+            "formats": {
+                "padding_top": 40,
+                "padding_bottom": 20,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "BlockElement",
+                    "template": "Block",
+                    "elements": [
+                        {
+                            "name": "LinkElement",
+                            "template": "Link",
+                            "text": "View in browser",
+                            "url": "{WEB_VIEW_URL}",
+                            "formats": {
+                                "font_family": "Courier New",
+                                "font_size": 15,
+                                "text_color": "#000000",
+                                "text_align": "center",
+                                "text_decoration": "underline"
+                            }
+                        }
+                    ],
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "padding_top": 10,
+                "padding_bottom": 5,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Copyright (C) {CURRENT_YEAR}. All rights reserved.",
+                    "formats": {
+                        "font_family": "Courier New",
+                        "font_size": 13,
+                        "text_align": "center"
+                    }
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "If you no longer want to receive these emails, you can <a href=\"{UNSUBSCRIBE_URL}\">unsubscribe</a>.",
+                    "formats": {
+                        "font_family": "Courier New",
+                        "font_size": 13,
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "padding_top": 5,
+                "padding_bottom": 10,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#EEEDE9",
+        "padding_top": 40,
+        "padding_right": 0,
+        "padding_bottom": 40,
+        "padding_left": 0
+    },
+    "block_gap": 0,
+    "block_padding_bottom": 0,
+    "block_padding_top": 0,
+    "block_padding_right": 0,
+    "block_padding_left": 0
+}
