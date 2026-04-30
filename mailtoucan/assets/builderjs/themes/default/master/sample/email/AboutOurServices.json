@@ -1,0 +1,1105 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": null,
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ImageElement",
+                    "template": "Image",
+                    "src": "master/assets/image/about_our_services/logo.png",
+                    "alt": "",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "width": "100%",
+                        "align": "center",
+                        "border_radius": 0
+                    },
+                    "effect": {
+                        "grayscale": null,
+                        "sepia": null,
+                        "invert": null,
+                        "blur": null,
+                        "brightness": null,
+                        "contrast": null,
+                        "saturate": null,
+                        "hueRotate": null,
+                        "opacity": null
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#252525",
+                "padding_top": 50,
+                "padding_right": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "margin_right": "auto",
+                "margin_bottom": 0,
+                "margin_left": "auto",
+                "width": 98
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ImageElement",
+                    "template": "Image",
+                    "src": "master/assets/image/about_our_services/womenImage.png",
+                    "alt": "",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "width": "100%",
+                        "align": "center",
+                        "border_radius": 0
+                    },
+                    "effect": {
+                        "grayscale": null,
+                        "sepia": null,
+                        "invert": null,
+                        "blur": null,
+                        "brightness": null,
+                        "contrast": null,
+                        "saturate": null,
+                        "hueRotate": null,
+                        "opacity": null
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#a7aca3",
+                "padding_right": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "margin_right": "auto",
+                "margin_bottom": 0,
+                "margin_left": "auto",
+                "width": 820
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h1",
+                                            "text": "Crafting <br> the perfect <br> brand",
+                                            "formats": {
+                                                "font_family": "Arimo, Arial, Helvetica Neue, Helvetica, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 48,
+                                                "text_color": "#373737",
+                                                "text_align": "left"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "At Skaparlust Agency, we focus on crafting the perfect brands to take our clients' businesses to the next level. ",
+                                            "formats": {
+                                                "font_family": "Arimo, Arial, Helvetica Neue, Helvetica, sans-serif",
+                                                "font_size": 15,
+                                                "text_color": "#373737",
+                                                "text_align": "left"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 30,
+                                        "padding_bottom": 40
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Our experienced professionals aim to create a brand that accurately represents your values and goals.",
+                                            "formats": {
+                                                "font_family": "Arimo, Arial, Helvetica Neue, Helvetica, sans-serif",
+                                                "font_size": 15,
+                                                "text_color": "#373737",
+                                                "text_align": "left"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 30
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 40
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#a7aca3",
+                "background_position": "center",
+                "padding_top": 40,
+                "padding_right": 80,
+                "padding_bottom": 40,
+                "padding_left": 80,
+                "margin_top": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Our services",
+                                            "formats": {
+                                                "font_family": "Arimo, Arial, Helvetica Neue, Helvetica, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 30,
+                                                "text_color": "#373737",
+                                                "text_align": "left",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#a7aca3",
+                "background_position": "center",
+                "padding_top": 40,
+                "padding_right": 80,
+                "padding_bottom": 10,
+                "padding_left": 80,
+                "margin_top": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "DividerElement",
+                                            "template": "Divider",
+                                            "formats": {
+                                                "background_color": "#373737",
+                                                "height": 2,
+                                                "divider_style": "solid",
+                                                "padding_top": 10,
+                                                "padding_bottom": 10
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": 1100
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 40
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#a7aca3",
+                "background_position": "center",
+                "padding_right": 80,
+                "padding_bottom": 40,
+                "padding_left": 80,
+                "margin_top": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/about_our_services/eye.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": "100%",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": 150
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h3",
+                                            "text": "BRAND DEVELOPMENT",
+                                            "formats": {
+                                                "font_family": "Arimo, Arial, Helvetica Neue, Helvetica, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 20,
+                                                "text_color": "#373737",
+                                                "text_align": "left",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 20
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "With <strong>brand development</strong>, we work to understand your unique brand story and develop a strategy that ensures successful business outcomes.",
+                                            "formats": {
+                                                "font_family": "Arimo, Arial, Helvetica Neue, Helvetica, sans-serif",
+                                                "font_size": 15,
+                                                "text_color": "#373737",
+                                                "text_align": "left",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 40
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#a7aca3",
+                "background_position": "center",
+                "padding_right": 80,
+                "padding_bottom": 40,
+                "padding_left": 80,
+                "margin_top": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "DividerElement",
+                                            "template": "Divider",
+                                            "formats": {
+                                                "background_color": "#373737",
+                                                "height": 2,
+                                                "divider_style": "solid",
+                                                "padding_top": 10,
+                                                "padding_bottom": 10
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": 1100
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 40
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#a7aca3",
+                "background_position": "center",
+                "padding_right": 80,
+                "padding_bottom": 40,
+                "padding_left": 80,
+                "margin_top": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/about_our_services/message.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": "100%",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": 150
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h3",
+                                            "text": "MESSAGING",
+                                            "formats": {
+                                                "font_family": "Arimo, Arial, Helvetica Neue, Helvetica, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 20,
+                                                "text_color": "#373737",
+                                                "text_align": "left",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 20
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Our <strong>messaging</strong> services will help you craft a powerful message that captures your values, purpose and the uniqueness of your brand.",
+                                            "formats": {
+                                                "font_family": "Arimo, Arial, Helvetica Neue, Helvetica, sans-serif",
+                                                "font_size": 15,
+                                                "text_color": "#373737",
+                                                "text_align": "left",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 40
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#a7aca3",
+                "background_position": "center",
+                "padding_right": 80,
+                "padding_bottom": 40,
+                "padding_left": 80,
+                "margin_top": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "DividerElement",
+                                            "template": "Divider",
+                                            "formats": {
+                                                "background_color": "#373737",
+                                                "height": 2,
+                                                "divider_style": "solid",
+                                                "padding_top": 10,
+                                                "padding_bottom": 10
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": 1100
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 40
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#a7aca3",
+                "background_position": "center",
+                "padding_right": 80,
+                "padding_bottom": 40,
+                "padding_left": 80,
+                "margin_top": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/about_our_services/pencil.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": "100%",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": 150
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h3",
+                                            "text": "DESIGN",
+                                            "formats": {
+                                                "font_family": "Arimo, Arial, Helvetica Neue, Helvetica, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 20,
+                                                "text_color": "#373737",
+                                                "text_align": "left",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 20
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Our <strong>design</strong> services create the look, style and feel which conveys the intended message through engaging visuals",
+                                            "formats": {
+                                                "font_family": "Arimo, Arial, Helvetica Neue, Helvetica, sans-serif",
+                                                "font_size": 15,
+                                                "text_color": "#373737",
+                                                "text_align": "left",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 40
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#a7aca3",
+                "background_position": "center",
+                "padding_right": 80,
+                "padding_bottom": 40,
+                "padding_left": 80,
+                "margin_top": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "DividerElement",
+                                            "template": "Divider",
+                                            "formats": {
+                                                "background_color": "#373737",
+                                                "height": 2,
+                                                "divider_style": "solid",
+                                                "padding_top": 10,
+                                                "padding_bottom": 10
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": 1100
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 40
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#a7aca3",
+                "background_position": "center",
+                "padding_right": 80,
+                "padding_bottom": 40,
+                "padding_left": 80,
+                "margin_top": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Ready to get started?",
+                                            "formats": {
+                                                "font_family": "Arimo, Arial, Helvetica Neue, Helvetica, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 30,
+                                                "text_color": "#373737",
+                                                "text_align": "center",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "SCHEDULE A CALL",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "center",
+                                                "font_family": "Arimo, Arial, Helvetica Neue, Helvetica, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 17,
+                                                "text_color": "#ffffff",
+                                                "link_color": "#ffffff",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "#252525",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 16,
+                                                "padding_right": 28,
+                                                "padding_bottom": 16,
+                                                "padding_left": 28,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 2,
+                                                "border_top_color": "#252525",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 2,
+                                                "border_right_color": "#252525",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 2,
+                                                "border_bottom_color": "#252525",
+                                                "border_left_width": 2,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#252525",
+                                                "border_radius": 50
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 30
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 40
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#a7aca3",
+                "background_position": "center",
+                "padding_right": 80,
+                "padding_bottom": 40,
+                "padding_left": 80,
+                "margin_top": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "SocialIconsElement",
+                                            "template": "SocialIcons",
+                                            "items": [
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/facebook.png",
+                                                    "label": "Facebook"
+                                                },
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/linkedin.png",
+                                                    "label": "LinkedIn"
+                                                },
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/youtube.png",
+                                                    "label": "YouTube"
+                                                },
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/twitter.png",
+                                                    "label": "X"
+                                                }
+                                            ],
+                                            "size": 50,
+                                            "gap": 10,
+                                            "align": "center",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#252525",
+                                        "padding_top": 70
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 40
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#252525",
+                "background_position": "center",
+                "padding_right": 80,
+                "padding_bottom": 40,
+                "padding_left": 80,
+                "margin_top": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "LinkElement",
+                    "template": "Link",
+                    "text": "View in browser",
+                    "url": "{WEB_VIEW_URL}",
+                    "formats": {
+                        "font_family": "Work Sans, sans-serif",
+                        "font_size": 14,
+                        "text_color": "#ffffff",
+                        "text_align": "center",
+                        "text_decoration": "underline"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#252525",
+                "padding_top": 10,
+                "padding_bottom": 10
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Copyright (C) {CURRENT_YEAR}. All rights reserved.",
+                    "formats": {
+                        "font_family": "Work Sans, sans-serif",
+                        "font_size": 12,
+                        "text_color": "#ffffff",
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#252525",
+                "padding_top": 10,
+                "padding_bottom": 20
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "If you no longer want to receive these emails, you can <a href=\"{UNSUBSCRIBE_URL}\">unsubscribe</a>",
+                    "formats": {
+                        "font_family": "Work Sans, sans-serif",
+                        "font_size": 12,
+                        "text_color": "#ffffff",
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#252525",
+                "padding_top": 0,
+                "padding_bottom": 30
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#252525",
+        "padding_top": 0,
+        "padding_right": 60,
+        "padding_bottom": 0,
+        "padding_left": 60
+    },
+    "block_gap": 0,
+    "block_padding_bottom": 0,
+    "block_padding_top": 0,
+    "block_padding_right": 0,
+    "block_padding_left": 0
+}
