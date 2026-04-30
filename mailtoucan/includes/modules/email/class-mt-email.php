@@ -105,18 +105,54 @@ class MT_Email {
 
     public function queue_broadcast_campaign( $campaign_id, $brand_id ) {
         global $wpdb;
+
+        // ── Global + per-tenant email kill switch ────────────────────────────────
+        if ( get_option('mt_email_enabled', '1') !== '1' ) {
+            error_log("MailToucan: Global email kill switch is OFF. Campaign #{$campaign_id} blocked.");
+            return;
+        }
+        $brand_paused = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT email_paused FROM {$wpdb->prefix}mt_brands WHERE id = %d", $brand_id
+        ));
+        if ( $brand_paused ) {
+            error_log("MailToucan: Brand #{$brand_id} has email paused by Super Admin. Campaign #{$campaign_id} blocked.");
+            return;
+        }
+        // ────────────────────────────────────────────────────────────────────────
+
         $campaign = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$wpdb->prefix}mt_campaigns WHERE id = %d", $campaign_id));
         if ( ! $campaign ) return;
-        
-        $config = json_decode($campaign->config_json, true) ?: [];
-        $audience = $config['audience'] ?? 'all';
+
+        // ── Email quota check ────────────────────────────────────────────────────
+        // Use brand-level override first, fall back to package default.
+        $brand_row   = $wpdb->get_row($wpdb->prepare(
+            "SELECT email_limit, package_slug FROM {$wpdb->prefix}mt_brands WHERE id = %d", $brand_id
+        ));
+        $email_limit = intval($brand_row->email_limit ?? 1000);
+
+        // Count emails already sent in the current calendar month
+        $first_of_month   = gmdate('Y-m-01 00:00:00');
+        $sent_this_month  = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->prefix}mt_email_sends WHERE brand_id = %d AND sent_at >= %s",
+            $brand_id, $first_of_month
+        ));
+        $remaining_quota = max(0, $email_limit - $sent_this_month);
+
+        if ( $remaining_quota <= 0 ) {
+            error_log( "MailToucan: Brand #{$brand_id} has hit their monthly email limit ({$email_limit} sent). Campaign #{$campaign_id} was blocked." );
+            return; // Hard stop — nothing queued
+        }
+        // ────────────────────────────────────────────────────────────────────────
+
+        $config      = json_decode($campaign->config_json, true) ?: [];
+        $audience    = $config['audience'] ?? 'all';
         $location_id = $config['location_id'] ?? 'all';
-        $tag = $config['audience_tag'] ?? '';
+        $tag         = $config['audience_tag'] ?? '';
 
         $leads_table = $wpdb->prefix . 'mt_guest_leads';
         $queue_table = $wpdb->prefix . 'mt_email_queue';
 
-        $query = "SELECT id, email FROM $leads_table WHERE brand_id = %d AND status NOT IN ('unsubscribed', 'trashed', 'deleted')";
+        $query  = "SELECT id, email FROM $leads_table WHERE brand_id = %d AND status NOT IN ('unsubscribed', 'trashed', 'deleted')";
         $params = [$brand_id];
 
         if ( $location_id !== 'all' ) {
@@ -133,8 +169,14 @@ class MT_Email {
             $params[] = $tag;
         }
 
+        // Cap the result set to the remaining quota so we never exceed the limit
+        $query   .= " LIMIT %d";
+        $params[] = $remaining_quota;
+
         $leads = $wpdb->get_results($wpdb->prepare($query, ...$params));
-        
+        if ( empty($leads) ) return;
+
+        $queued = 0;
         foreach ( $leads as $lead ) {
             $wpdb->insert($queue_table, [
                 'brand_id'    => $brand_id,
@@ -144,6 +186,11 @@ class MT_Email {
                 'status'      => 'pending',
                 'send_after'  => current_time('mysql')
             ]);
+            $queued++;
+        }
+
+        if ( $queued < count($leads) || $remaining_quota === count($leads) ) {
+            error_log( "MailToucan: Brand #{$brand_id} quota almost full. Queued {$queued} of possible audience for campaign #{$campaign_id}. Limit: {$email_limit}, Sent this month: {$sent_this_month}." );
         }
     }
 
