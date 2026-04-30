@@ -1,0 +1,4 @@
+<div style="<%- formatter.toStyleStringAll(['padding_top', 'padding_right', 'padding_bottom', 'padding_left']) %>">
+    <div style="<%- formatter.toStyleStringAll(['background_color', 'height']) %><% if (formatter && formatter.getFormat && formatter.getFormat('divider_style')) { %><% var _h = formatter.getFormat('height') || 1; var _style = formatter.getFormat('divider_style'); var _bw = (_style === 'double') ? Math.max(4, _h*2) : _h; %> border-top: <%- _bw %>px <%- _style %> <%- formatter.getFormat('background_color') || '#000' %>; background-color: transparent; height: 0;<% } %><% if (formatter && formatter.getFormat && formatter.getFormat('divider_css')) { %><%- formatter.getFormat('divider_css') %><% } %>"></div>
+</div>
+    
