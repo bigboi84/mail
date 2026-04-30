@@ -1,0 +1,83 @@
+<% if (fieldType === 'text') { %>
+    <div class="">
+        <label class="form-label" inline-edit="fieldLabel"><%- fieldLabel %></label>
+        <input type="text" name="<%- fieldName %>" value="<%- fieldValue %>" placeholder="<%- fieldPlaceholder %>" class="form-control" />
+    </div>
+    
+<% } else if (fieldType === 'textarea') { %>
+    <div class="">
+        <label class="form-label" inline-edit="fieldLabel"><%- fieldLabel %></label>
+        <textarea name="<%- fieldName %>" placeholder="<%- fieldPlaceholder %>" class="form-control"><%- fieldValue %></textarea>
+    </div>
+
+<% } else if (fieldType === 'number') { %>
+    <div class="">
+        <label class="form-label" inline-edit="fieldLabel"><%- fieldLabel %></label>
+        <input type="number" name="<%- fieldName %>" value="<%- fieldValue %>" placeholder="<%- fieldPlaceholder %>" class="form-control" />
+    </div>
+
+<% } else if (fieldType === 'email') { %>
+    <div class="">
+        <label class="form-label" inline-edit="fieldLabel"><%- fieldLabel %></label>
+        <input type="email" name="<%- fieldName %>" value="<%- fieldValue %>" placeholder="<%- fieldPlaceholder %>" class="form-control" />
+    </div>
+
+<% } else if (fieldType === 'date') { %>
+    <div class="">
+        <label class="form-label" inline-edit="fieldLabel"><%- fieldLabel %></label>
+        <input type="date" name="<%- fieldName %>" value="<%- fieldValue %>" class="form-control" />
+    </div>
+
+<% } else if (fieldType === 'datetime') { %>
+    <div class="">
+        <label class="form-label" inline-edit="fieldLabel"><%- fieldLabel %></label>
+        <input type="datetime-local" name="<%- fieldName %>" value="<%- fieldValue %>" class="form-control" />
+    </div>
+
+<% } else if (fieldType === 'dropdown') { %>
+    <div class="">
+        <label class="form-label" inline-edit="fieldLabel"><%- fieldLabel %></label>
+        <select name="<%- fieldName %>" class="form-select">
+            <% fieldOptions.forEach(function(opt) { %>
+                <option value="<%- opt.value %>" <%= fieldValue == opt.value ? "selected" : "" %>><%- opt.text %></option>
+            <% }); %>
+        </select>
+    </div>
+<% } else if (fieldType === 'multiselect') { %>
+    <div class="">
+        <label class="form-label" inline-edit="fieldLabel"><%- fieldLabel %></label>
+        <select name="<%- fieldName %>" class="form-select" multiple>
+            <% fieldOptions.forEach(function(opt) { %>
+                <option value="<%- opt.value %>" <%= fieldValue == opt.value ? "selected" : "" %>><%- opt.text %></option>
+            <% }); %>
+        </select>
+    </div>
+
+<% } else if (fieldType === 'checkbox') { %>
+    <div class="">
+        <label class="form-label" inline-edit="fieldLabel"><%- fieldLabel %></label>
+        <% fieldOptions.forEach(function(opt) { %>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="<%- fieldName %>[]" value="<%- opt.value %>" id="<%- fieldName %>_<%- opt.value %>" <%= (Array.isArray(fieldValue) && fieldValue.includes(opt.value)) ? "checked" : "" %> />
+                <label class="form-check-label" for="<%- fieldName %>_<%- opt.value %>"><%- opt.text %></label>
+            </div>
+        <% }); %>
+    </div>
+
+<% } else if (fieldType === 'radio') { %>
+    <div class="">
+        <label class="form-label" inline-edit="fieldLabel"><%- fieldLabel %></label>
+        <% fieldOptions.forEach(function(opt) { %>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="<%- fieldName %>" value="<%- opt.value %>" id="<%- fieldName %>_<%- opt.value %>" <%= (fieldValue == opt.value) ? "checked" : "" %> />
+                <label class="form-check-label" for="<%- fieldName %>_<%- opt.value %>"><%- opt.text %></label>
+            </div>
+        <% }); %>
+    </div>
+
+<% } else { %>
+    <div class="">
+        <label class="form-label" inline-edit="fieldLabel"><%- fieldLabel %></label>
+        <input type="text" name="<%- fieldName %>" value="<%- fieldValue %>" placeholder="<%- fieldPlaceholder %>" class="form-control" />
+    </div>
+<% } %>
