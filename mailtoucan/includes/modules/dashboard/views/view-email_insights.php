@@ -49,25 +49,37 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
         --mt-brand: <?php echo esc_html($brand_color); ?>;
         --mt-accent: <?php echo esc_html($mt_palette['accent']); ?>;
     }
+    .vei-page-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+    .vei-page-title{font-size:22px;font-weight:900;color:#111827;display:flex;align-items:center;gap:8px;}
+    .vei-page-sub{font-size:13px;color:#6b7280;margin-top:3px;}
+    .vei-new-btn{background:var(--mt-brand);color:white;border:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:8px;text-decoration:none;transition:filter .15s;}
+    .vei-new-btn:hover{filter:brightness(1.1);}
+
+    /* Mobile */
+    @media(max-width:768px){
+        .vei-page-header{flex-direction:column;align-items:flex-start;}
+        .vei-page-title{font-size:18px;}
+        .vei-new-btn{width:100%;justify-content:center;}
+        .grid.grid-cols-3{grid-template-columns:1fr!important;}
+        .grid.grid-cols-4{grid-template-columns:1fr 1fr!important;}
+        .grid.grid-cols-2{grid-template-columns:1fr!important;}
+        .max-w-7xl{max-width:100%;}
+        canvas{max-width:100%;}
+        .overflow-x-auto{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+        table{min-width:500px;}
+    }
 </style>
 
 <div class="max-w-7xl mx-auto">
-    <header class="mb-10 flex justify-between items-end bg-white p-8 rounded-3xl shadow-sm border border-gray-200 relative overflow-hidden">
-        <div class="relative z-10">
-            <p class="text-sm font-bold uppercase tracking-widest text-gray-400 mb-1">Email Marketing Engine</p>
-            <h1 class="text-3xl font-black text-gray-900 flex items-center gap-3">Dashboard Insights</h1>
-            <p class="text-gray-500 text-sm mt-2 max-w-lg">Track your delivery rates, guest engagement, and overall campaign performance across all automated and manual broadcasts.</p>
+    <div class="vei-page-header">
+        <div>
+            <div class="vei-page-title"><i class="fa-solid fa-chart-line" style="color:var(--mt-brand);"></i> Email Insights</div>
+            <div class="vei-page-sub">Track delivery rates, open rates, and campaign performance.</div>
         </div>
-        <div class="relative z-10">
-            <a href="?view=campaigns" class="text-white px-6 py-3 rounded-xl font-bold shadow-lg transition flex items-center gap-2 hover:opacity-90" style="background-color: var(--mt-brand);">
-                <i class="fa-solid fa-paper-plane"></i> New Broadcast
-            </a>
-        </div>
-        
-        <div class="absolute right-0 bottom-0 opacity-5 pointer-events-none translate-x-1/4 translate-y-1/4">
-            <i class="fa-solid fa-chart-line" style="font-size: 250px; color: var(--mt-brand);"></i>
-        </div>
-    </header>
+        <a href="?view=campaigns" class="vei-new-btn">
+            <i class="fa-solid fa-paper-plane"></i> New Broadcast
+        </a>
+    </div>
 
     <div class="grid grid-cols-3 gap-6 mb-8">
         <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm relative overflow-hidden group hover:border-gray-300 transition">
