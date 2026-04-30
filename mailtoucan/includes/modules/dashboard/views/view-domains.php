@@ -6,51 +6,87 @@ $table_domains = $wpdb->prefix . 'mt_email_domains';
 $domains = $wpdb->get_results( $wpdb->prepare("SELECT * FROM $table_domains WHERE brand_id = %d ORDER BY created_at DESC", $brand->id) );
 ?>
 
-<header class="mb-8 flex justify-between items-end">
+<style>
+    .dom-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+    .dom-title{font-size:22px;font-weight:900;color:#111827;}
+    .dom-sub{font-size:13px;color:#6b7280;margin-top:3px;}
+    .dom-add-btn{background:var(--mt-primary);color:white;border:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:8px;transition:all .15s;}
+    .dom-add-btn:hover{filter:brightness(1.1);}
+    .dom-card{background:white;border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden;margin-bottom:24px;}
+    .dom-table{width:100%;border-collapse:collapse;}
+    .dom-table th{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#9ca3af;font-weight:700;padding:12px 16px;border-bottom:2px solid #f3f4f6;text-align:left;background:#fafafa;}
+    .dom-table td{font-size:13px;padding:14px 16px;border-bottom:1px solid #f3f4f6;color:#374151;vertical-align:middle;}
+    .dom-table tr:last-child td{border-bottom:none;}
+    .dom-table tr:hover td{background:#f9fafb;}
+    .dom-name{font-size:15px;font-weight:700;color:#111827;display:flex;align-items:center;gap:8px;}
+    .dom-badge-ok{background:#dcfce7;color:#15803d;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;display:inline-flex;align-items:center;gap:5px;}
+    .dom-badge-pend{background:#fef3c7;color:#92400e;font-size:10px;font-weight:700;padding:3px 10px;border-radius:99px;display:inline-flex;align-items:center;gap:5px;}
+    .dom-action-link{font-size:12px;font-weight:700;color:var(--mt-primary);background:none;border:none;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:6px;transition:background .15s;}
+    .dom-action-link:hover{background:#f0f9ff;}
+    .dom-del-btn{font-size:12px;color:#dc2626;background:none;border:none;cursor:pointer;font-family:inherit;padding:6px 8px;border-radius:6px;transition:background .15s;}
+    .dom-del-btn:hover{background:#fee2e2;}
+    .dom-empty{text-align:center;padding:60px 20px;color:#9ca3af;font-size:14px;}
+    .dom-info-banner{background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:12px;padding:16px 20px;display:flex;align-items:flex-start;gap:12px;margin-bottom:20px;font-size:13px;color:#1e40af;}
+
+    /* Mobile */
+    @media(max-width:768px){
+        .dom-header{flex-direction:column;align-items:flex-start;}
+        .dom-title{font-size:18px;}
+        .dom-add-btn{width:100%;justify-content:center;}
+        .dom-card{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+        .dom-table{min-width:540px;}
+        .dom-info-banner{flex-direction:column;gap:8px;}
+    }
+</style>
+
+<!-- Info banner -->
+<div class="dom-info-banner">
+    <i class="fa-solid fa-circle-info" style="font-size:18px;flex-shrink:0;margin-top:1px;"></i>
+    <div><strong>Why authenticate your domain?</strong> Sending from a verified domain protects your reputation, prevents spam filtering, and lets guests see your brand name — not "via mailtoucan.com" — in their inbox.</div>
+</div>
+
+<div class="dom-header">
     <div>
-        <h1 class="text-2xl font-bold text-gray-900">Sender Domains</h1>
-        <p class="text-gray-500 text-sm">Authenticate your custom domain to ensure your marketing emails land in the inbox, not the spam folder.</p>
+        <div class="dom-title"><i class="fa-solid fa-globe" style="color:var(--mt-primary);margin-right:6px;"></i>Sender Domains</div>
+        <div class="dom-sub">Authenticate your custom domain to ensure your emails land in the inbox, not the spam folder.</div>
     </div>
-    <button onclick="openAddDomainModal()" class="bg-indigo-600 text-white px-5 py-2.5 rounded-lg font-bold shadow-md hover:bg-indigo-700 transition flex items-center gap-2">
+    <button onclick="openAddDomainModal()" class="dom-add-btn">
         <i class="fa-solid fa-plus"></i> Add Domain
     </button>
-</header>
+</div>
 
-<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-20">
-    <table class="w-full text-left border-collapse">
-        <thead class="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-400 uppercase tracking-wider">
-            <tr>
-                <th class="p-4 pl-6">Domain Name</th>
-                <th class="p-4">Status</th>
-                <th class="p-4">Added On</th>
-                <th class="p-4 text-right pr-6">Action</th>
-            </tr>
-        </thead>
-        <tbody class="divide-y divide-gray-100">
+<div class="dom-card">
+    <table class="dom-table">
+        <thead><tr>
+            <th>Domain Name</th>
+            <th>Status</th>
+            <th>Added On</th>
+            <th style="text-align:right;">Actions</th>
+        </tr></thead>
+        <tbody>
             <?php if(empty($domains)): ?>
-                <tr><td colspan="4" class="p-12 text-center text-gray-400 italic">No domains authenticated yet. Click "Add Domain" to begin.</td></tr>
+                <tr><td colspan="4" class="dom-empty"><i class="fa-solid fa-globe" style="font-size:32px;color:#d1d5db;display:block;margin-bottom:12px;"></i>No domains authenticated yet.<br>Click <strong>Add Domain</strong> to begin.</td></tr>
             <?php else: ?>
-                <?php foreach($domains as $dom): 
+                <?php foreach($domains as $dom):
                     $dkim = json_decode($dom->dkim_tokens, true) ?: [];
                 ?>
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="p-4 pl-6 font-bold text-gray-900 text-lg"><i class="fa-solid fa-globe text-gray-400 mr-2 text-sm"></i><?php echo esc_html($dom->domain_name); ?></td>
-                    <td class="p-4">
+                <tr>
+                    <td><div class="dom-name"><i class="fa-solid fa-globe" style="color:#d1d5db;font-size:16px;"></i><?php echo esc_html($dom->domain_name); ?></div></td>
+                    <td>
                         <?php if($dom->status === 'verified'): ?>
-                            <span class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full flex items-center w-max gap-1"><i class="fa-solid fa-check-circle"></i> Verified</span>
+                            <span class="dom-badge-ok"><i class="fa-solid fa-check-circle"></i> Verified</span>
                         <?php else: ?>
-                            <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-3 py-1 rounded-full flex items-center w-max gap-1"><i class="fa-solid fa-triangle-exclamation"></i> Pending DNS</span>
+                            <span class="dom-badge-pend"><i class="fa-solid fa-triangle-exclamation"></i> Pending DNS</span>
                         <?php endif; ?>
                     </td>
-                    <td class="p-4 text-sm text-gray-500 font-medium"><?php echo date('M d, Y', strtotime($dom->created_at)); ?></td>
-                    <td class="p-4 text-right pr-6 flex justify-end gap-3 items-center">
-                        <?php 
-                            // Change button text and icon based on status
+                    <td><?php echo date('M d, Y', strtotime($dom->created_at)); ?></td>
+                    <td style="text-align:right;">
+                        <?php
                             $btn_text = $dom->status === 'verified' ? 'View DNS' : 'Setup DNS';
                             $btn_icon = $dom->status === 'verified' ? 'fa-eye' : 'fa-server';
                         ?>
-                        <button onclick="openDnsModal('<?php echo esc_js($dom->domain_name); ?>', <?php echo htmlspecialchars(wp_json_encode($dkim), ENT_QUOTES, 'UTF-8'); ?>, <?php echo $dom->id; ?>)" class="text-indigo-600 font-bold text-sm hover:underline"><i class="fa-solid <?php echo $btn_icon; ?> mr-1"></i> <?php echo $btn_text; ?></button>
-                        <button onclick="promptDeleteDomain(<?php echo $dom->id; ?>)" class="text-red-400 hover:text-red-600 transition ml-3" title="Remove Domain"><i class="fa-solid fa-trash"></i></button>
+                        <button onclick="openDnsModal('<?php echo esc_js($dom->domain_name); ?>', <?php echo htmlspecialchars(wp_json_encode($dkim), ENT_QUOTES, 'UTF-8'); ?>, <?php echo $dom->id; ?>)" class="dom-action-link"><i class="fa-solid <?php echo $btn_icon; ?>"></i> <?php echo $btn_text; ?></button>
+                        <button onclick="promptDeleteDomain(<?php echo $dom->id; ?>)" class="dom-del-btn" title="Remove Domain"><i class="fa-solid fa-trash"></i></button>
                     </td>
                 </tr>
                 <?php endforeach; ?>
