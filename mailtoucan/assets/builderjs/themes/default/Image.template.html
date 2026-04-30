@@ -1,0 +1,7 @@
+<div style="text-align: <%- formatter.getFormat("align", "center") %>;">
+    <img src="<%= src %>" alt="<%= alt %>"
+        style="
+            <%- formatter.toStyleStringAll() %>
+            <% if (effect) { %>filter: grayscale(<%= effect.grayscale %>%) sepia(<%= effect.sepia %>%) invert(<%= effect.invert %>%) blur(<%= effect.blur %>px) brightness(<%= effect.brightness %>%) contrast(<%= effect.contrast %>%) saturate(<%= effect.saturate %>%) hue-rotate(<%= effect.hueRotate %>deg) opacity(<%= effect.opacity %>%);<% } %>
+        ">
+</div>
