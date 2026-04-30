@@ -1,0 +1,19 @@
+<div width="100%" builder-element="BlockElement">
+    <div style="text-align: <%- align %>;">
+        <div class="" style="display: inline-block;">
+            <div builder-element="IconsContainerElement"
+                style="display: flex; gap: <%= gap %>px; <%- formatter.toStyleStringAll() %>">
+                <% items.forEach(function(item) { %>
+                    <div style="display: inline-block;">
+                        <a builder-element="IconLinkElement" data-value="twitter" href="<%= item.link %>"
+                            class="">
+                            <span class="social-icon" inline-edit="text">
+                                <img alt="<%= item.label %>" src="<%= item.image_url %>" width="<%- size %>px" height="<%- size %>px">
+                            </span>
+                        </a>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+</div>
