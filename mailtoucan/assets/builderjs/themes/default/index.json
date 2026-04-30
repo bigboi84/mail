@@ -1,0 +1,43 @@
+{
+    "name": "default",
+    "title": "Default Theme",
+    "description": "ACM Default Theme",
+    "pages": [
+        "Page",
+        "Form",
+        "Carousel"
+    ],
+    "templates": [
+        "Block",
+        "Grid",
+        "Cell",
+        "P",
+        "Link",
+        "H1",
+        "H2",
+        "H3",
+        "H4",
+        "H5",
+        "Heading",
+        "Image",
+        "Label",
+        "Button",
+        "Alert",
+        "RSS",
+        "Youtube",
+        "Menu",
+        "HTML",
+        "Video",
+        "SocialIcons",
+        "TextInput",
+        "Divider",
+        "Field",
+        "SubmitButton",
+        "Checkout",
+        "CheckoutControl",
+        "CheckoutSimple",
+        "CheckoutSimpleControl",
+        "FormBlock",
+        "CarouselSettingsControl"
+    ]
+}
