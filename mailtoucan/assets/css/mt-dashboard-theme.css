@@ -1,0 +1,37 @@
+/* Shared dashboard shell theme variables and primitives */
+:root {
+    --mt-primary: #fcc753;
+    --mt-sidebar-bg: #1a232e;
+    --mt-sidebar-hover: #1f2937;
+    --mt-page-bg: #f3f4f6;
+    --mt-card-bg: #ffffff;
+    --mt-text-primary: #111827;
+}
+
+body {
+    background: var(--mt-page-bg);
+    color: var(--mt-text-primary);
+}
+
+.main-content {
+    background: var(--mt-page-bg);
+}
+
+.mt-card {
+    background: var(--mt-card-bg);
+    border: 1px solid rgba(17, 24, 39, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(17, 24, 39, 0.04);
+}
+
+.mt-btn-primary {
+    background: var(--mt-primary);
+    color: #111827;
+    border: 1px solid var(--mt-primary);
+    border-radius: 12px;
+    font-weight: 700;
+}
+
+.mt-btn-primary:hover {
+    opacity: 0.92;
+}
