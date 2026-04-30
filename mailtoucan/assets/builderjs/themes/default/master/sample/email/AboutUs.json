@@ -1,0 +1,1031 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": null,
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/AboutUs/AboutUsLogo.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "max_width": "100%",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": 165
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h1",
+                                            "text": "Get ready to unleash your dog’s potential",
+                                            "formats": {
+                                                "font_family": "Merriweather, Georgia, \"Times New Roman\", serif",
+                                                "font_weight": "bold",
+                                                "font_size": 35,
+                                                "text_align": "left",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 50
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/AboutUs/AboutUsHeader.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "cover",
+                                                "background_repeat": "no-repeat",
+                                                "width": "100%",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "margin_right": -50,
+                                        "margin_left": -50,
+                                        "width": 760
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h1",
+                                            "text": "How does your dog measure up?",
+                                            "formats": {
+                                                "font_family": "Merriweather, Georgia, \"Times New Roman\", serif",
+                                                "font_weight": "bold",
+                                                "font_size": 32,
+                                                "text_align": "left",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "When it comes to your dog’s performance, <em><strong>Fetcharang</strong></em> gives you all you need to know and then some",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_size": 16,
+                                                "text_align": "left",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 50
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "DividerElement",
+                                            "template": "Divider",
+                                            "formats": {
+                                                "background_color": "#D0D0D0",
+                                                "height": 1,
+                                                "divider_style": "solid",
+                                                "padding_top": 10,
+                                                "padding_bottom": 10
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 20,
+                "padding_right": 48,
+                "padding_bottom": 20,
+                "padding_left": 48,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Same dog, <br> new tricks ",
+                                            "formats": {
+                                                "font_family": "Merriweather, Georgia, \"Times New Roman\", serif",
+                                                "font_weight": "bold",
+                                                "font_size": 60,
+                                                "text_align": "left",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "With our innovative training techniques and methods, your furry friend can learn new behaviors that will amaze you!",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_size": 16,
+                                                "text_align": "left",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 20,
+                                        "padding_bottom": 20
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "A few services we offer are obedience training and behavior modification.",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_size": 16,
+                                                "text_align": "left",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 20,
+                                        "padding_bottom": 20
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "Tell Me More",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "center",
+                                                "font_family": "inherit",
+                                                "font_weight": "600",
+                                                "font_size": 20,
+                                                "text_color": "#000000",
+                                                "link_color": "#ffffff",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "#CBDC46",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 16,
+                                                "padding_right": 28,
+                                                "padding_bottom": 16,
+                                                "padding_left": 28,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 1,
+                                                "border_top_color": "#CBDC46",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 1,
+                                                "border_right_color": "#CBDC46",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 1,
+                                                "border_bottom_color": "#CBDC46",
+                                                "border_left_width": 1,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#CBDC46",
+                                                "border_radius": 30,
+                                                "width": 160
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#FFFFFF",
+                                        "padding_bottom": 40
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/AboutUs/dog.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "max_width": "100%",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 20,
+                "padding_right": 48,
+                "padding_bottom": 20,
+                "padding_left": 48,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/AboutUs/playing.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "max_width": "100%",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "We Care ",
+                                            "formats": {
+                                                "font_family": "Merriweather, Georgia, \"Times New Roman\", serif",
+                                                "font_weight": "bold",
+                                                "font_size": 32,
+                                                "text_align": "left",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 20
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "<strong><em>Fetcharang</em></strong> has an exceptional customer support team with live tech support available during normal business hours.",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_size": 16,
+                                                "text_align": "left",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 20
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Visit us at: <a href=\"https://fetcharang.com\" style=\"color: inherit; text-decoration: underline;\">Fetcharang.com</a>",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_size": 16,
+                                                "text_align": "left",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#f7f7f7",
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "DividerElement",
+                                            "template": "Divider",
+                                            "formats": {
+                                                "background_color": "#D0D0D0",
+                                                "height": 1,
+                                                "divider_style": "solid",
+                                                "padding_top": 10,
+                                                "padding_bottom": 10
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#f7f7f7",
+                "padding_top": 20,
+                "padding_right": 48,
+                "padding_bottom": 20,
+                "padding_left": 48,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "<strong>Call us:</strong> 1-800-555-BARK",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_size": 16,
+                                                "text_align": "center",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 20,
+                                        "padding_left": 220
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "<strong>Hours of operation:</strong> Mon - Fri 8am EST - 6pm EST",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_size": 16,
+                                                "text_align": "center",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_left": 150
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "SocialIconsElement",
+                                            "template": "SocialIcons",
+                                            "items": [
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/facebook.png",
+                                                    "label": "Facebook"
+                                                },
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/instagram.png",
+                                                    "label": "Instagram"
+                                                },
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/twitter.png",
+                                                    "label": "Twitter"
+                                                },
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/youtube.png",
+                                                    "label": "YouTube"
+                                                }
+                                            ],
+                                            "size": 50,
+                                            "gap": 10,
+                                            "align": "center",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 20
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#f7f7f7",
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "DividerElement",
+                                            "template": "Divider",
+                                            "formats": {
+                                                "background_color": "#D0D0D0",
+                                                "height": 1,
+                                                "divider_style": "solid",
+                                                "padding_top": 10,
+                                                "padding_bottom": 10
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#f7f7f7",
+                "padding_top": 20,
+                "padding_right": 48,
+                "padding_bottom": 20,
+                "padding_left": 48,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/AboutUs/logo2.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "max_width": "100%",
+                                                "align": "left",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "LinkElement",
+                                            "template": "Link",
+                                            "text": "View in browser",
+                                            "url": "{WEB_VIEW_URL}",
+                                            "formats": {
+                                                "font_family": "Work Sans, sans-serif",
+                                                "font_size": 14,
+                                                "text_color": "#000000",
+                                                "text_align": "right",
+                                                "text_decoration": "underline"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#f7f7f7",
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Copyright (C) {CURRENT_YEAR}. All rights reserved.",
+                                            "formats": {
+                                                "font_family": "Work Sans, sans-serif",
+                                                "font_size": 12,
+                                                "text_color": "#000000",
+                                                "text_align": "right"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#f7f7f7",
+                                        "padding_top": 10,
+                                        "padding_bottom": 20
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "If you no longer want to receive these emails, you can <a href=\"{UNSUBSCRIBE_URL}\">unsubscribe</a>",
+                                            "formats": {
+                                                "font_family": "Work Sans, sans-serif",
+                                                "font_size": 12,
+                                                "text_color": "#000000",
+                                                "text_align": "right"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#f7f7f7"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50,
+                                "padding_left": 150
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#f7f7f7",
+                "padding_top": 20,
+                "padding_right": 48,
+                "padding_bottom": 20,
+                "padding_left": 48,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#F4F4F4"
+    },
+    "block_gap": 0,
+    "container_width": "medium",
+    "block_padding_bottom": 20,
+    "block_padding_top": 20,
+    "block_padding_right": 20,
+    "block_padding_left": 20
+}
