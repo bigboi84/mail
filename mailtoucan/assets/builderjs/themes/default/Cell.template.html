@@ -1,0 +1,27 @@
+<div style="<%
+    var width = formatter.getFormat('width', 'auto');
+    var widthStyle = 'width: auto;';
+    if (width !== 'auto' && width !== null && width !== '') {
+        var numWidth = parseFloat(width);
+        if (!isNaN(numWidth) && typeof width === 'number') {
+            widthStyle = 'width: ' + numWidth + '%;';
+        } else if (!isNaN(numWidth) && typeof width === 'string' && width.indexOf('%') === -1 && width.indexOf('px') === -1) {
+            widthStyle = 'width: ' + numWidth + '%;';
+        } else {
+            widthStyle = 'width: ' + width + (typeof width === 'number' || width.indexOf('%') > -1 || width.indexOf('px') > -1 ? '' : '%') + ';';
+        }
+    }
+    
+    var height = formatter.getFormat('height');
+    var heightStyle = '';
+    if (height !== null && height !== '' && height !== undefined) {
+        heightStyle = 'height: ' + height + (typeof height === 'number' ? 'px' : '') + ';';
+    }
+    
+    var otherStyles = formatter.toStyleStringAll().replace(/width:\s*[^;]+;?\s*/gi, '').replace(/height:\s*[^;]+;?\s*/gi, '').trim();
+    var finalStyle = (widthStyle + ' ' + heightStyle + ' ' + otherStyles).trim();
+%><%- finalStyle %>">
+    <% if (blocks && blocks.length) { blocks.forEach(function(block) { %>
+        <%- block %>
+    <% }); } %>
+</div>
