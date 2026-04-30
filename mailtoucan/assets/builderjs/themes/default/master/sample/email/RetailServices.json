@@ -1,0 +1,788 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": null,
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/logo.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 200,
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": 0,
+                                                "sepia": 0,
+                                                "invert": 0,
+                                                "blur": 0,
+                                                "brightness": 100,
+                                                "contrast": 100,
+                                                "saturate": 100,
+                                                "hueRotate": 0,
+                                                "opacity": 100
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "BOOK",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "right",
+                                                "font_family": "inherit",
+                                                "font_weight": "600",
+                                                "font_size": 18,
+                                                "text_color": "#000000",
+                                                "link_color": "#ffffff",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "#FFFFFF",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 12,
+                                                "padding_right": 50,
+                                                "padding_bottom": 12,
+                                                "padding_left": 50,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 1,
+                                                "border_top_color": "#000000",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 1,
+                                                "border_right_color": "#000000",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 1,
+                                                "border_bottom_color": "#000000",
+                                                "border_left_width": 1,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#000000",
+                                                "border_radius": 0
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 0
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 30,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 50
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "type": "h1",
+                    "text": "Headline<br>(We suggest 2 lines)",
+                    "formats": {
+                        "font_size": 42,
+                        "line_height": 1.2
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Use this space to add context to the headline, provide an intro to the email, and include a transition into the below. We suggest about 3 lines of text.",
+                    "formats": {
+                        "font_size": 18
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 40
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/ProductImageSquare.svg",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": "100%",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": 0,
+                                                "sepia": 0,
+                                                "invert": 0,
+                                                "blur": 0,
+                                                "brightness": 100,
+                                                "contrast": 100,
+                                                "saturate": 100,
+                                                "hueRotate": 0,
+                                                "opacity": 100
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 50,
+                                "background_color": "#D9D9D9"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Headline<br>We suggest 1-2 lines",
+                                            "formats": {}
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 20,
+                                        "padding_right": 20,
+                                        "padding_bottom": 0,
+                                        "padding_left": 20
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Here’s where you can describe a service or features of a service. We recommend about 4 lines of text here.",
+                                            "formats": {}
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 20,
+                                        "padding_right": 20,
+                                        "padding_bottom": 20,
+                                        "padding_left": 20
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50,
+                                "background_color": "#F4F4F4"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 0,
+                "padding_right": 0,
+                "padding_bottom": 0,
+                "padding_left": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Headline<br>We suggest 1-2 lines",
+                                            "formats": {}
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 20,
+                                        "padding_right": 20,
+                                        "padding_bottom": 0,
+                                        "padding_left": 20
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Here’s where you can describe a service or features of a service. We recommend about 4 lines of text here.",
+                                            "formats": {}
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 20,
+                                        "padding_right": 20,
+                                        "padding_bottom": 20,
+                                        "padding_left": 20
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50,
+                                "background_color": "#F4F4F4"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/ProductImageSquare.svg",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": "100%",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": 0,
+                                                "sepia": 0,
+                                                "invert": 0,
+                                                "blur": 0,
+                                                "brightness": 100,
+                                                "contrast": 100,
+                                                "saturate": 100,
+                                                "hueRotate": 0,
+                                                "opacity": 100
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 50,
+                                "background_color": "#D9D9D9"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 0,
+                "padding_right": 0,
+                "padding_bottom": 0,
+                "padding_left": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/ProductImageSquare.svg",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": "100%",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": 0,
+                                                "sepia": 0,
+                                                "invert": 0,
+                                                "blur": 0,
+                                                "brightness": 100,
+                                                "contrast": 100,
+                                                "saturate": 100,
+                                                "hueRotate": 0,
+                                                "opacity": 100
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": 50,
+                                "background_color": "#D9D9D9"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Headline<br>We suggest 1-2 lines",
+                                            "formats": {}
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 20,
+                                        "padding_right": 20,
+                                        "padding_bottom": 0,
+                                        "padding_left": 20
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Here’s where you can describe a service or features of a service. We recommend about 4 lines of text here.",
+                                            "formats": {}
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 20,
+                                        "padding_right": 20,
+                                        "padding_bottom": 20,
+                                        "padding_left": 20
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50,
+                                "background_color": "#F4F4F4"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 0,
+                "padding_right": 0,
+                "padding_bottom": 0,
+                "padding_left": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ButtonElement",
+                    "template": "Button",
+                    "text": "LEARN MORE",
+                    "url": "#",
+                    "formats": {
+                        "align": "center",
+                        "font_family": "inherit",
+                        "font_weight": "600",
+                        "font_size": 18,
+                        "text_color": "#000000",
+                        "link_color": "#ffffff",
+                        "text_align": "center",
+                        "line_height": "1.5",
+                        "text_direction": "ltr",
+                        "background_color": "#FFFFFF",
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "padding_top": 15,
+                        "padding_right": 50,
+                        "padding_bottom": 15,
+                        "padding_left": 50,
+                        "border_top_style": "solid",
+                        "border_top_width": 2,
+                        "border_top_color": "#000000",
+                        "border_right_style": "solid",
+                        "border_right_width": 2,
+                        "border_right_color": "#000000",
+                        "border_bottom_style": "solid",
+                        "border_bottom_width": 2,
+                        "border_bottom_color": "#000000",
+                        "border_left_width": 2,
+                        "border_left_style": "solid",
+                        "border_left_color": "#000000",
+                        "border_radius": 0,
+                        "width": "auto"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 40,
+                "padding_bottom": 40
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h3",
+                                            "text": "Location 1",
+                                            "formats": {
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "1234 Address St.City, State",
+                                            "formats": {
+                                                "font_size": 16,
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "(123) 456-7890",
+                                            "formats": {
+                                                "font_size": 16,
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h3",
+                                            "text": "Location 2",
+                                            "formats": {
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "1234 Address St.City, State",
+                                            "formats": {
+                                                "font_size": 16,
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "(123) 456-7890",
+                                            "formats": {
+                                                "font_size": 16,
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 30,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "SocialIconsElement",
+                    "template": "SocialIcons",
+                    "items": [
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/icons/facebook.png",
+                            "label": "Facebook"
+                        },
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/icons/linkedin.png",
+                            "label": "LinkedIn"
+                        },
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/icons/youtube.png",
+                            "label": "YouTube"
+                        },
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/icons/twitter.png",
+                            "label": "X"
+                        }
+                    ],
+                    "size": 40,
+                    "gap": 30,
+                    "align": "center",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 40
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Copyright (C) {CURRENT_YEAR}. All rights reserved.",
+                    "formats": {
+                        "font_size": 13,
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#EFEFEF",
+                "padding_top": 30,
+                "padding_bottom": 10
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "If you no longer want to receive these emails, you can <a href=\"{UNSUBSCRIBE_URL}\">unsubscribe</a>",
+                    "formats": {
+                        "font_size": 13,
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#EFEFEF"
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#E4E4E4",
+        "padding_top": 0,
+        "padding_right": 60,
+        "padding_bottom": 0,
+        "padding_left": 60
+    },
+    "block_gap": 0,
+    "container_width": "medium",
+    "block_padding_bottom": 20,
+    "block_padding_top": 20,
+    "block_padding_right": 20,
+    "block_padding_left": 20
+}
