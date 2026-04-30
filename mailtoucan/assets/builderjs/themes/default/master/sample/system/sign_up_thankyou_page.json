@@ -1,0 +1,124 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": "Almost finished...!",
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "type": "h1",
+                    "text": "Almost finished...!",
+                    "formats": {}
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "{LIST_NAME}",
+                    "formats": {}
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "{CURRENT_DATE}",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 40
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "DividerElement",
+                    "template": "Divider",
+                    "formats": {
+                        "background_color": "#D0D0D0",
+                        "height": 2,
+                        "divider_style": "solid",
+                        "padding_top": 10,
+                        "padding_bottom": 10
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 0,
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "type": "h2",
+                    "text": "Just one more step!",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "We need to <strong>confirm your email address</strong> to complete your subscription to <strong>{LIST_NAME}</strong>. Please check your inbox for a confirmation message and click the link inside — this helps keep your account secure and ensures you receive our updates.",
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Copyright (C). {LIST_NAME} | This is an automated message, please do not reply.",
+                    "formats": {
+                        "font_size": 13,
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 60
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#F4F4F4",
+        "padding_top": 40,
+        "padding_right": 60,
+        "padding_bottom": 40,
+        "padding_left": 60
+    },
+    "block_gap": 0,
+    "container_width": "medium",
+    "block_padding_bottom": 20,
+    "block_padding_top": 20,
+    "block_padding_right": 20,
+    "block_padding_left": 20
+}
