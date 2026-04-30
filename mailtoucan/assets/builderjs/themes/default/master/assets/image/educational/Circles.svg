@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="207.5mm"
+   height="36mm"
+   viewBox="0 0 207.5 36"
+   version="1.1"
+   id="svg1"
+   inkscape:export-batch-path="/home/mareks/Projects/builderjs_v2/demo/themes/default/image/email/educational"
+   inkscape:export-batch-name="batch"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Circles"
+     transform="translate(-1.782568,-0.76332664)">
+    <g
+       id="g1">
+      <circle
+         style="fill:#ebe5d9;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         id="path1"
+         cx="19.782568"
+         cy="18.763327"
+         r="18" />
+      <circle
+         style="fill:#149a79;fill-opacity:1;stroke:none;stroke-width:0.265;stroke-dasharray:none"
+         id="path1-5"
+         cx="76.949234"
+         cy="18.763327"
+         r="18" />
+      <circle
+         style="fill:#a3a7d4;fill-opacity:1;stroke:none;stroke-width:0.264583"
+         id="path1-9"
+         cx="134.11591"
+         cy="18.763327"
+         r="18" />
+      <circle
+         style="fill:#ee6d45;fill-opacity:1;stroke:none;stroke-width:0;stroke-dasharray:none"
+         id="path1-2"
+         cx="191.28256"
+         cy="18.763327"
+         r="18" />
+    </g>
+  </g>
+</svg>
