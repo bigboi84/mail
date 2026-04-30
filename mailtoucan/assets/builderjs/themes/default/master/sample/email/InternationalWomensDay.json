@@ -1,0 +1,1243 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": null,
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h4",
+                                            "text": " Exclusive Women’s Day Offer - 20% off with code WOMENSDAY25",
+                                            "formats": {
+                                                "font_family": "DM Sans, sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#f8efe8",
+                                                "text_align": "center",
+                                                "line_height": 1
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10,
+                                        "margin_right": "auto",
+                                        "margin_left": "auto"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 30,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#d83f1d",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/international_womens_day/logo.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 204.6,
+                                                "max_width": "100%",
+                                                "align": "center",
+                                                "border_radius": 15
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 20,
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h1",
+                                            "text": "Celebrate International Women’s Day",
+                                            "formats": {
+                                                "font_family": "DM Sans, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 90,
+                                                "text_color": "#0e0401",
+                                                "text_align": "center",
+                                                "line_height": 1
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10,
+                                        "margin_right": "auto",
+                                        "margin_left": "auto"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "United in Making a Difference",
+                                            "formats": {
+                                                "font_family": "DM Sans, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 36,
+                                                "text_color": "#d83f1d",
+                                                "text_align": "center",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10,
+                                        "margin_right": "auto",
+                                        "margin_left": "auto"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 30,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/international_womens_day/people.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 290,
+                                                "max_width": "100%",
+                                                "align": "center",
+                                                "border_radius": 15
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h3",
+                                            "text": "Women Who Inspire",
+                                            "formats": {
+                                                "font_family": "DM Sans, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 20,
+                                                "text_color": "#415a77",
+                                                "text_align": "center",
+                                                "line_height": 1
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10,
+                                        "margin_right": "auto",
+                                        "margin_left": "auto"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "This International Women’s Day, we feature stories of women who are pioneers in their industries. From technology innovators to community leaders, these profiles showcase courage, innovation, and persistence.",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#0e0401",
+                                                "text_align": "center",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_right": 20,
+                                        "padding_left": 20,
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "Learn More",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "center",
+                                                "font_family": "inherit",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#894536",
+                                                "link_color": "#894536",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "#f8efe8",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 16,
+                                                "padding_right": 28,
+                                                "padding_bottom": 16,
+                                                "padding_left": 28,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 0,
+                                                "border_top_color": "#b87b2d",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 0,
+                                                "border_right_color": "#b87b2d",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 0,
+                                                "border_bottom_color": "#b87b2d",
+                                                "border_left_width": 0,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#b87b2d",
+                                                "border_radius": 50
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#ffffff"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/international_womens_day/women.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 290,
+                                                "max_width": "100%",
+                                                "align": "center",
+                                                "border_radius": 15
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h3",
+                                            "text": "Connect & Grow",
+                                            "formats": {
+                                                "font_family": "DM Sans, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 20,
+                                                "text_color": "#415a77",
+                                                "text_align": "center",
+                                                "line_height": 1
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10,
+                                        "margin_right": "auto",
+                                        "margin_left": "auto"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Participate in inspiring events designed to empower and educate. Our curated list includes virtual roundtables, webinars, and local events celebrating International Women’s Day",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#0e0401",
+                                                "text_align": "center",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_right": 20,
+                                        "padding_left": 20,
+                                        "width": 330,
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "View Events",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "center",
+                                                "font_family": "inherit",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#894536",
+                                                "link_color": "#894536",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "#f8efe8",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 16,
+                                                "padding_right": 28,
+                                                "padding_bottom": 16,
+                                                "padding_left": 28,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 0,
+                                                "border_top_color": "#b87b2d",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 0,
+                                                "border_right_color": "#b87b2d",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 0,
+                                                "border_bottom_color": "#b87b2d",
+                                                "border_left_width": 0,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#b87b2d",
+                                                "border_radius": 50
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#ffffff",
+                                        "padding_top": 20
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 30,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "DividerElement",
+                                            "template": "Divider",
+                                            "formats": {
+                                                "background_color": "rgb(235, 172, 116)",
+                                                "height": 8,
+                                                "divider_style": "dotted",
+                                                "padding_top": 20,
+                                                "padding_right": 24,
+                                                "padding_bottom": 20,
+                                                "padding_left": 24
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 20,
+                                        "width": "100%"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 30,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Welcome to Our Special <br> International Women’s Day <br> Edition! ",
+                                            "formats": {
+                                                "font_family": "DM Sans, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 36,
+                                                "text_color": "#d83f1d",
+                                                "text_align": "center",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10,
+                                        "margin_right": "auto",
+                                        "margin_left": "auto"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "This week, we spotlight powerful narratives, essential discussions, and ways you can make a real impact. Join us in celebrating the landmarks achieved by women around the world and take action to support continued growth and equality",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#0e0401",
+                                                "text_align": "center",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_right": 20,
+                                        "padding_bottom": 20,
+                                        "padding_left": 20,
+                                        "margin_right": "auto",
+                                        "margin_left": "auto",
+                                        "width": 612
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/international_womens_day/shopping.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 660,
+                                                "max_width": "100%",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 30,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Shop & Support",
+                                            "formats": {
+                                                "font_family": "DM Sans, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 36,
+                                                "text_color": "#d83f1d",
+                                                "text_align": "center",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10,
+                                        "margin_right": "auto",
+                                        "margin_left": "auto"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Empower economic growth by supporting businesses led by women. Explore our directory of women entrepreneurs and find unique products and services",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#0e0401",
+                                                "text_align": "center",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_right": 20,
+                                        "padding_bottom": 20,
+                                        "padding_left": 20,
+                                        "margin_right": "auto",
+                                        "margin_left": "auto",
+                                        "width": 612
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "Shop Now",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "center",
+                                                "font_family": "inherit",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#894536",
+                                                "link_color": "#894536",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "#f8efe8",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 16,
+                                                "padding_right": 28,
+                                                "padding_bottom": 16,
+                                                "padding_left": 28,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 0,
+                                                "border_top_color": "#b87b2d",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 0,
+                                                "border_right_color": "#b87b2d",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 0,
+                                                "border_bottom_color": "#b87b2d",
+                                                "border_left_width": 0,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#b87b2d",
+                                                "border_radius": 50
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#ffffff",
+                                        "padding_top": 10
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 30,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "DividerElement",
+                                            "template": "Divider",
+                                            "formats": {
+                                                "background_color": "rgb(235, 172, 116)",
+                                                "height": 8,
+                                                "divider_style": "dotted",
+                                                "padding_top": 20,
+                                                "padding_right": 24,
+                                                "padding_bottom": 20,
+                                                "padding_left": 24
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "width": "100%"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 30,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/international_womens_day/women2.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 192.2,
+                                                "max_width": "100%",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "width": "100%",
+                                        "display": "flex",
+                                        "justify_content": "center"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Your Voice Matters!",
+                                            "formats": {
+                                                "font_family": "DM Sans, sans-serif",
+                                                "font_weight": "bold",
+                                                "font_size": 36,
+                                                "text_color": "#d83f1d",
+                                                "text_align": "center",
+                                                "line_height": 1.25
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10,
+                                        "margin_right": "auto",
+                                        "margin_left": "auto"
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Get involved with initiatives supporting women's rights and advancement. Every <br> action counts towards building a more equitable world.",
+                                            "formats": {
+                                                "font_family": "\"Work Sans\", sans-serif",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#0e0401",
+                                                "text_align": "center",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_right": 20,
+                                        "padding_bottom": 20,
+                                        "padding_left": 50,
+                                        "margin_right": "auto",
+                                        "margin_left": "auto",
+                                        "width": 612
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "Get involved",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "center",
+                                                "font_family": "inherit",
+                                                "font_weight": "normal",
+                                                "font_size": 16,
+                                                "text_color": "#894536",
+                                                "link_color": "#894536",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "#f8efe8",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 16,
+                                                "padding_right": 28,
+                                                "padding_bottom": 16,
+                                                "padding_left": 28,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 0,
+                                                "border_top_color": "#b87b2d",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 0,
+                                                "border_right_color": "#b87b2d",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 0,
+                                                "border_bottom_color": "#b87b2d",
+                                                "border_left_width": 0,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#b87b2d",
+                                                "border_radius": 50
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#ffffff",
+                                        "padding_top": 10
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 30,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "DividerElement",
+                                            "template": "Divider",
+                                            "formats": {
+                                                "background_color": "rgb(235, 172, 116)",
+                                                "height": 8,
+                                                "divider_style": "dotted",
+                                                "padding_top": 20,
+                                                "padding_right": 24,
+                                                "padding_bottom": 10,
+                                                "padding_left": 24
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "width": "100%"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 30,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "SocialIconsElement",
+                                            "template": "SocialIcons",
+                                            "items": [
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/facebook.png",
+                                                    "label": "Facebook"
+                                                },
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/instagram.png",
+                                                    "label": "Instagram"
+                                                },
+                                                {
+                                                    "link": "#",
+                                                    "image_url": "master/assets/image/icons/twitter.png",
+                                                    "label": "Twitter"
+                                                }
+                                            ],
+                                            "size": 50,
+                                            "gap": 10,
+                                            "align": "center",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "LinkElement",
+                                            "template": "Link",
+                                            "text": "View in browser",
+                                            "url": "{WEB_VIEW_URL}",
+                                            "formats": {
+                                                "font_family": "Work Sans, sans-serif",
+                                                "font_size": 14,
+                                                "text_color": "#0e0401",
+                                                "text_align": "center",
+                                                "text_decoration": "underline"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#ffffff",
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Copyright (C) {CURRENT_YEAR}. All rights reserved.",
+                                            "formats": {
+                                                "font_family": "Work Sans, sans-serif",
+                                                "font_size": 12,
+                                                "text_color": "#0e0401",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#ffffff",
+                                        "padding_top": 10,
+                                        "padding_bottom": 20
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "If you no longer want to receive these emails, you can <a href=\"{UNSUBSCRIBE_URL}\">unsubscribe</a>",
+                                            "formats": {
+                                                "font_family": "Work Sans, sans-serif",
+                                                "font_size": 12,
+                                                "text_color": "#0e0401",
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "background_color": "#ffffff"
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 100
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ffffff",
+                "background_position": "center",
+                "padding_top": 25,
+                "padding_right": 25,
+                "padding_bottom": 25,
+                "padding_left": 25,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 610
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#f8efe8",
+        "padding_top": 0,
+        "padding_right": 0,
+        "padding_bottom": 0,
+        "padding_left": 0
+    },
+    "block_gap": 0,
+    "block_padding_bottom": 0,
+    "block_padding_top": 0,
+    "block_padding_right": 0,
+    "block_padding_left": 0
+}
