@@ -1,0 +1,954 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": null,
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/educational/Circles.svg",
+                                            "alt": "Alternative text",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 5,
+                                                "width": 105,
+                                                "height": "auto",
+                                                "align": "left",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "50%"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/educational/logo.png",
+                                            "alt": "logo",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 155,
+                                                "height": "auto",
+                                                "align": "right",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "50%"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "padding_top": 20,
+                        "padding_right": 20,
+                        "padding_bottom": 20,
+                        "padding_left": 20
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "H1Element",
+                    "template": "H1",
+                    "text": "Brighten Up Your Space —",
+                    "formats": {
+                        "font_family": "Marcellus, serif",
+                        "font_size": 36,
+                        "text_color": "#241b16",
+                        "text_align": "left",
+                        "text_direction": "ltr",
+                        "padding_right": 20,
+                        "padding_left": 20
+                    }
+                },
+                {
+                    "name": "H1Element",
+                    "template": "H1",
+                    "text": "Lighting and Lighting Design Tips",
+                    "formats": {
+                        "font_family": "Marcellus, serif",
+                        "font_size": 36,
+                        "text_color": "#241b16",
+                        "text_align": "left",
+                        "text_direction": "ltr",
+                        "padding_right": 20,
+                        "padding_left": 20
+                    }
+                },
+                {
+                    "name": "H1Element",
+                    "template": "H1",
+                    "text": "from Assembly",
+                    "formats": {
+                        "font_family": "Marcellus, serif",
+                        "font_size": 36,
+                        "text_color": "#241b16",
+                        "text_align": "left",
+                        "text_direction": "ltr",
+                        "padding_right": 20,
+                        "padding_left": 20
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 20,
+                "padding_bottom": 20
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "At <i><b>Assembly</b></i>, we understand that the right lighting can make all the difference. Especially when it comes to creating a warm, inviting space that reflects your unique style and personality.",
+                                            "formats": {
+                                                "font_size": 14,
+                                                "text_color": "#241b16",
+                                                "text_align": "left",
+                                                "line_height": "1.5",
+                                                "padding_right": 80,
+                                                "padding_left": 20
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "50%"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "That's why we wanted to share some lighting and lighting design tips with you to help you brighten up your home or office.",
+                                            "formats": {
+                                                "font_size": 14,
+                                                "text_color": "#241b16",
+                                                "text_align": "left",
+                                                "line_height": "1.5",
+                                                "padding_right": 20,
+                                                "padding_left": 80
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "50%"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "DividerElement",
+                    "template": "Divider",
+                    "formats": {
+                        "background_color": "#000",
+                        "height": 1,
+                        "divider_style": "dashed",
+                        "padding_top": 10,
+                        "padding_right": 10,
+                        "padding_bottom": 10,
+                        "padding_left": 10
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/educational/dinning.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": "100%",
+                                                "height": "auto",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "55%"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "H1Element",
+                                            "template": "H1",
+                                            "text": "1. Layer Your Lighting",
+                                            "formats": {
+                                                "font_weight": "bold",
+                                                "font_size": 24,
+                                                "text_color": "#241b16",
+                                                "text_align": "left",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 40
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Instead of relying on one bright overhead light, consider layering your lighting by adding lamps, sconces, and other types of lighting fixtures. This will create a more dynamic and interesting lighting scheme.",
+                                            "formats": {
+                                                "font_weight": "normal",
+                                                "font_size": 14,
+                                                "text_color": "#241b16",
+                                                "text_align": "left",
+                                                "line_height": "1.5"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_right": 100
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "45%",
+                                "padding_top": 40,
+                                "padding_right": 40,
+                                "padding_bottom": 40,
+                                "padding_left": 70
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 20,
+                "padding_right": 0,
+                "padding_bottom": 20,
+                "padding_left": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "H1Element",
+                                            "template": "H1",
+                                            "text": "2. Consider Color Temperature",
+                                            "formats": {
+                                                "font_weight": "bold",
+                                                "font_size": 24,
+                                                "text_color": "#241b16",
+                                                "text_align": "left",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 40
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Color temperature refers to the hue of the light, which can range from warm yellow to cool blue. Consider the mood you want to create and the colors in your space when selecting the color temperature of your bulbs.",
+                                            "formats": {
+                                                "font_weight": "normal",
+                                                "font_size": 14,
+                                                "text_color": "#241b16",
+                                                "text_align": "left",
+                                                "line_height": "1.5"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_right": 100
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "45%",
+                                "padding_top": 40,
+                                "padding_right": 40,
+                                "padding_bottom": 40,
+                                "padding_left": 70
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/educational/books_on_shelf.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": "100%",
+                                                "height": "auto",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "55%"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 20,
+                "padding_right": 0,
+                "padding_bottom": 20,
+                "padding_left": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/educational/table_lamp.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": "100%",
+                                                "height": "auto",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "55%"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "H1Element",
+                                            "template": "H1",
+                                            "text": "3. Highlight Key Features",
+                                            "formats": {
+                                                "font_weight": "bold",
+                                                "font_size": 24,
+                                                "text_color": "#241b16",
+                                                "text_align": "left",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 40
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Use lighting to highlight key features in your space, such as artwork, architectural details, or plants. This will draw the eye and create visual interest.",
+                                            "formats": {
+                                                "font_weight": "normal",
+                                                "font_size": 14,
+                                                "text_color": "#241b16",
+                                                "text_align": "left",
+                                                "line_height": "1.5"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_right": 100
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "45%",
+                                "padding_top": 40,
+                                "padding_right": 40,
+                                "padding_bottom": 40,
+                                "padding_left": 70
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 20,
+                "padding_right": 0,
+                "padding_bottom": 40,
+                "padding_left": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "H1Element",
+                                            "template": "H1",
+                                            "text": "Need Some Help?",
+                                            "formats": {
+                                                "font_family": "'Marcellus', serif",
+                                                "font_size": 24,
+                                                "text_color": "#241b16",
+                                                "text_align": "left",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_bottom": 20,
+                                        "padding_left": 30
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "We offer a range of lighting fixtures and design services to help you create the perfect lighting scheme for your space.",
+                                            "formats": {
+                                                "font_family": "'DM Sans', sans-serif",
+                                                "font_size": 14,
+                                                "text_color": "#241b16",
+                                                "text_align": "left",
+                                                "line_height": "1.5"
+                                            }
+                                        },
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Whether you're looking for a statement pendant or need help designing a custom lighting plan, our team of lighting experts is here to help.",
+                                            "formats": {
+                                                "font_family": "'DM Sans', sans-serif",
+                                                "font_size": 14,
+                                                "text_color": "#241b16",
+                                                "text_align": "left",
+                                                "line_height": "1.5"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_right": 40,
+                                        "padding_bottom": 30,
+                                        "padding_left": 30
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "Schedule A Consultation",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "left",
+                                                "font_family": "'Marcellus', serif",
+                                                "font_weight": "400",
+                                                "font_size": 16,
+                                                "text_color": "#FFFFFF",
+                                                "link_color": "#ffffff",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "#241b16",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 16,
+                                                "padding_right": 28,
+                                                "padding_bottom": 16,
+                                                "padding_left": 28,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 1,
+                                                "border_top_color": "#241b16",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 1,
+                                                "border_right_color": "#241b16",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 1,
+                                                "border_bottom_color": "#241b16",
+                                                "border_left_width": 1,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#241b16",
+                                                "border_radius": 0
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_left": 28
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "50%"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/educational/consultation.png",
+                                            "alt": "Alternative text",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 400,
+                                                "height": "auto",
+                                                "align": "right",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "50%"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#ebe5d9",
+                "padding_top": 48,
+                "padding_right": 0,
+                "padding_bottom": 48,
+                "padding_left": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "SocialIconsElement",
+                    "template": "SocialIcons",
+                    "items": [
+                        {
+                            "image_url": "master/assets/image/educational/facebook.svg",
+                            "link": "#",
+                            "label": "Facebook"
+                        },
+                        {
+                            "image_url": "master/assets/image/educational/instagram.svg",
+                            "link": "#",
+                            "label": "Instagram"
+                        },
+                        {
+                            "image_url": "master/assets/image/educational/twitter.svg",
+                            "link": "#",
+                            "label": "Twitter"
+                        }
+                    ],
+                    "size": 64,
+                    "gap": 10,
+                    "align": "center",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#241b16",
+                "padding_top": 10,
+                "padding_right": 0,
+                "padding_bottom": 5,
+                "padding_left": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ImageElement",
+                    "template": "Image",
+                    "src": "master/assets/image/educational/logo_white.png",
+                    "alt": "logo",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "width": 200,
+                        "height": "auto",
+                        "align": "center",
+                        "border_radius": 0
+                    },
+                    "effect": {
+                        "grayscale": null,
+                        "sepia": null,
+                        "invert": null,
+                        "blur": null,
+                        "brightness": null,
+                        "contrast": null,
+                        "saturate": null,
+                        "hueRotate": null,
+                        "opacity": null
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#241b16",
+                "padding_top": 10,
+                "padding_right": 0,
+                "padding_bottom": 0,
+                "padding_left": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "LinkElement",
+                    "template": "Link",
+                    "text": "View in browser",
+                    "url": "{WEB_VIEW_URL}",
+                    "formats": {
+                        "font_size": 12,
+                        "text_color": "#fff",
+                        "link_color": "#ffffff",
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#241b16",
+                "padding_top": 20,
+                "padding_bottom": 10
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Copyright (C) {CURRENT_YEAR}. All rights reserved.",
+                    "formats": {
+                        "font_size": 12,
+                        "text_color": "#fff",
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#241b16",
+                "padding_top": 0,
+                "padding_bottom": 10
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "If you no longer want to receive these emails, you can <a href=\"{UNSUBSCRIBE_URL}\"\">unsubscribe</a>",
+                    "formats": {
+                        "font_size": 12,
+                        "text_color": "#fff",
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#241b16",
+                "padding_top": 0,
+                "padding_bottom": 10
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#F4F4F4"
+    },
+    "block_gap": 0,
+    "container_width": "medium",
+    "block_padding_bottom": 20,
+    "block_padding_top": 20,
+    "block_padding_right": 20,
+    "block_padding_left": 20
+}
