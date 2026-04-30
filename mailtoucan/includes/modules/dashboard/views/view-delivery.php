@@ -28,6 +28,11 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
 
 <style>
     :root { --mt-brand: <?php echo esc_html($brand_color); ?>; --mt-accent: <?php echo esc_html($mt_palette['accent']); ?>; }
+    .vd-page-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+    .vd-page-title{font-size:22px;font-weight:900;color:#111827;display:flex;align-items:center;gap:8px;}
+    .vd-page-sub{font-size:13px;color:#6b7280;margin-top:3px;}
+    .vd-save-btn{background:var(--mt-brand);color:white;border:none;border-radius:10px;padding:10px 22px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:8px;transition:filter .15s;}
+    .vd-save-btn:hover{filter:brightness(1.1);}
     .routing-radio { display: none; }
     .routing-card { transition: all 0.2s ease; border: 2px solid #e2e8f0; cursor: pointer; }
     .routing-radio:checked + .routing-card { border-color: var(--mt-brand); background-color: #f8fafc; }
@@ -35,17 +40,26 @@ $mt_palette = get_option( 'mt_brand_palette', ['accent' => '#FCC753', 'dark' => 
     .routing-radio:checked + .routing-card .radio-circle::after { content: ''; display: block; width: 10px; height: 10px; background: var(--mt-brand); border-radius: 50%; margin: 3px auto; }
     .routing-card:hover { border-color: #cbd5e1; }
     .routing-radio:checked + .routing-card:hover { border-color: var(--mt-brand); }
+
+    /* Mobile */
+    @media(max-width:768px){
+        .vd-page-header{flex-direction:column;align-items:flex-start;}
+        .vd-page-title{font-size:18px;}
+        .vd-save-btn{width:100%;justify-content:center;}
+        .grid.grid-cols-2{grid-template-columns:1fr!important;}
+        .grid.grid-cols-3{grid-template-columns:1fr!important;}
+    }
 </style>
 
-<header class="mb-8 flex justify-between items-end">
+<div class="vd-page-header">
     <div>
-        <h1 class="text-3xl font-black text-gray-900 flex items-center gap-3">Flight Routing</h1>
-        <p class="text-gray-500 text-sm mt-1">Configure how your Transactional and Bulk marketing emails take flight.</p>
+        <div class="vd-page-title"><i class="fa-solid fa-paper-plane" style="color:var(--mt-brand);"></i> Flight Routing</div>
+        <div class="vd-page-sub">Configure how your Transactional and Bulk marketing emails take flight.</div>
     </div>
-    <button onclick="saveDeliverySettings()" id="btn_save_delivery" class="text-white px-8 py-3 rounded-xl font-black shadow-lg hover:opacity-90 transition flex items-center gap-2" style="background-color: var(--mt-brand);">
+    <button onclick="saveDeliverySettings()" id="btn_save_delivery" class="vd-save-btn">
         <i class="fa-solid fa-floppy-disk"></i> Save Routes
     </button>
-</header>
+</div>
 
 <div class="grid grid-cols-2 gap-8 mb-12">
     <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
