@@ -33,6 +33,12 @@ $sender_email = !empty($brand_config['delivery']['from_email']) ? $brand_config[
         --mt-brand: <?php echo esc_html($brand_color); ?>;
         --mt-accent: <?php echo esc_html($mt_palette['accent']); ?>;
     }
+    /* Page header */
+    .vw-page-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+    .vw-page-title{font-size:22px;font-weight:900;color:#111827;display:flex;align-items:center;gap:8px;}
+    .vw-page-sub{font-size:13px;color:#6b7280;margin-top:3px;}
+    .vw-primary-btn{background:var(--mt-brand);color:white;border:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:8px;transition:filter .15s;}
+    .vw-primary-btn:hover{filter:brightness(1.1);}
     
     /* Wizard Step Transitions */
     .wizard-step { display: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
@@ -56,18 +62,30 @@ $sender_email = !empty($brand_config['delivery']['from_email']) ? $brand_config[
     .audience-radio:checked + .audience-card { border-color: var(--mt-brand); background-color: #f8fafc; }
     .audience-radio:checked + .audience-card .radio-circle { border-color: var(--mt-brand); }
     .audience-radio:checked + .audience-card .radio-circle::after { content: ''; display: block; width: 10px; height: 10px; background: var(--mt-brand); border-radius: 50%; margin: 3px auto; }
+
+    /* Mobile */
+    @media(max-width:768px){
+        .vw-page-header{flex-direction:column;align-items:flex-start;}
+        .vw-page-title{font-size:18px;}
+        .vw-primary-btn{width:100%;justify-content:center;}
+        .overflow-x-auto{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+        table{min-width:580px;}
+        .grid.grid-cols-2{grid-template-columns:1fr!important;}
+        .grid.grid-cols-3{grid-template-columns:1fr!important;}
+        .wizard-panel{padding:16px!important;}
+    }
 </style>
 
 <div id="view_campaign_list">
-    <header class="mb-8 flex justify-between items-end">
+    <div class="vw-page-header">
         <div>
-            <h1 class="text-3xl font-black text-gray-900 flex items-center gap-3">Campaigns</h1>
-            <p class="text-gray-500 text-sm mt-1">Manage, schedule, and track your email blasts.</p>
+            <div class="vw-page-title"><i class="fa-solid fa-paper-plane" style="color:var(--mt-brand);"></i> Campaigns</div>
+            <div class="vw-page-sub">Manage, schedule, and track your email blasts.</div>
         </div>
-        <button onclick="startWizard(0)" class="text-white px-6 py-3 rounded-xl font-bold shadow-lg transition flex items-center gap-2 hover:opacity-90" style="background-color: var(--mt-brand);">
+        <button onclick="startWizard(0)" class="vw-primary-btn">
             <i class="fa-solid fa-paper-plane"></i> Create Campaign
         </button>
-    </header>
+    </div>
 
     <?php if(empty($campaigns)): ?>
         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden text-center py-24">
@@ -296,35 +314,60 @@ $sender_email = !empty($brand_config['delivery']['from_email']) ? $brand_config[
 
             <div id="step-3" class="wizard-step">
                 <h2 class="text-3xl font-black text-gray-900 mb-2">Toucan Styled</h2>
-                <p class="text-gray-500 mb-8">Select a beautiful template you built in the Toucan Studio.</p>
-                
+                <p class="text-gray-500 mb-8">Pick from a starter template or one of your custom designs.</p>
+
                 <input type="hidden" id="selected_template_id" value="">
 
-                <?php if(empty($active_templates)): ?>
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 text-center py-16">
-                        <i class="fa-solid fa-palette text-4xl text-gray-300 mb-4"></i>
-                        <h3 class="text-lg font-bold text-gray-700">No Saved Templates</h3>
-                        <p class="text-sm text-gray-500 mb-4">You need to build a design in the Studio first.</p>
-                        <button onclick="exitWizard()" class="text-indigo-600 font-bold hover:underline">Go back to Dashboard</button>
+                <!-- STARTER TEMPLATES SECTION -->
+                <div class="mb-10">
+                    <div class="flex items-center gap-3 mb-4">
+                        <h3 class="text-lg font-black text-gray-900">✨ Starter Templates</h3>
+                        <span class="text-[10px] bg-purple-100 text-purple-700 px-2 py-1 rounded font-bold uppercase tracking-widest">Ready to Send</span>
                     </div>
-                <?php else: ?>
-                    <div class="grid grid-cols-3 gap-6">
-                        <?php foreach($active_templates as $tpl): ?>
-                        <div class="template-card bg-white rounded-2xl overflow-hidden shadow-sm relative group" onclick="selectTemplate(this, <?php echo $tpl->id; ?>)">
-                            <div class="select-check absolute top-3 right-3 w-6 h-6 text-white rounded-full flex items-center justify-center opacity-0 scale-50 transition-all shadow-md z-10" style="background-color: var(--mt-brand);">
-                                <i class="fa-solid fa-check text-xs"></i>
-                            </div>
-                            <div class="aspect-[4/3] bg-gray-100 flex items-center justify-center border-b border-gray-100 relative overflow-hidden">
-                                <i class="fa-regular fa-envelope text-4xl text-gray-300 transition-transform group-hover:scale-110"></i>
-                            </div>
-                            <div class="p-4">
-                                <h3 class="font-bold text-gray-900 truncate text-sm"><?php echo esc_html($tpl->template_name); ?></h3>
-                                <p class="text-[10px] text-gray-400 mt-1 uppercase tracking-widest font-bold">Last Edited: <?php echo date('M d', strtotime($tpl->updated_at)); ?></p>
-                            </div>
+                    <p class="text-sm text-gray-500 mb-5">Pre-built templates auto-filled with your brand colors and logo. One click and you're off.</p>
+                    <div id="starter_template_grid" class="grid grid-cols-3 gap-5">
+                        <div class="col-span-3 text-center py-8 text-gray-400 text-sm">
+                            <i class="fa-solid fa-circle-notch fa-spin text-2xl mb-3 block text-purple-300"></i>
+                            Loading starter templates...
                         </div>
-                        <?php endforeach; ?>
                     </div>
-                <?php endif; ?>
+                </div>
+
+                <!-- DIVIDER -->
+                <div class="flex items-center gap-4 mb-8">
+                    <div class="flex-1 h-px bg-gray-200"></div>
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">or use your own designs</span>
+                    <div class="flex-1 h-px bg-gray-200"></div>
+                </div>
+
+                <!-- SAVED TEMPLATES SECTION -->
+                <div>
+                    <h3 class="text-lg font-black text-gray-900 mb-4">My Studio Templates</h3>
+                    <?php if(empty($active_templates)): ?>
+                        <div class="bg-gray-50 rounded-2xl border border-dashed border-gray-300 text-center py-12">
+                            <i class="fa-solid fa-palette text-3xl text-gray-300 mb-3"></i>
+                            <h4 class="text-base font-bold text-gray-600">No Custom Templates Yet</h4>
+                            <p class="text-sm text-gray-500 mt-1">Design one in the Toucan Studio and it'll appear here.</p>
+                        </div>
+                    <?php else: ?>
+                        <div class="grid grid-cols-3 gap-6">
+                            <?php foreach($active_templates as $tpl): ?>
+                            <div class="template-card bg-white rounded-2xl overflow-hidden shadow-sm relative group" onclick="selectTemplate(this, <?php echo $tpl->id; ?>)">
+                                <div class="select-check absolute top-3 right-3 w-6 h-6 text-white rounded-full flex items-center justify-center opacity-0 scale-50 transition-all shadow-md z-10" style="background-color: var(--mt-brand);">
+                                    <i class="fa-solid fa-check text-xs"></i>
+                                </div>
+                                <div class="aspect-[4/3] bg-gray-100 flex items-center justify-center border-b border-gray-100 relative overflow-hidden">
+                                    <i class="fa-regular fa-envelope text-4xl text-gray-300 transition-transform group-hover:scale-110"></i>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold text-gray-900 truncate text-sm"><?php echo esc_html($tpl->template_name); ?></h3>
+                                    <p class="text-[10px] text-gray-400 mt-1 uppercase tracking-widest font-bold">Last Edited: <?php echo date('M d', strtotime($tpl->updated_at)); ?></p>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
 
             <div id="step-4" class="wizard-step">
@@ -453,8 +496,117 @@ $sender_email = !empty($brand_config['delivery']['from_email']) ? $brand_config[
     let currentStep = 1;
     const totalSteps = 4;
 
+    // ── AI ASSIST (subject line + preview) ────────────────────────────────────
     function triggerAI() {
-        showToast('Connecting to Toucan AI Engine...', 'success');
+        const btn = document.querySelector('[onclick="triggerAI()"]');
+        const campaignName = document.getElementById('camp_name').value;
+        const currentSubject = document.getElementById('camp_subject').value;
+
+        // Build the quick-prompt modal
+        let modal = document.getElementById('ai_assist_modal');
+        if (!modal) {
+            modal = document.createElement('div');
+            modal.id = 'ai_assist_modal';
+            modal.className = 'fixed inset-0 bg-gray-900/60 z-[500] flex items-center justify-center backdrop-blur-sm';
+            modal.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center"><i class="fa-solid fa-wand-magic-sparkles text-indigo-600"></i></div>
+                        <div>
+                            <h3 class="text-lg font-black text-gray-900">AI Subject Line Assist</h3>
+                            <p class="text-xs text-gray-500">Describe your campaign goal and Toucan AI will suggest subject lines.</p>
+                        </div>
+                    </div>
+                    <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">What is this campaign about?</label>
+                    <textarea id="ai_goal_input" class="w-full p-3 border border-gray-300 rounded-xl text-sm outline-none focus:border-indigo-400 resize-none" rows="3" placeholder="e.g. Weekend special 20% off, bring in regulars who haven't visited in a while..."></textarea>
+                    <div id="ai_suggestions" class="mt-4 hidden">
+                        <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-2">Pick one — or use as inspiration:</p>
+                        <div id="ai_suggestion_list" class="space-y-2"></div>
+                    </div>
+                    <div id="ai_error_msg" class="hidden mt-3 text-sm text-red-600 font-medium"></div>
+                    <div class="flex gap-3 mt-6">
+                        <button onclick="document.getElementById('ai_assist_modal').remove()" class="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-xl font-bold hover:bg-gray-200 transition">Cancel</button>
+                        <button id="ai_gen_btn" onclick="runCampaignAI()" class="flex-1 bg-indigo-600 text-white py-2.5 rounded-xl font-bold hover:bg-indigo-700 transition flex items-center justify-center gap-2"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate</button>
+                    </div>
+                    <div id="ai_credit_info" class="text-[10px] text-gray-400 text-center mt-3"></div>
+                </div>`;
+            document.body.appendChild(modal);
+        }
+        document.getElementById('ai_goal_input').value = currentSubject || '';
+        document.getElementById('ai_suggestions').classList.add('hidden');
+        document.getElementById('ai_error_msg').classList.add('hidden');
+        document.getElementById('ai_credit_info').textContent = '';
+    }
+
+    function runCampaignAI() {
+        const btn     = document.getElementById('ai_gen_btn');
+        const goal    = document.getElementById('ai_goal_input').value.trim();
+        const errBox  = document.getElementById('ai_error_msg');
+        if (!goal) { errBox.textContent = 'Please describe your campaign goal first.'; errBox.classList.remove('hidden'); return; }
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Thinking...';
+        errBox.classList.add('hidden');
+
+        const fd = new FormData();
+        fd.append('action',        'mt_ai_campaign_assist');
+        fd.append('security',      mt_nonce);
+        fd.append('campaign_name', document.getElementById('camp_name').value);
+        fd.append('goal',          goal);
+        fd.append('brand_name',    '<?php echo esc_js($brand->brand_name); ?>');
+
+        fetch(mt_ajax_url, { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(res => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Regenerate';
+                if (!res.success) {
+                    errBox.textContent = res.data?.message || res.data || 'AI error. Please try again.';
+                    errBox.classList.remove('hidden');
+                    if (res.data?.out_of_credits) {
+                        btn.disabled = true;
+                        btn.innerHTML = 'Limit Reached';
+                    }
+                    return;
+                }
+                const data = res.data;
+                const list = document.getElementById('ai_suggestion_list');
+                list.innerHTML = '';
+
+                // Subject line suggestions
+                (data.subjects || []).forEach(s => {
+                    const item = document.createElement('button');
+                    item.type = 'button';
+                    item.className = 'w-full text-left p-3 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-xl text-sm font-semibold text-gray-800 transition';
+                    item.textContent = s;
+                    item.onclick = function() {
+                        document.getElementById('camp_subject').value = s;
+                        if (data.preview) document.getElementById('camp_preview').value = data.preview;
+                        document.getElementById('ai_assist_modal').remove();
+                        showToast('Subject line applied!', 'success');
+                    };
+                    list.appendChild(item);
+                });
+
+                // Preview text
+                if (data.preview) {
+                    const prev = document.createElement('div');
+                    prev.className = 'p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-600';
+                    prev.innerHTML = '<span class="font-bold text-gray-400 uppercase tracking-widest text-[9px]">Preview text:</span><br>' + data.preview;
+                    list.appendChild(prev);
+                }
+
+                document.getElementById('ai_suggestions').classList.remove('hidden');
+                if (data.remaining !== undefined) {
+                    document.getElementById('ai_credit_info').textContent = data.remaining + ' AI assists remaining this month';
+                }
+            })
+            .catch(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Retry';
+                errBox.textContent = 'Network error. Please try again.';
+                errBox.classList.remove('hidden');
+            });
     }
 
     function toggleCustomAudience() {
@@ -614,6 +766,101 @@ $sender_email = !empty($brand_config['delivery']['from_email']) ? $brand_config[
         document.getElementById('selected_template_id').value = id;
     }
 
+    // ── Starter Template Loader ───────────────────────────────────────────────
+    const STARTER_ICONS = {
+        starter:     { icon: 'fa-envelope-open-text', color: 'bg-blue-100 text-blue-500',   label: 'General' },
+        birthday:    { icon: 'fa-cake-candles',        color: 'bg-pink-100 text-pink-500',   label: 'Birthday' },
+        anniversary: { icon: 'fa-star',                color: 'bg-amber-100 text-amber-500', label: 'Anniversary' },
+        winback:     { icon: 'fa-heart',               color: 'bg-red-100 text-red-500',     label: 'Win-Back' },
+        promo:       { icon: 'fa-tag',                 color: 'bg-green-100 text-green-500', label: 'Promo' },
+    };
+
+    let starterTemplatesLoaded = false;
+
+    function loadStarterTemplates() {
+        if (starterTemplatesLoaded) return;
+        const grid = document.getElementById('starter_template_grid');
+        if (!grid) return;
+
+        const fd = new FormData();
+        fd.append('action', 'mt_get_starter_templates');
+        fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : '');
+
+        fetch(typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php', { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(res => {
+                starterTemplatesLoaded = true;
+                grid.innerHTML = '';
+                if (!res.success || !res.data || !res.data.length) {
+                    grid.innerHTML = '<div class="col-span-3 text-center py-8 text-sm text-gray-400">No starter templates available.</div>';
+                    return;
+                }
+                res.data.forEach(tpl => {
+                    const meta = STARTER_ICONS[tpl.slug] || STARTER_ICONS['starter'];
+                    const card = document.createElement('div');
+                    card.className = 'template-card bg-white rounded-2xl overflow-hidden shadow-sm border border-purple-100 relative group cursor-pointer';
+                    card.setAttribute('data-starter-slug', tpl.slug);
+                    card.innerHTML = `
+                        <div class="select-check absolute top-3 right-3 w-6 h-6 text-white rounded-full flex items-center justify-center opacity-0 scale-50 transition-all shadow-md z-10" style="background-color: var(--mt-brand);">
+                            <i class="fa-solid fa-check text-xs"></i>
+                        </div>
+                        <div class="aspect-[4/3] ${meta.color.split(' ')[0]} flex flex-col items-center justify-center border-b border-purple-50 relative overflow-hidden gap-2">
+                            <i class="fa-solid ${meta.icon} text-4xl ${meta.color.split(' ')[1]} transition-transform group-hover:scale-110"></i>
+                            <span class="text-[10px] font-black uppercase tracking-widest ${meta.color.split(' ')[1]} opacity-60">${meta.label}</span>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-bold text-gray-900 truncate text-sm">${tpl.name}</h3>
+                            <p class="text-[10px] text-purple-500 mt-1 font-bold uppercase tracking-widest">✨ Pre-Built Starter</p>
+                        </div>`;
+                    card.onclick = function() { useStarterTemplate(this, tpl.slug, tpl.name); };
+                    grid.appendChild(card);
+                });
+            })
+            .catch(() => {
+                grid.innerHTML = '<div class="col-span-3 text-center py-8 text-sm text-red-400">Failed to load starter templates.</div>';
+            });
+    }
+
+    function useStarterTemplate(element, slug, name) {
+        // Deselect all cards
+        document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+
+        // Show spinner on this card while we create the record
+        const check = element.querySelector('.select-check');
+        if (check) { check.style.opacity = '0'; }
+        element.classList.add('opacity-60', 'pointer-events-none');
+        const icon = element.querySelector('.aspect-\\[4\\/3\\] i');
+
+        const fd = new FormData();
+        fd.append('action', 'mt_use_starter_template');
+        fd.append('security', typeof mt_nonce !== 'undefined' ? mt_nonce : '');
+        fd.append('slug', slug);
+        fd.append('template_name', name);
+
+        fetch(typeof mt_ajax_url !== 'undefined' ? mt_ajax_url : '/wp-admin/admin-ajax.php', { method: 'POST', body: fd })
+            .then(r => r.json())
+            .then(res => {
+                element.classList.remove('opacity-60', 'pointer-events-none');
+                if (res.success && res.data && res.data.template_id) {
+                    element.classList.add('selected');
+                    if (check) { check.style.opacity = '1'; check.style.scale = '1'; }
+                    document.getElementById('selected_template_id').value = res.data.template_id;
+                    showToast(`"${name}" template loaded!`, 'success');
+                } else {
+                    showToast('Could not load that starter — try again.', 'error');
+                }
+            })
+            .catch(() => {
+                element.classList.remove('opacity-60', 'pointer-events-none');
+                showToast('Network error loading starter template.', 'error');
+            });
+    }
+
+    // Auto-load starters when step 3 is reached
+    const _origGoToStep = goToStep;
+    // We hook into the goToStep function by wrapping it after definition
+    // ─────────────────────────────────────────────────────────────────────────
+
     function goToStep(step) {
         if (step > currentStep) {
             if (currentStep === 1) {
@@ -638,9 +885,14 @@ $sender_email = !empty($brand_config['delivery']['from_email']) ? $brand_config[
         }
 
         document.querySelectorAll('.wizard-step').forEach(el => el.classList.remove('active'));
-        
+
         currentStep = step;
         document.getElementById('step-' + currentStep).classList.add('active');
+
+        // Lazy-load starter templates when user arrives at step 3
+        if (currentStep === 3 && typeof loadStarterTemplates === 'function') {
+            loadStarterTemplates();
+        }
 
         for(let i=1; i<=totalSteps; i++) {
             let indicator = document.getElementById('nav-step-' + i);
