@@ -1,0 +1,580 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": null,
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "ANNOUNCEMENT OR PROMO CODE",
+                    "formats": {
+                        "font_size": 18,
+                        "text_color": "#FFFFFF",
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#000000",
+                "padding_top": 15,
+                "padding_bottom": 15
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ImageElement",
+                    "template": "Image",
+                    "src": "master/assets/image/logo.png",
+                    "alt": "",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "width": 200,
+                        "align": "center",
+                        "border_radius": 0
+                    },
+                    "effect": {
+                        "grayscale": null,
+                        "sepia": null,
+                        "invert": null,
+                        "blur": null,
+                        "brightness": null,
+                        "contrast": null,
+                        "saturate": null,
+                        "hueRotate": null,
+                        "opacity": null
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 30,
+                "padding_bottom": 30
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "type": "h1",
+                    "text": "Headline<br>We suggest 2 lines",
+                    "formats": {
+                        "font_size": 42,
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Use this space to add context to your headline, provide an intro to the email, and include a transition into the call-to-action button. We suggest 2-3 lines.",
+                    "formats": {
+                        "font_size": 20,
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ButtonElement",
+                    "template": "Button",
+                    "text": "SHOP NOW",
+                    "url": "#",
+                    "formats": {
+                        "align": "center",
+                        "font_family": "inherit",
+                        "font_weight": "600",
+                        "font_size": 20,
+                        "text_color": "#FFFFFF",
+                        "link_color": "#ffffff",
+                        "text_align": "center",
+                        "line_height": "1.5",
+                        "text_direction": "ltr",
+                        "background_color": "#000000",
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "padding_top": 15,
+                        "padding_right": 50,
+                        "padding_bottom": 15,
+                        "padding_left": 50,
+                        "border_top_style": "solid",
+                        "border_top_width": 0,
+                        "border_top_color": "#0d6efd",
+                        "border_right_style": "solid",
+                        "border_right_width": 0,
+                        "border_right_color": "#0d6efd",
+                        "border_bottom_style": "solid",
+                        "border_bottom_width": 0,
+                        "border_bottom_color": "#0d6efd",
+                        "border_left_width": 0,
+                        "border_left_style": "solid",
+                        "border_left_color": "#0d6efd",
+                        "border_radius": 0,
+                        "width": 300
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ImageElement",
+                    "template": "Image",
+                    "src": "master/assets/image/FeaturedProductImage.svg",
+                    "alt": "",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "width": "100%",
+                        "align": "center",
+                        "border_radius": 0
+                    },
+                    "effect": {
+                        "grayscale": null,
+                        "sepia": null,
+                        "invert": null,
+                        "blur": null,
+                        "brightness": null,
+                        "contrast": null,
+                        "saturate": null,
+                        "hueRotate": null,
+                        "opacity": null
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_right": 0,
+                "padding_left": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "type": "h2",
+                    "text": "Headline<br>(We suggest 1-2 lines of text)",
+                    "formats": {
+                        "font_size": 36,
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/ProductImage.svg",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": "100%",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": 0,
+                                                "sepia": 0,
+                                                "invert": 0,
+                                                "blur": 0,
+                                                "brightness": 100,
+                                                "contrast": 100,
+                                                "saturate": 100,
+                                                "hueRotate": 0,
+                                                "opacity": 100
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Product Option 1",
+                                            "formats": {
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "$90",
+                                            "formats": {
+                                                "font_size": 30,
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "ADD BUTTON TEXT",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "center",
+                                                "font_family": "inherit",
+                                                "font_weight": "400",
+                                                "font_size": 18,
+                                                "text_color": "#FFFFFF",
+                                                "link_color": "#ffffff",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "#000000",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 15,
+                                                "padding_right": 20,
+                                                "padding_bottom": 15,
+                                                "padding_left": 20,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 0,
+                                                "border_top_color": "#0d6efd",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 0,
+                                                "border_right_color": "#0d6efd",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 0,
+                                                "border_bottom_color": "#0d6efd",
+                                                "border_left_width": 0,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#0d6efd",
+                                                "border_radius": 0,
+                                                "width": "auto"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/ProductImage.svg",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": "100%",
+                                                "align": "center",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": 0,
+                                                "sepia": 0,
+                                                "invert": 0,
+                                                "blur": 0,
+                                                "brightness": 100,
+                                                "contrast": 100,
+                                                "saturate": 100,
+                                                "hueRotate": 0,
+                                                "opacity": 100
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "type": "h2",
+                                            "text": "Product Option 2",
+                                            "formats": {
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "$90",
+                                            "formats": {
+                                                "font_size": 30,
+                                                "text_align": "center"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "ADD BUTTON TEXT",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "center",
+                                                "font_family": "inherit",
+                                                "font_weight": "400",
+                                                "font_size": 18,
+                                                "text_color": "#FFFFFF",
+                                                "link_color": "#ffffff",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "#000000",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 15,
+                                                "padding_right": 20,
+                                                "padding_bottom": 15,
+                                                "padding_left": 20,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 0,
+                                                "border_top_color": "#0d6efd",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 0,
+                                                "border_right_color": "#0d6efd",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 0,
+                                                "border_bottom_color": "#0d6efd",
+                                                "border_left_width": 0,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#0d6efd",
+                                                "border_radius": 0,
+                                                "width": "auto"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_bottom": 10
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": 50
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 40
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#F4F4F4"
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "SocialIconsElement",
+                    "template": "SocialIcons",
+                    "items": [
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/icons/facebook.png",
+                            "label": "Facebook"
+                        },
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/icons/linkedin.png",
+                            "label": "LinkedIn"
+                        },
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/icons/youtube.png",
+                            "label": "YouTube"
+                        },
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/icons/twitter.png",
+                            "label": "X"
+                        }
+                    ],
+                    "size": 35,
+                    "gap": 30,
+                    "align": "center",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_top": 40
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Copyright (C) {CURRENT_YEAR}. All rights reserved.",
+                    "formats": {
+                        "font_size": 13,
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF",
+                "padding_bottom": 10
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "If you no longer want to receive these emails, you can <a href=\"{UNSUBSCRIBE_URL}\">unsubscribe</a>",
+                    "formats": {
+                        "font_size": 13,
+                        "text_align": "center"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#FFFFFF"
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#F4F4F4",
+        "padding_top": 0,
+        "padding_right": 0,
+        "padding_bottom": 0,
+        "padding_left": 0
+    },
+    "block_gap": 0,
+    "container_width": "medium",
+    "block_padding_bottom": 20,
+    "block_padding_top": 20,
+    "block_padding_right": 20,
+    "block_padding_left": 20
+}
