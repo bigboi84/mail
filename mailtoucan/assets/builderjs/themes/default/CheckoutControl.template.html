@@ -1,0 +1,256 @@
+<div class="checkout-control-panel">
+    <!-- UI Settings Section -->
+    <div class="py-3 px-3 border-bottom">
+        <div class="mb-3">
+            <label class="form-label fw-semibold small text-uppercase text-muted">UI Settings</label>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Preview Label</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.ui.previewLabel %>" 
+                   data-path="ui.previewLabel">
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Mode Label</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.ui.modeLabel %>" 
+                   data-path="ui.modeLabel">
+        </div>
+    </div>
+
+    <!-- Header Section -->
+    <div class="py-3 px-3 border-bottom">
+        <div class="mb-3">
+            <label class="form-label fw-semibold small text-uppercase text-muted">Header</label>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Header Title</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.headerTitle %>" 
+                   data-path="headerTitle">
+        </div>
+    </div>
+
+    <!-- Button Texts Section -->
+    <div class="py-3 px-3 border-bottom">
+        <div class="mb-3">
+            <label class="form-label fw-semibold small text-uppercase text-muted">Button Texts</label>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Guest Submit Text</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.buttonTexts.guestSubmit %>" 
+                   data-path="buttonTexts.guestSubmit">
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Saved Button Text</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.buttonTexts.saved %>" 
+                   data-path="buttonTexts.saved">
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Upgrade/Downgrade Button Text</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.buttonTexts.upgrade %>" 
+                   data-path="buttonTexts.upgrade">
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Submitting Text</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.buttonTexts.submitting %>" 
+                   data-path="buttonTexts.submitting">
+        </div>
+    </div>
+
+    <!-- Headlines Section -->
+    <div class="py-3 px-3 border-bottom">
+        <div class="mb-3">
+            <label class="form-label fw-semibold small text-uppercase text-muted">Section Headlines</label>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Contact Information Headline</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.headlines.contact %>" 
+                   data-path="headlines.contact">
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Billing Information Headline</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.headlines.billing %>" 
+                   data-path="headlines.billing">
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Payment Information Headline</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.headlines.payment %>" 
+                   data-path="headlines.payment">
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Privacy Notice</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.headlines.privacy %>" 
+                   data-path="headlines.privacy">
+        </div>
+    </div>
+
+    <!-- Contact Input Labels Section -->
+    <div class="py-3 px-3 border-bottom">
+        <div class="mb-3">
+            <label class="form-label fw-semibold small text-uppercase text-muted">Contact Input Labels</label>
+        </div>
+        
+        <div class="row g-2">
+            <div class="col-6">
+                <label class="form-label fw-semibold small">First Name</label>
+                <input type="text" class="form-control form-control-sm" 
+                       value="<%= values.contactLabels.firstName %>" 
+                       data-path="contactLabels.firstName">
+            </div>
+            <div class="col-6">
+                <label class="form-label fw-semibold small">Last Name</label>
+                <input type="text" class="form-control form-control-sm" 
+                       value="<%= values.contactLabels.lastName %>" 
+                       data-path="contactLabels.lastName">
+            </div>
+        </div>
+        
+        <div class="mb-3 mt-2">
+            <label class="form-label fw-semibold small">Email</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.contactLabels.email %>" 
+                   data-path="contactLabels.email">
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Phone Number</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.contactLabels.phone %>" 
+                   data-path="contactLabels.phone">
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Address</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.contactLabels.address %>" 
+                   data-path="contactLabels.address">
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Apartment/Building</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.contactLabels.apartment %>" 
+                   data-path="contactLabels.apartment">
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Optional Text</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.contactLabels.apartmentOptional %>" 
+                   data-path="contactLabels.apartmentOptional">
+        </div>
+        
+        <div class="row g-2 mt-1">
+            <div class="col-6">
+                <label class="form-label fw-semibold small">Country</label>
+                <input type="text" class="form-control form-control-sm" 
+                       value="<%= values.contactLabels.country %>" 
+                       data-path="contactLabels.country">
+            </div>
+            <div class="col-6">
+                <label class="form-label fw-semibold small">State</label>
+                <input type="text" class="form-control form-control-sm" 
+                       value="<%= values.contactLabels.state %>" 
+                       data-path="contactLabels.state">
+            </div>
+        </div>
+        
+        <div class="row g-2 mt-2">
+            <div class="col-6">
+                <label class="form-label fw-semibold small">City</label>
+                <input type="text" class="form-control form-control-sm" 
+                       value="<%= values.contactLabels.city %>" 
+                       data-path="contactLabels.city">
+            </div>
+            <div class="col-6">
+                <label class="form-label fw-semibold small">Postal Code</label>
+                <input type="text" class="form-control form-control-sm" 
+                       value="<%= values.contactLabels.postal %>" 
+                       data-path="contactLabels.postal">
+            </div>
+        </div>
+    </div>
+
+    <!-- Default Values Section -->
+    <div class="py-3 px-3 border-bottom">
+        <div class="mb-3">
+            <label class="form-label fw-semibold small text-uppercase text-muted">Default Values</label>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Default Country</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.defaults.country %>" 
+                   data-path="defaults.country">
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Default State</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.defaults.state %>" 
+                   data-path="defaults.state">
+        </div>
+    </div>
+
+    <!-- Payment Summary Section -->
+    <div class="py-3 px-3 border-bottom">
+        <div class="mb-3">
+            <label class="form-label fw-semibold small text-uppercase text-muted">Payment Summary</label>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Summary Title</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.paymentSummary.title %>" 
+                   data-path="paymentSummary.title">
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label fw-semibold small">Summary CTA</label>
+            <input type="text" class="form-control form-control-sm" 
+                   value="<%= values.paymentSummary.cta %>" 
+                   data-path="paymentSummary.cta">
+        </div>
+    </div>
+
+    <!-- Colors Section -->
+    <div class="py-3 px-3 border-bottom">
+        <div class="mb-3">
+            <label class="form-label fw-semibold small text-uppercase text-muted">Colors</label>
+        </div>
+        
+        <div class="py-2 ps-3 pe-3 w-100 d-flex align-items-center justify-content-between">
+            <label class="form-label fw-semibold mb-0 me-3 small">Text Color</label>
+            <input type="color" class="form-control form-control-sm form-control-color" 
+                   value="#ffffff" 
+                   data-path="colors.text">
+        </div>
+        
+        <div class="py-2 ps-3 pe-3 w-100 d-flex align-items-center justify-content-between">
+            <label class="form-label fw-semibold mb-0 me-3 small">Link Color</label>
+            <input type="color" class="form-control form-control-sm form-control-color" 
+                   value="#ffffff" 
+                   data-path="colors.link">
+        </div>
+    </div>
+</div>
