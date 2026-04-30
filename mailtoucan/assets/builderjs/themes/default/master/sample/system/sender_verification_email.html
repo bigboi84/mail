@@ -1,0 +1,63 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email Address</title>
+
+    <style>
+        html {
+            margin: 0;
+        }
+        body {
+            padding: 0;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.4;
+        }
+        p, h1, h2, h3, h4, h5, h6, label, ul {
+            margin: 0;
+        }
+        a {
+            color: inherit;
+        }
+        [builder-element="PageElement"] {
+            min-height: 100vh;
+            display: block;
+            flex-direction: ;
+            justify-content: ;
+            align-items: ;
+        }
+
+        [builder-element="PageElement"] > [builder-element="BlockElement"] > :first-child {
+            padding-top: 20px;
+            padding-right: 50px;
+            padding-bottom: 20px;
+            padding-left: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div builder-element="PageElement" style="background-color: rgb(244, 244, 244); padding: 40px 60px !important;"><div builder-element="BlockElement"><div style="background-color: #FFFFFF;">
+    <div builder-element="HeadingElement">
+    <h1 inline-edit="text" style="">Verify Your Email Address</h1>
+
+</div><div builder-element="PElement"><div style="">{CURRENT_DATE}</div></div>
+</div></div><div builder-element="BlockElement"><div style="background-color: #FFFFFF; border-radius: 0px !important; padding-top: 0px !important; padding-bottom: 0px !important;">
+    <div builder-element="DividerElement"><div style="padding-top: 10px !important; padding-bottom: 10px !important;">
+    <div style="background-color: #D0D0D0; height: 2px !important; border-top: 2px solid #D0D0D0; background-color: transparent; height: 0;"></div>
+</div>
+    </div>
+</div></div><div builder-element="BlockElement"><div style="background-color: #FFFFFF; border-radius: 0px !important; padding-bottom: 0px !important;">
+    <div builder-element="PElement"><div style="">Hi {USER_NAME}, we need to confirm your email</div></div>
+</div></div><div builder-element="BlockElement"><div style="background-color: #FFFFFF; border-radius: 0px !important; padding-bottom: 0px !important;">
+    <div builder-element="PElement"><div style="">We received a request to register <strong>{USER_EMAIL}</strong> as a sender in our system. To complete this process, please confirm that you own this email address by clicking the button below:</div></div>
+</div></div><div builder-element="BlockElement"><div style="background-color: #FFFFFF;">
+    <div builder-element="LinkElement"><a href="{VERIFICATION_LINK}" style="display: block;" inline-edit="text">Verify My Email</a></div>
+</div></div><div builder-element="BlockElement"><div style="background-color: #FFFFFF; border-radius: 0px !important; padding-bottom: 0px !important;">
+    <div builder-element="PElement"><div style="">If the button above does not work, copy and paste this link into your browser:</div></div>
+</div></div><div builder-element="BlockElement"><div style="background-color: #FFFFFF;">
+    <div builder-element="LinkElement"><a href="{VERIFICATION_LINK}" style="display: block;" inline-edit="text">{VERIFICATION_LINK}</a></div>
+</div></div><div builder-element="BlockElement"><div style="background-color: #FFFFFF;">
+    <div builder-element="PElement"><div style="font-size: 13px !important; text-align: center;">Copyright (C). All rights reserved.</div></div>
+</div></div></div>
+
+</body></html>
