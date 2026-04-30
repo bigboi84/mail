@@ -1,0 +1,281 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": null,
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "text": "Thank<br>You",
+                                            "formats": {
+                                                "font_family": "Arial Black",
+                                                "font_size": 72,
+                                                "text_color": "#1A1A1A",
+                                                "text_align": "left",
+                                                "line_height": 1.1,
+                                                "padding_top": 85
+                                            }
+                                        },
+                                        {
+                                            "name": "BlockElement",
+                                            "template": "Block",
+                                            "elements": [],
+                                            "formats": {
+                                                "background_color": "#00FF32",
+                                                "margin_top": 40,
+                                                "margin_bottom": 40,
+                                                "width": 170,
+                                                "height": 10
+                                            }
+                                        },
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Congrats on completing<br>the branding course!",
+                                            "formats": {
+                                                "font_size": 22,
+                                                "text_color": "#1A1A1A",
+                                                "text_align": "left",
+                                                "line_height": 1.4
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/ClassThankYou/logo.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_bottom": 200,
+                                                "width": 130,
+                                                "align": "right",
+                                                "border_radius": 0
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                },
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "We’re thrilled to have been a part of your branding journey. We hope that the course has provided you with valuable insights into the fundamentals of brand. Share your feedback on the course below.",
+                                            "formats": {
+                                                "font_size": 15,
+                                                "text_color": "#1A1A1A",
+                                                "text_align": "left",
+                                                "line_height": 1.45
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 40
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#F8F5EE",
+                "padding_top": 60,
+                "padding_right": 40,
+                "padding_bottom": 60,
+                "padding_left": 40,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "We want to hear from you",
+                    "formats": {
+                        "font_size": 20,
+                        "text_color": "#F8F5EE",
+                        "padding_bottom": 20
+                    }
+                },
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "text": "We would love to hear<br>about your experience.",
+                    "formats": {
+                        "font_size": 42,
+                        "text_color": "#FFFFFF",
+                        "line_height": 1.2,
+                        "padding_bottom": 30
+                    }
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "<a href=\"#\" style=\"display:inline-block;text-decoration:none;color:#FFFFFF;border:2px solid #FFFFFF;padding:14px 30px;font-size:18px;font-family:Arial;\">SHARE FEEDBACK</a>",
+                    "formats": {
+                        "text_align": "right",
+                        "padding_top": 0,
+                        "padding_bottom": 0
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#252525",
+                "padding_top": 60,
+                "padding_right": 40,
+                "padding_bottom": 60,
+                "padding_left": 40,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "SocialIconsElement",
+                    "template": "SocialIcons",
+                    "items": [
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/ClassThankYou/facebook.png",
+                            "label": "Facebook"
+                        },
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/ClassThankYou/instagram.png",
+                            "label": "Instagram"
+                        },
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/ClassThankYou/twitter.png",
+                            "label": "X"
+                        }
+                    ],
+                    "size": 35,
+                    "gap": 25,
+                    "align": "left",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat"
+                    }
+                },
+                {
+                    "name": "LinkElement",
+                    "template": "Link",
+                    "text": "View in browser",
+                    "url": "{WEB_VIEW_URL}",
+                    "formats": {
+                        "font_size": 14,
+                        "text_color": "#4A3034",
+                        "text_align": "left"
+                    }
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Copyright (C) {CURRENT_YEAR}. All rights reserved.",
+                    "formats": {
+                        "font_size": 12,
+                        "text_align": "left",
+                        "padding_top": 20
+                    }
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "If you no longer want to receive these emails, you can <a href=\"{UNSUBSCRIBE_URL}\">unsubscribe</a>.",
+                    "formats": {
+                        "font_size": 12,
+                        "text_align": "left",
+                        "padding_top": 20
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#F8F5EE",
+                "padding_top": 40,
+                "padding_right": 40,
+                "padding_bottom": 40,
+                "padding_left": 40,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#E6E6E6",
+        "padding_top": 0,
+        "padding_right": 0,
+        "padding_bottom": 0,
+        "padding_left": 0
+    },
+    "block_gap": 0,
+    "block_padding_bottom": 40,
+    "block_padding_top": 40,
+    "block_padding_right": 0,
+    "block_padding_left": 0
+}
