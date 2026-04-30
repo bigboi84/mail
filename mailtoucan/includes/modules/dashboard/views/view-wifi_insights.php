@@ -89,23 +89,64 @@ foreach($responses_raw as $r) {
     <span id="mt_toast_msg">Message</span>
 </div>
 
-<header class="mb-8 flex justify-between items-end">
+<style>
+    .wi-page-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+    .wi-page-title{font-size:22px;font-weight:900;color:#111827;display:flex;align-items:center;gap:8px;}
+    .wi-page-sub{font-size:13px;color:#6b7280;margin-top:3px;}
+    .wi-range-select{background:white;border:1.5px solid #e5e7eb;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;color:#374151;outline:none;cursor:pointer;font-family:inherit;}
+    .wi-export-btn{background:white;color:#374151;border:1.5px solid #e5e7eb;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:6px;}
+    .wi-export-btn:hover{background:#f9fafb;}
+
+    /* Tabs */
+    .wi-tabs{display:flex;gap:2px;border-bottom:2px solid #f3f4f6;margin-bottom:24px;}
+    .wi-tab-btn{padding:10px 18px;font-size:13px;font-weight:700;color:#9ca3af;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:inherit;transition:all .15s;display:flex;align-items:center;gap:7px;}
+    .wi-tab-btn.active{color:var(--mt-brand,var(--mt-primary));border-bottom-color:var(--mt-brand,var(--mt-primary));}
+    .wi-tab-btn:hover{color:#374151;}
+    .wi-tab-panel{display:none;}
+    .wi-tab-panel.active{display:block;}
+
+    /* Mobile */
+    @media(max-width:768px){
+        .wi-page-header{flex-direction:column;align-items:flex-start;}
+        .wi-page-title{font-size:18px;}
+        .wi-page-header .flex{flex-wrap:wrap;gap:8px;}
+        .grid.grid-cols-4{grid-template-columns:1fr 1fr!important;}
+        .grid.grid-cols-3{grid-template-columns:1fr!important;}
+        .grid.grid-cols-2{grid-template-columns:1fr!important;}
+        canvas{max-width:100%;}
+        .overflow-x-auto{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+        table{min-width:520px;}
+    }
+    @media(max-width:420px){
+        .grid.grid-cols-4{grid-template-columns:1fr!important;}
+    }
+</style>
+
+<div class="wi-page-header">
     <div>
-        <h1 class="text-2xl font-bold text-gray-900">WiFi & CRM Insights</h1>
-        <p class="text-gray-500 text-sm">Analyze network traffic, location performance, and campaign engagement.</p>
+        <div class="wi-page-title"><i class="fa-solid fa-wifi" style="color:var(--mt-brand,var(--mt-primary));"></i> WiFi &amp; CRM Insights</div>
+        <div class="wi-page-sub">Analyse network traffic, location performance, and campaign engagement.</div>
     </div>
     <div class="flex gap-3">
-        <select onchange="window.location.search = '?view=wifi_insights&range=' + this.value" class="bg-white border border-gray-300 px-4 py-2 rounded-lg font-bold text-sm text-gray-600 outline-none shadow-sm cursor-pointer">
+        <select onchange="window.location.search = '?view=wifi_insights&range=' + this.value" class="wi-range-select">
             <option value="30" <?php echo ($range===30)?'selected':'';?>>Last 30 Days</option>
             <option value="7"  <?php echo ($range===7) ?'selected':'';?>>Last 7 Days</option>
             <option value="0"  <?php echo ($range===0) ?'selected':'';?>>All Time</option>
         </select>
-        <button onclick="exportGlobalReport()" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-bold text-sm shadow-sm hover:bg-gray-50 transition flex items-center gap-2">
-            <i class="fa-solid fa-download text-indigo-500"></i> Global Report
+        <button onclick="exportGlobalReport()" class="wi-export-btn">
+            <i class="fa-solid fa-download" style="color:var(--mt-brand,var(--mt-primary));"></i> Global Report
         </button>
     </div>
-</header>
+</div>
 
+<!-- Tab Navigation -->
+<div class="wi-tabs">
+    <button class="wi-tab-btn active" onclick="wiSwitchTab('summary', this)"><i class="fa-solid fa-chart-pie"></i> Summary</button>
+    <button class="wi-tab-btn" onclick="wiSwitchTab('campaigns', this)"><i class="fa-solid fa-tags"></i> Campaign Engagement</button>
+</div>
+
+<!-- Tab 1: Summary -->
+<div class="wi-tab-panel active" id="wi_panel_summary">
 <div class="grid grid-cols-4 gap-6 mb-8">
     <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
         <div class="absolute -right-4 -top-4 text-gray-100 text-7xl"><i class="fa-solid fa-users"></i></div>
@@ -177,6 +218,10 @@ foreach($responses_raw as $r) {
     </div>
 </div>
 
+</div><!-- /wi_panel_summary -->
+
+<!-- Tab 2: Campaign Engagement -->
+<div class="wi-tab-panel" id="wi_panel_campaigns">
 <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden mb-12">
     <div class="p-6 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
         <div>
@@ -225,6 +270,7 @@ foreach($responses_raw as $r) {
         <?php endif; ?>
     </div>
 </div>
+</div><!-- /wi_panel_campaigns -->
 
 <div id="camp_data_modal" class="fixed inset-0 bg-gray-900/60 z-[200] hidden opacity-0 transition-opacity duration-300 backdrop-blur-sm flex items-center justify-center p-6">
     <div id="camp_data_content" class="bg-white w-full max-w-6xl h-[85vh] rounded-2xl shadow-2xl flex flex-col transform scale-95 transition-transform duration-300 overflow-hidden">
@@ -313,6 +359,13 @@ foreach($responses_raw as $r) {
 
         toast.classList.remove('translate-y-20', 'opacity-0');
         setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 3000);
+    }
+
+    function wiSwitchTab(tab, btn) {
+        document.querySelectorAll('.wi-tab-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.wi-tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('wi_panel_' + tab).classList.add('active');
+        btn.classList.add('active');
     }
 
     function exportGlobalReport() {
