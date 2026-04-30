@@ -1,0 +1,757 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": null,
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ImageElement",
+                    "template": "Image",
+                    "src": "master/assets/image/event_agenda_dark/logo.png",
+                    "alt": "Alternative text",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "width": 180,
+                        "height": "auto",
+                        "align": "center",
+                        "border_radius": 0
+                    },
+                    "effect": {
+                        "grayscale": null,
+                        "sepia": null,
+                        "invert": null,
+                        "blur": null,
+                        "brightness": null,
+                        "contrast": null,
+                        "saturate": null,
+                        "hueRotate": null,
+                        "opacity": null
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#000000",
+                "padding_top": 20,
+                "padding_bottom": 20
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "H1Element",
+                    "template": "H1",
+                    "text": "XXL Headline",
+                    "formats": {
+                        "font_weight": "bold",
+                        "font_size": 70,
+                        "text_color": "#FFFFFF",
+                        "text_align": "left",
+                        "line_height": "1",
+                        "text_direction": "ltr",
+                        "padding_bottom": 0
+                    }
+                },
+                {
+                    "name": "H1Element",
+                    "template": "H1",
+                    "text": "We suggest 3 lines of text",
+                    "formats": {
+                        "font_weight": "normal",
+                        "font_size": 70,
+                        "text_color": "#FFFFFF",
+                        "text_align": "left",
+                        "line_height": "1",
+                        "text_direction": "ltr",
+                        "padding_right": 200,
+                        "padding_bottom": 0
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#000000",
+                "padding_top": 10,
+                "padding_right": 0,
+                "padding_bottom": 40,
+                "padding_left": 20
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Add some context to your headline, describe your event, and invite readers to RSVP. We suggest 3-4 lines of text here.",
+                    "formats": {
+                        "font_size": 18,
+                        "text_color": "#FFFFFF",
+                        "text_align": "left",
+                        "line_height": "1.5",
+                        "padding_right": 360
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#000000",
+                "padding_top": 10,
+                "padding_right": 0,
+                "padding_bottom": 40,
+                "padding_left": 20
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "H4Element",
+                    "template": "H4",
+                    "text": "Date / Time",
+                    "formats": {
+                        "font_size": 18,
+                        "text_color": "#FFFFFF",
+                        "text_align": "left",
+                        "text_direction": "ltr",
+                        "padding_bottom": 5
+                    }
+                },
+                {
+                    "name": "H4Element",
+                    "template": "H4",
+                    "text": "Location",
+                    "formats": {
+                        "font_size": 18,
+                        "text_color": "#FFFFFF",
+                        "text_align": "left",
+                        "text_direction": "ltr",
+                        "padding_bottom": 5
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#000000",
+                "padding_top": 10,
+                "padding_right": 0,
+                "padding_bottom": 10,
+                "padding_left": 20
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "ButtonElement",
+                    "template": "Button",
+                    "text": "RSVP",
+                    "url": "#",
+                    "formats": {
+                        "align": "left",
+                        "font_family": "inherit",
+                        "font_weight": "400",
+                        "font_size": 16,
+                        "text_color": "#000",
+                        "link_color": "#000",
+                        "text_align": "center",
+                        "line_height": "1.5",
+                        "text_direction": "ltr",
+                        "background_color": "#9d957b",
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat",
+                        "padding_top": 12,
+                        "padding_right": 180,
+                        "padding_bottom": 12,
+                        "padding_left": 180,
+                        "border_top_style": "solid",
+                        "border_top_width": 0,
+                        "border_top_color": "#0d6efd",
+                        "border_right_style": "solid",
+                        "border_right_width": 0,
+                        "border_right_color": "#0d6efd",
+                        "border_bottom_style": "solid",
+                        "border_bottom_width": 0,
+                        "border_bottom_color": "#0d6efd",
+                        "border_left_width": 0,
+                        "border_left_style": "solid",
+                        "border_left_color": "#0d6efd",
+                        "border_radius": 0
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#000000",
+                "padding_top": 10,
+                "padding_right": 0,
+                "padding_bottom": 30,
+                "padding_left": 20
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "H3Element",
+                                            "template": "H3",
+                                            "text": "Event Headline",
+                                            "formats": {
+                                                "font_weight": "bold",
+                                                "font_size": 32,
+                                                "text_align": "left",
+                                                "text_direction": "ltr",
+                                                "padding_top": 0,
+                                                "padding_bottom": 20
+                                            }
+                                        },
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Date / Time",
+                                            "formats": {
+                                                "font_size": 18,
+                                                "line_height": "1.5",
+                                                "padding_bottom": 20
+                                            }
+                                        },
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "Sign Up",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "left",
+                                                "font_family": "inherit",
+                                                "font_weight": "400",
+                                                "font_size": 16,
+                                                "text_color": "#FFFFFF",
+                                                "link_color": "#ffffff",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "#000000",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 12,
+                                                "padding_right": 30,
+                                                "padding_bottom": 12,
+                                                "padding_left": 30,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 2,
+                                                "border_top_color": "#231e15",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 2,
+                                                "border_right_color": "#231e15",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 2,
+                                                "border_bottom_color": "#231e15",
+                                                "border_left_width": 2,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#231e15   ",
+                                                "border_radius": 0
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 0
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "25%"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "This is where you’ll tell your audience all about what they can expect at this event. We suggest 4-5 lines of text here.",
+                                            "formats": {
+                                                "font_size": 18,
+                                                "line_height": "1.5"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_right": 20,
+                                        "padding_left": 20
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "75%"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#9d957b",
+                "padding_top": 30,
+                "padding_right": 0,
+                "padding_bottom": 30,
+                "padding_left": 20
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "DividerElement",
+                    "template": "Divider",
+                    "formats": {
+                        "background_color": "#000",
+                        "height": 1,
+                        "divider_style": "solid",
+                        "padding_top": 10,
+                        "padding_bottom": 10
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#9d957b",
+                "padding_top": 0,
+                "padding_right": 0,
+                "padding_bottom": 0,
+                "padding_left": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "H3Element",
+                                            "template": "H3",
+                                            "text": "Event Headline",
+                                            "formats": {
+                                                "font_weight": "bold",
+                                                "font_size": 32,
+                                                "text_align": "left",
+                                                "text_direction": "ltr",
+                                                "padding_top": 0,
+                                                "padding_bottom": 20
+                                            }
+                                        },
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Date / Time",
+                                            "formats": {
+                                                "font_size": 18,
+                                                "line_height": "1.5",
+                                                "padding_bottom": 20
+                                            }
+                                        },
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "Sign Up",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "left",
+                                                "font_family": "inherit",
+                                                "font_weight": "400",
+                                                "font_size": 16,
+                                                "text_color": "#FFFFFF",
+                                                "link_color": "#ffffff",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "#000000",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 12,
+                                                "padding_right": 30,
+                                                "padding_bottom": 12,
+                                                "padding_left": 30,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 2,
+                                                "border_top_color": "#231e15",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 2,
+                                                "border_right_color": "#231e15",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 2,
+                                                "border_bottom_color": "#231e15",
+                                                "border_left_width": 2,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#231e15   ",
+                                                "border_radius": 0
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 0
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "25%"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "This is where you’ll tell your audience all about what they can expect at this event. We suggest 4-5 lines of text here.",
+                                            "formats": {
+                                                "font_size": 18,
+                                                "line_height": "1.5"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_right": 20,
+                                        "padding_left": 20
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "75%"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#9d957b",
+                "padding_top": 30,
+                "padding_right": 0,
+                "padding_bottom": 30,
+                "padding_left": 20
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "DividerElement",
+                    "template": "Divider",
+                    "formats": {
+                        "background_color": "#000",
+                        "height": 1,
+                        "divider_style": "solid",
+                        "padding_top": 10,
+                        "padding_bottom": 10
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#9d957b",
+                "padding_top": 0,
+                "padding_right": 0,
+                "padding_bottom": 0,
+                "padding_left": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "H3Element",
+                                            "template": "H3",
+                                            "text": "Event Headline",
+                                            "formats": {
+                                                "font_weight": "bold",
+                                                "font_size": 32,
+                                                "text_align": "left",
+                                                "text_direction": "ltr",
+                                                "padding_top": 0,
+                                                "padding_bottom": 20
+                                            }
+                                        },
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Date / Time",
+                                            "formats": {
+                                                "font_size": 18,
+                                                "line_height": "1.5",
+                                                "padding_bottom": 20
+                                            }
+                                        },
+                                        {
+                                            "name": "ButtonElement",
+                                            "template": "Button",
+                                            "text": "Sign Up",
+                                            "url": "#",
+                                            "formats": {
+                                                "align": "left",
+                                                "font_family": "inherit",
+                                                "font_weight": "400",
+                                                "font_size": 16,
+                                                "text_color": "#FFFFFF",
+                                                "link_color": "#ffffff",
+                                                "text_align": "center",
+                                                "line_height": "1.5",
+                                                "text_direction": "ltr",
+                                                "background_color": "#000000",
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 12,
+                                                "padding_right": 30,
+                                                "padding_bottom": 12,
+                                                "padding_left": 30,
+                                                "border_top_style": "solid",
+                                                "border_top_width": 2,
+                                                "border_top_color": "#231e15",
+                                                "border_right_style": "solid",
+                                                "border_right_width": 2,
+                                                "border_right_color": "#231e15",
+                                                "border_bottom_style": "solid",
+                                                "border_bottom_width": 2,
+                                                "border_bottom_color": "#231e15",
+                                                "border_left_width": 2,
+                                                "border_left_style": "solid",
+                                                "border_left_color": "#231e15   ",
+                                                "border_radius": 0
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 0
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "25%"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "This is where you’ll tell your audience all about what they can expect at this event. We suggest 4-5 lines of text here.",
+                                            "formats": {
+                                                "font_size": 18,
+                                                "line_height": "1.5"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {
+                                        "padding_top": 10,
+                                        "padding_right": 20,
+                                        "padding_left": 20
+                                    }
+                                }
+                            ],
+                            "formats": {
+                                "width": "75%"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {}
+                }
+            ],
+            "formats": {
+                "background_color": "#9d957b",
+                "padding_top": 30,
+                "padding_right": 0,
+                "padding_bottom": 30,
+                "padding_left": 20
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "DividerElement",
+                    "template": "Divider",
+                    "formats": {
+                        "background_color": "#000",
+                        "height": 1,
+                        "divider_style": "solid",
+                        "padding_top": 10,
+                        "padding_bottom": 10
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#9d957b",
+                "padding_top": 0,
+                "padding_right": 0,
+                "padding_bottom": 0,
+                "padding_left": 0
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "SocialIconsElement",
+                    "template": "SocialIcons",
+                    "items": [
+                        {
+                            "image_url": "master/assets/image/icons/facebook.png",
+                            "link": "#",
+                            "label": "Facebook"
+                        },
+                        {
+                            "image_url": "master/assets/image/icons/twitter.png",
+                            "link": "#",
+                            "label": "Twitter"
+                        },
+                        {
+                            "image_url": "master/assets/image/icons/instagram.png",
+                            "link": "#",
+                            "label": "Instagram"
+                        }
+                    ],
+                    "size": 32,
+                    "gap": 30,
+                    "align": "center",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#9d957b",
+                "padding_top": 20,
+                "padding_bottom": 20
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "LinkElement",
+                    "template": "Link",
+                    "text": "View email in browser",
+                    "url": "#",
+                    "formats": {
+                        "font_size": 11,
+                        "text_color": "#FFFFFF",
+                        "text_align": "center",
+                        "line_height": "1.5"
+                    }
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Copyright (C) {CURRENT_YEAR}. All rights reserved.",
+                    "formats": {
+                        "font_size": 11,
+                        "text_color": "#FFFFFF",
+                        "text_align": "center",
+                        "line_height": "1.5"
+                    }
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "If you no longer want to receive these emails, you can <a href='{UNSUBSCRIBE_URL}'>unsubscribe</a>",
+                    "formats": {
+                        "font_size": 11,
+                        "text_color": "#FFFFFF",
+                        "text_align": "center",
+                        "line_height": "1.5"
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#231e15",
+                "padding_top": 20,
+                "padding_bottom": 20
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#231e15",
+        "padding_top": 0,
+        "padding_right": 150,
+        "padding_bottom": 0,
+        "padding_left": 150
+    },
+    "block_gap": 0,
+    "container_width": "medium",
+    "block_padding_bottom": 20,
+    "block_padding_top": 20,
+    "block_padding_right": 20,
+    "block_padding_left": 20
+}
