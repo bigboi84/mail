@@ -1,0 +1,744 @@
+{
+    "theme": "default",
+    "name": "PageElement",
+    "template": "Page",
+    "page_title": null,
+    "blocks": [
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "text": "THE<br>VERONICA<br>THEATRE",
+                                            "formats": {
+                                                "font_family": "Arial Black",
+                                                "font_size": 58,
+                                                "text_color": "#000000",
+                                                "text_align": "left",
+                                                "line_height": 0.9
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/EventLineup/picture1.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 300,
+                                                "height": 270,
+                                                "align": "center",
+                                                "border_radius": 20
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 20
+                    }
+                },
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/EventLineup/picture2.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 400,
+                                                "height": 250,
+                                                "align": "center",
+                                                "border_radius": 20
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/EventLineup/picture3.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "width": 250,
+                                                "height": 250,
+                                                "align": "center",
+                                                "border_radius": 20
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "padding_top": 0,
+                        "gap": 20
+                    }
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "As we prepare to kick off another exciting season, we're thrilled to share with you our upcoming lineup of shows:",
+                    "formats": {
+                        "font_family": "Courier New",
+                        "font_size": 16,
+                        "text_color": "#000000",
+                        "line_height": 1.5,
+                        "padding_top": 40,
+                        "padding_bottom": 40
+                    }
+                },
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "text": "Quest for Valoria",
+                    "formats": {
+                        "font_family": "Arial Black",
+                        "font_size": 32,
+                        "text_color": "#000000",
+                        "padding_bottom": 15
+                    }
+                },
+                {
+                    "name": "BlockElement",
+                    "template": "Block",
+                    "elements": [
+                        {
+                            "name": "PElement",
+                            "template": "P",
+                            "text": "",
+                            "formats": {
+                                "padding_top": 0,
+                                "padding_bottom": 0
+                            }
+                        }
+                    ],
+                    "formats": {
+                        "border_top_style": "solid",
+                        "border_top_width": 2,
+                        "border_top_color": "#000000",
+                        "padding_top": 40,
+                        "padding_bottom": 40
+                    }
+                },
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Encounters with magical creatures, battles with evil forces, and the exploration of forgotten lands.<br><br><b>Performances run from Monday to Wednesday, June thru August 2023.</b>",
+                                            "formats": {
+                                                "font_family": "Courier New",
+                                                "font_size": 15,
+                                                "text_color": "#000000",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "<b>Tickets:</b> $15<br><b>Doors:</b> 7pm • Show 8pm",
+                                            "formats": {
+                                                "font_family": "Courier New",
+                                                "font_size": 15,
+                                                "text_color": "#000000",
+                                                "padding_bottom": 20
+                                            }
+                                        },
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "<a href='#' style='background:#000;color:#fff;padding:12px 35px;text-decoration:none;font-family:Arial;font-size:13px;border-radius:0px;display:inline-block;white-space:nowrap;'>BUY TICKETS</a>",
+                                            "formats": {}
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 40
+                    }
+                },
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "text": "Reflection in Motion",
+                    "formats": {
+                        "font_family": "Arial Black",
+                        "font_size": 32,
+                        "text_color": "#000000",
+                        "padding_bottom": 15
+                    }
+                },
+                {
+                    "name": "BlockElement",
+                    "template": "Block",
+                    "elements": [
+                        {
+                            "name": "PElement",
+                            "template": "P",
+                            "text": "",
+                            "formats": {
+                                "padding_top": 0,
+                                "padding_bottom": 0
+                            }
+                        }
+                    ],
+                    "formats": {
+                        "border_top_style": "solid",
+                        "border_top_width": 2,
+                        "border_top_color": "#000000",
+                        "padding_top": 40,
+                        "padding_bottom": 40
+                    }
+                },
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "Exploration of the relationship between internal and external movement featuring choreographer Emily Lin.<br><br><b>Performances run from Friday to Sunday, August thru October 2023.</b>",
+                                            "formats": {
+                                                "font_family": "Courier New",
+                                                "font_size": 15,
+                                                "text_color": "#000000",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "<b>Tickets:</b> $20<br><b>Doors:</b> 8pm • Show 9pm",
+                                            "formats": {
+                                                "font_family": "Courier New",
+                                                "font_size": 15,
+                                                "text_color": "#000000",
+                                                "padding_bottom": 20
+                                            }
+                                        },
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "<a href='#' style='background:#000;color:#fff;padding:12px 35px;text-decoration:none;font-family:Arial;font-size:13px;border-radius:0px;display:inline-block;white-space:nowrap;'>BUY TICKETS</a>",
+                                            "formats": {}
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 40
+                    }
+                },
+                {
+                    "name": "HeadingElement",
+                    "template": "Heading",
+                    "text": "Reflection in Motion",
+                    "formats": {
+                        "font_family": "Arial Black",
+                        "font_size": 32,
+                        "text_color": "#000000",
+                        "padding_bottom": 15
+                    }
+                },
+                {
+                    "name": "BlockElement",
+                    "template": "Block",
+                    "elements": [
+                        {
+                            "name": "PElement",
+                            "template": "P",
+                            "text": "",
+                            "formats": {
+                                "padding_top": 0,
+                                "padding_bottom": 0
+                            }
+                        }
+                    ],
+                    "formats": {
+                        "border_top_style": "solid",
+                        "border_top_width": 2,
+                        "border_top_color": "#000000",
+                        "padding_top": 40,
+                        "padding_bottom": 40
+                    }
+                },
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "A diverse group of musicians come together to overcome differences and find their unique voice.<br><br><b>Performances run from Saturday to Sunday, August thru October 2023.</b>",
+                                            "formats": {
+                                                "font_family": "Courier New",
+                                                "font_size": 15,
+                                                "text_color": "#000000",
+                                                "line_height": 1.5
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "<b>Tickets:</b> $15<br><b>Doors:</b> 2pm • Show 3pm",
+                                            "formats": {
+                                                "font_family": "Courier New",
+                                                "font_size": 15,
+                                                "text_color": "#000000",
+                                                "padding_bottom": 20
+                                            }
+                                        },
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "<a href='#' style='background:#000;color:#fff;padding:12px 35px;text-decoration:none;font-family:Arial;font-size:13px;border-radius:0px;display:inline-block;white-space:nowrap;'>BUY TICKETS</a>",
+                                            "formats": {}
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 40
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#F8F5EE",
+                "padding_top": 60,
+                "padding_right": 40,
+                "padding_bottom": 60,
+                "padding_left": 40,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "GridElement",
+                    "template": "Grid",
+                    "cells": [
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "ImageElement",
+                                            "template": "Image",
+                                            "src": "master/assets/image/EventLineup/picture4.png",
+                                            "alt": "",
+                                            "formats": {
+                                                "background_position": "center",
+                                                "background_size": "100%",
+                                                "background_repeat": "no-repeat",
+                                                "padding_top": 10,
+                                                "width": 180,
+                                                "height": 140,
+                                                "align": "center",
+                                                "border_radius": 20
+                                            },
+                                            "effect": {
+                                                "grayscale": null,
+                                                "sepia": null,
+                                                "invert": null,
+                                                "blur": null,
+                                                "brightness": null,
+                                                "contrast": null,
+                                                "saturate": null,
+                                                "hueRotate": null,
+                                                "opacity": null
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        },
+                        {
+                            "name": "CellElement",
+                            "template": "Cell",
+                            "blocks": [
+                                {
+                                    "name": "BlockElement",
+                                    "template": "Block",
+                                    "elements": [
+                                        {
+                                            "name": "HeadingElement",
+                                            "template": "Heading",
+                                            "text": "A Message From Us",
+                                            "formats": {
+                                                "font_family": "Arial Black",
+                                                "font_size": 32,
+                                                "text_color": "#FFFFFF",
+                                                "text_align": "left",
+                                                "padding_bottom": 20
+                                            }
+                                        },
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "We're excited to bring you another season of thought-provoking performances that explore the human experience.",
+                                            "formats": {
+                                                "font_family": "Courier New",
+                                                "font_size": 15,
+                                                "text_color": "#FFFFFF",
+                                                "text_align": "left",
+                                                "line_height": 1.5,
+                                                "padding_bottom": 20
+                                            }
+                                        },
+                                        {
+                                            "name": "PElement",
+                                            "template": "P",
+                                            "text": "We can’t wait to see you at the theatre soon!",
+                                            "formats": {
+                                                "font_family": "Courier New",
+                                                "font_size": 15,
+                                                "text_color": "#FFFFFF",
+                                                "text_align": "left"
+                                            }
+                                        }
+                                    ],
+                                    "formats": {}
+                                }
+                            ],
+                            "formats": {
+                                "width": "auto"
+                            }
+                        }
+                    ],
+                    "cell_gap": 0,
+                    "formats": {
+                        "gap": 30
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#3F130A",
+                "padding_top": 60,
+                "padding_right": 40,
+                "padding_bottom": 60,
+                "padding_left": 40,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        },
+        {
+            "name": "BlockElement",
+            "template": "Block",
+            "elements": [
+                {
+                    "name": "SocialIconsElement",
+                    "template": "SocialIcons",
+                    "items": [
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/EventLineup/facebook.png",
+                            "label": "Facebook"
+                        },
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/EventLineup/instagram.png",
+                            "label": "Instagram"
+                        },
+                        {
+                            "link": "#",
+                            "image_url": "master/assets/image/EventLineup/twitter.png",
+                            "label": "Twitter"
+                        }
+                    ],
+                    "size": 32,
+                    "gap": 25,
+                    "align": "center",
+                    "formats": {
+                        "background_position": "center",
+                        "background_size": "100%",
+                        "background_repeat": "no-repeat"
+                    }
+                },
+                {
+                    "name": "BlockElement",
+                    "template": "Block",
+                    "elements": [
+                        {
+                            "name": "LinkElement",
+                            "template": "Link",
+                            "text": "View in browser",
+                            "url": "{WEB_VIEW_URL}",
+                            "formats": {
+                                "font_family": "Courier New",
+                                "font_size": 15,
+                                "text_color": "#000000",
+                                "text_align": "center",
+                                "text_decoration": "underline"
+                            }
+                        }
+                    ],
+                    "formats": {}
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "Copyright (C) {CURRENT_YEAR}. All rights reserved.",
+                    "formats": {
+                        "font_family": "Courier New",
+                        "font_size": 14,
+                        "text_color": "#000000",
+                        "text_align": "center",
+                        "line_height": 1.4,
+                        "padding_top": 15
+                    }
+                },
+                {
+                    "name": "PElement",
+                    "template": "P",
+                    "text": "If you no longer want to receive these emails, you can <a href=\"{UNSUBSCRIBE_URL}\">unsubscribe</a>.",
+                    "formats": {
+                        "font_family": "Courier New",
+                        "font_size": 14,
+                        "text_color": "#000000",
+                        "text_align": "center",
+                        "padding_top": 10
+                    }
+                }
+            ],
+            "formats": {
+                "background_color": "#EAE111",
+                "padding_top": 60,
+                "padding_right": 20,
+                "padding_bottom": 60,
+                "padding_left": 20,
+                "margin_right": "auto",
+                "margin_left": "auto",
+                "width": 660
+            }
+        }
+    ],
+    "formats": {
+        "background_color": "#EAE111",
+        "padding_top": 0,
+        "padding_right": 0,
+        "padding_bottom": 0,
+        "padding_left": 0
+    },
+    "block_gap": 0,
+    "block_padding_bottom": 0,
+    "block_padding_top": 0,
+    "block_padding_right": 0,
+    "block_padding_left": 0
+}
