@@ -74,7 +74,12 @@ $uamip = sanitize_text_field($_GET['uamip'] ?? '');
 $uamport = sanitize_text_field($_GET['uamport'] ?? '3990');
 $mt_login = sanitize_text_field($_GET['loginurl'] ?? $_GET['link-login'] ?? '');
 $res_param = sanitize_text_field($_GET['res'] ?? '');
+// MikroTik sends ?dst= (or ?link-orig=) with the original URL the guest was trying to reach
+$mikrotik_dst = sanitize_text_field($_GET['dst'] ?? $_GET['link-orig'] ?? '');
 $challenge = sanitize_text_field($_GET['challenge'] ?? '');
+// OpenMesh / CloudTrax sends ?redirect= — the grant URL that dismisses the captive portal popup
+// After RADIUS write succeeds, JS redirects the guest browser to this URL
+$openmesh_redirect = sanitize_text_field($_GET['redirect'] ?? '');
 
 $rad_user = 'guest';
 if (strlen($clean_mac) === 12) {
@@ -128,6 +133,8 @@ if (!empty($raw_mac) && strlen($clean_mac) >= 10) {
 $flow_type = isset($config['flow_type']) ? intval($config['flow_type']) : 1;
 $require_verification = isset($config['verify_email']) ? (bool)$config['verify_email'] : true;
 $redirect_url = !empty($config['redirect_url']) ? $config['redirect_url'] : (!empty($state['redirect_url']) ? $state['redirect_url'] : 'http://captive.apple.com/hotspot-detect.html');
+// MikroTik's original destination takes priority over splash config — restores the page guest was trying to open
+$final_dst = !empty($mikrotik_dst) ? $mikrotik_dst : $redirect_url;
 
 $s1 = $state['step1'] ?? [];
 $s2 = $state['step2'] ?? [];
@@ -397,11 +404,11 @@ if (!empty($uamip)) {
                 <?php endif; ?>
                 
                 <?php if(!empty($mt_login)): ?>
-                    <form method="POST" action="<?php echo esc_attr($mt_login); ?>">
+                    <form id="mt_mikrotik_form" method="POST" action="<?php echo esc_attr($mt_login); ?>">
                         <input type="hidden" name="username" value="<?php echo esc_attr($rad_user); ?>">
                         <input type="hidden" name="password" value="<?php echo esc_attr($rad_user); ?>">
-                        <input type="hidden" name="dst" value="<?php echo esc_attr($redirect_url); ?>">
-                        <button type="submit" onclick="this.innerHTML='<i class=\'fa-solid fa-circle-notch fa-spin\'></i> Connecting...'" class="main-btn" style="background-color: <?php echo esc_attr($s3['btn_color'] ?? '#111827'); ?>; margin-top: <?php echo esc_attr($s3['spacing']['btn_mt'] ?? 32); ?>px;">
+                        <input type="hidden" name="dst" value="<?php echo esc_attr($final_dst); ?>">
+                        <button type="submit" id="mt_mikrotik_btn" onclick="this.innerHTML='<i class=\'fa-solid fa-circle-notch fa-spin\'></i> Connecting...'" class="main-btn" style="background-color: <?php echo esc_attr($s3['btn_color'] ?? '#111827'); ?>; margin-top: <?php echo esc_attr($s3['spacing']['btn_mt'] ?? 32); ?>px;">
                             <span><?php echo esc_html($s3['btn_text'] ?? 'Browse the Internet'); ?></span>
                         </button>
                     </form>
@@ -444,6 +451,8 @@ if (!empty($uamip)) {
 
         const rawMac = "<?php echo esc_js($raw_mac); ?>";
         const redirectUrl = "<?php echo esc_js($redirect_url); ?>";
+        const mtLoginUrl = "<?php echo esc_js($mt_login); ?>";          // Non-empty = MikroTik router flow
+        const openMeshRedirect = "<?php echo esc_js($openmesh_redirect); ?>"; // Non-empty = OpenMesh/CloudTrax flow
 
         if (resParam === 'success') {
             window.location.replace(redirectUrl); 
@@ -651,8 +660,28 @@ if (!empty($uamip)) {
                 clearTimeout(fallbackTimeout);
                 if(data.success) {
                     transitionToStep(3);
+                    if (mtLoginUrl) {
+                        // ── MikroTik flow ──────────────────────────────────────────────────
+                        // Auto-submit the hidden form so the router grants WiFi access.
+                        // Guest sees "Connected!" briefly, then the router redirect takes over.
+                        setTimeout(() => {
+                            const mikrotikForm = document.getElementById('mt_mikrotik_form');
+                            const mikrotikBtn  = document.getElementById('mt_mikrotik_btn');
+                            if (mikrotikBtn)  mikrotikBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Connecting...';
+                            if (mikrotikForm) mikrotikForm.submit();
+                        }, 1400);
+                    } else if (openMeshRedirect) {
+                        // ── OpenMesh / CloudTrax flow ──────────────────────────────────────
+                        // RADIUS already authorised the MAC above. Now redirect the guest's
+                        // browser to the CloudTrax grant URL so the captive-portal popup
+                        // dismisses and the device knows it has internet access.
+                        setTimeout(() => {
+                            window.location.href = openMeshRedirect;
+                        }, 1400);
+                    }
+                    // If neither param is set, guest stays on step 3 (RADIUS-only mode).
                 } else {
-                    alert(data.data); 
+                    alert(data.data);
                     resetButtons();
                 }
             })
