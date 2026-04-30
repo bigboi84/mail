@@ -11,10 +11,10 @@ class MT_Activator {
 
         $tables = [
             // 1. THE NEW PACKAGE MANAGER TABLE
-            "CREATE TABLE {$wpdb->prefix}mt_packages ( id bigint(20) NOT NULL AUTO_INCREMENT, package_slug varchar(50) NOT NULL, package_name varchar(100) NOT NULL, location_limit int(11) DEFAULT 1, storage_limit_mb int(11) DEFAULT 50, email_limit int(11) DEFAULT 1000, price_mrr decimal(10,2) DEFAULT 0.00, PRIMARY KEY  (id), UNIQUE KEY package_slug (package_slug) ) $charset_collate;",
+            "CREATE TABLE {$wpdb->prefix}mt_packages ( id bigint(20) NOT NULL AUTO_INCREMENT, package_slug varchar(50) NOT NULL, package_name varchar(100) NOT NULL, location_limit int(11) DEFAULT 1, storage_limit_mb int(11) DEFAULT 50, email_limit int(11) DEFAULT 1000, price_mrr decimal(10,2) DEFAULT 0.00, wifi_enabled tinyint(1) DEFAULT 1, email_enabled tinyint(1) DEFAULT 1, PRIMARY KEY  (id), UNIQUE KEY package_slug (package_slug) ) $charset_collate;",
 
             // 2. UPGRADED BRANDS TABLE (Added Billing & Limit Overrides)
-            "CREATE TABLE {$wpdb->prefix}mt_brands ( id bigint(20) NOT NULL AUTO_INCREMENT, brand_name varchar(100) NOT NULL, primary_color varchar(10), logo_url text, ai_voice_profile text, splash_config LONGTEXT, brand_config LONGTEXT, package_slug varchar(50) DEFAULT 'mt_starter', location_limit int(11) DEFAULT 1, email_limit int(11) DEFAULT 1000, storage_limit_mb int(11) DEFAULT 50, storage_used_kb bigint(20) DEFAULT 0, renewal_date date DEFAULT NULL, custom_mrr decimal(10,2) DEFAULT NULL, PRIMARY KEY  (id) ) $charset_collate;",
+            "CREATE TABLE {$wpdb->prefix}mt_brands ( id bigint(20) NOT NULL AUTO_INCREMENT, brand_name varchar(100) NOT NULL, primary_color varchar(10), logo_url text, ai_voice_profile text, splash_config LONGTEXT, brand_config LONGTEXT, package_slug varchar(50) DEFAULT 'mt_starter', location_limit int(11) DEFAULT 1, email_limit int(11) DEFAULT 1000, storage_limit_mb int(11) DEFAULT 50, storage_used_kb bigint(20) DEFAULT 0, renewal_date date DEFAULT NULL, custom_mrr decimal(10,2) DEFAULT NULL, api_sending_enabled tinyint(1) DEFAULT 0, PRIMARY KEY  (id) ) $charset_collate;",
             
             // 3. STORES, ROOST, WIFI, VAULT
             "CREATE TABLE {$wpdb->prefix}mt_stores ( id bigint(20) NOT NULL AUTO_INCREMENT, brand_id bigint(20) NOT NULL, store_name varchar(100) NOT NULL, router_identity varchar(100), local_offer_json text, splash_config LONGTEXT, PRIMARY KEY  (id), KEY brand_id (brand_id) ) $charset_collate;",
@@ -50,7 +50,12 @@ class MT_Activator {
         add_role( 'mt_pro', 'MailToucan Pro', $capabilities );
         add_role( 'mt_enterprise', 'MailToucan Enterprise', $capabilities );
 
-        add_rewrite_rule( '^app/?$', 'index.php?mt_app=1', 'top' );
+        add_rewrite_rule( '^app/?$',             'index.php?mt_app=1',          'top' );
+        add_rewrite_rule( '^login/?$',           'index.php?mt_auth_page=login',  'top' );
+        add_rewrite_rule( '^signup/?$',          'index.php?mt_auth_page=signup', 'top' );
+        add_rewrite_rule( '^forgot-password/?$', 'index.php?mt_auth_page=forgot', 'top' );
+        add_rewrite_rule( '^reset-password/?$',  'index.php?mt_auth_page=reset',  'top' );
+        add_rewrite_rule( '^unsubscribe/?$',     'index.php?mt_unsub=1',          'top' );
         flush_rewrite_rules();
     }
 }
